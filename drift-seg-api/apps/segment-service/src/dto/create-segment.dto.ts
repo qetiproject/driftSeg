@@ -13,13 +13,6 @@ import {
   Validate,
 } from 'class-validator';
 import { SegmentTypeEnum } from '../models';
-import { SegmentRuleKind } from './enums/rule-kinds';
-import { IsValidSegmentRuleConstraint } from './rules.validator';
-
-export interface SegmentRuleInput {
-  kind: SegmentRuleKind;
-  [key: string]: unknown;
-}
 
 export class CreateSegmentDto {
   @IsString()
