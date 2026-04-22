@@ -1,12 +1,44 @@
-import { Controller, Get } from '@nestjs/common';
-import { CustomerServiceService } from './customer-service.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { CustomerService } from './customer.service';
+import { CreateCustomerDto, UpdateCustomerDto } from './dto';
 
-@Controller()
+@Controller('customers')
 export class CustomerServiceController {
-  constructor(private readonly customerServiceService: CustomerServiceService) {}
+  constructor(private readonly customerService: CustomerService) {}
+
+  @Post()
+  create(@Body() createCustomerDto: CreateCustomerDto) {
+    return this.customerService.create(createCustomerDto);
+  }
 
   @Get()
-  getHello(): string {
-    return this.customerServiceService.getHello();
+  findAll() {
+    return this.customerService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.customerService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
+    return this.customerService.update(id, updateCustomerDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.customerService.remove(id);
   }
 }
