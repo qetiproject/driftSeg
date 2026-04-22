@@ -1,4 +1,4 @@
-import { SegmentRuleInput } from '../create-segment.dto';
+import { SegmentRuleInput } from '../create-segment';
 import { SegmentType } from '../enums/segment.enum';
 
 export interface SegmentResponseDto {
@@ -8,7 +8,7 @@ export interface SegmentResponseDto {
   rules: SegmentRuleInput;
   dependsOnSegmentIds: string[];
   isActive: boolean;
-  lastComputedAt: string;
-  createdAt: string;
-  updatedAt: string;
+  lastComputedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

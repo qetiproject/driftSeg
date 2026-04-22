@@ -1,18 +1,29 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsBoolean,
   IsEnum,
+  IsInt,
   IsMongoId,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   MaxLength,
+  Min,
   MinLength,
-  Validate,
+  ValidateNested,
 } from 'class-validator';
-import { SegmentTypeEnum } from '../models';
+import * as segmentRule from './create-segment/segment-rule';
+
+class ActiveBuyersRuleDto implements segmentRule.ActiveBuyersRuleInput {
+  @IsEnum(segmentRule.SegmentRuleKind)
+  kind!: segmentRule.SegmentRuleKind.ACTIVE_BUYERS;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  days!: number;
+}
 
 export class CreateSegmentDto {
   @IsString()
@@ -21,20 +32,16 @@ export class CreateSegmentDto {
   @MaxLength(120)
   name!: string;
 
-  @IsEnum(SegmentTypeEnum)
-  type!: SegmentTypeEnum;
+  @IsEnum(segmentRule.SegmentTypeEnum)
+  type!: segmentRule.SegmentTypeEnum;
 
   @IsObject()
-  @Validate(IsValidSegmentRuleConstraint)
-  rules!: SegmentRuleInput;
+  @ValidateNested()
+  @Type(() => ActiveBuyersRuleDto)
+  rules!: segmentRule.ActiveBuyersRuleInput;
 
   @IsOptional()
   @IsArray()
   @IsMongoId({ each: true })
   dependsOnSegmentIds?: string[];
-
-  @IsOptional()
-  @Type(() => Boolean)
-  @IsBoolean()
-  isActive?: boolean;
 }

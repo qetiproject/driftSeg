@@ -1,11 +1,7 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
-
-export enum SegmentTypeEnum {
-  DYNAMIC = 'dynamic',
-  STATIC = 'static',
-}
+import { SegmentTypeEnum } from '../dto/create-segment';
 
 @Schema({
   versionKey: false,
@@ -24,7 +20,7 @@ export class SegmentDocument extends AbstractDocument {
   @Prop({ type: [SchemaTypes.ObjectId], default: [] })
   dependsOnSegmentIds!: Types.ObjectId[];
 
-  @Prop({ default: true })
+  @Prop({ default: false })
   isActive!: boolean;
 
   @Prop()
