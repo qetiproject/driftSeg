@@ -5,6 +5,8 @@ import Joi from 'joi';
 import { SegmentServiceController } from './controllers/segment-service.controller';
 import { IsValidSegmentRuleConstraint } from './dto/rules.validator';
 import {
+  CustomerActivityDocument,
+  CustomerActivitySchema,
   SegmentDeltaDocument,
   SegmentDeltaSchema,
   SegmentDocument,
@@ -15,7 +17,11 @@ import {
 import { SegmentDeltaRepository } from './repositories/segment-delta.repository';
 import { SegmentMembershipRepository } from './repositories/segment-membership.repository';
 import { SegmentRepository } from './repositories/segment.repository';
+import { CustomerActivityRepository } from './repositories/customer-activity.repository';
+import { SegmentOrchestrationService } from './services/segment-orchestration.service';
 import { SegmentQueryService } from './services/segment-query.service';
+import { SegmentRuntimeService } from './services/segment-runtime.service';
+import { SegmentSignalService } from './services/segment-signal.service';
 import { SegmentService } from './services/segment.service';
 import { SegmentValidationService } from './services/segment-validation.service';
 
@@ -26,6 +32,7 @@ import { SegmentValidationService } from './services/segment-validation.service'
       { name: SegmentDocument.name, schema: SegmentSchema },
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
+      { name: CustomerActivityDocument.name, schema: CustomerActivitySchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -42,8 +49,12 @@ import { SegmentValidationService } from './services/segment-validation.service'
     SegmentRepository,
     SegmentMembershipRepository,
     SegmentDeltaRepository,
+    CustomerActivityRepository,
     SegmentValidationService,
     SegmentQueryService,
+    SegmentOrchestrationService,
+    SegmentRuntimeService,
+    SegmentSignalService,
     IsValidSegmentRuleConstraint,
   ],
 })
