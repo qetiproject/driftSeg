@@ -2,6 +2,7 @@ import { DatabaseModule } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
+import { SegmentController, SegmentQueryController } from './controllers';
 import { IsValidSegmentRuleConstraint } from './dto/rules.validator';
 import {
   CustomerActivityDocument,
@@ -13,16 +14,16 @@ import {
   SegmentMembershipSchema,
   SegmentSchema,
 } from './models';
+import { CustomerActivityRepository } from './repositories/customer-activity.repository';
 import { SegmentDeltaRepository } from './repositories/segment-delta.repository';
 import { SegmentMembershipRepository } from './repositories/segment-membership.repository';
 import { SegmentRepository } from './repositories/segment.repository';
-import { CustomerActivityRepository } from './repositories/customer-activity.repository';
 import { SegmentOrchestrationService } from './services/segment-orchestration.service';
 import { SegmentQueryService } from './services/segment-query.service';
 import { SegmentRuntimeService } from './services/segment-runtime.service';
 import { SegmentSignalService } from './services/segment-signal.service';
-import { SegmentService } from './services/segment.service';
 import { SegmentValidationService } from './services/segment-validation.service';
+import { SegmentService } from './services/segment.service';
 
 @Module({
   imports: [
@@ -42,7 +43,7 @@ import { SegmentValidationService } from './services/segment-validation.service'
       }),
     }),
   ],
-  controllers: [],
+  controllers: [SegmentController, SegmentQueryController],
   providers: [
     SegmentService,
     SegmentRepository,
