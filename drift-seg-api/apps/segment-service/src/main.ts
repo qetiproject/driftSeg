@@ -1,10 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { CustomerServiceModule } from './customer-service.module';
+import { SegmentServiceModule } from './segment-service.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CustomerServiceModule);
+  const app = await NestFactory.create(SegmentServiceModule);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -13,6 +13,6 @@ async function bootstrap() {
     }),
   );
   const configService = app.get(ConfigService);
-  await app.listen(configService.get('PORT') || 3000);
+  await app.listen(configService.get('PORT') || 3001, '0.0.0.0');
 }
 bootstrap();

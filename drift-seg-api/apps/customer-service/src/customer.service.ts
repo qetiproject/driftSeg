@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CustomerRepository } from './customer.repository';
 import { CreateCustomerDto } from './dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -8,12 +12,20 @@ export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
+    await this.validateCreateCustomerDto(createCustomerDto);
+    return await this.customerRepository.create(createCustomerDto);
+  }
+
+  private async validateCreateCustomerDto(
+    createCustomerDto: CreateCustomerDto,
+  ) {
     try {
-      return this.customerRepository.create(createCustomerDto);
-    } catch (error: any) {
-      console.error(error);
-      throw new Error('Payment failed. Customer was not created.');
+      await this.customerRepository.findOne({ email: createCustomerDto.email });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      return;
     }
+    throw new UnprocessableEntityException('Email already exists.');
   }
 
   async findAll() {
