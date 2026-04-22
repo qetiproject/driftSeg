@@ -2,7 +2,6 @@ import { DatabaseModule } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { SegmentServiceController } from './controllers/segment-service.controller';
 import { IsValidSegmentRuleConstraint } from './dto/rules.validator';
 import {
   CustomerActivityDocument,
@@ -43,7 +42,7 @@ import { SegmentValidationService } from './services/segment-validation.service'
       }),
     }),
   ],
-  controllers: [SegmentServiceController],
+  controllers: [],
   providers: [
     SegmentService,
     SegmentRepository,
@@ -57,5 +56,6 @@ import { SegmentValidationService } from './services/segment-validation.service'
     SegmentSignalService,
     IsValidSegmentRuleConstraint,
   ],
+  exports: [SegmentService],
 })
 export class SegmentServiceModule {}

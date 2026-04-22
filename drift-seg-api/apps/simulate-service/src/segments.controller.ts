@@ -1,17 +1,12 @@
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { CreateSegmentDto, UpdateSegmentDto } from '../dto';
-import { SegmentService } from '../services/segment.service';
+  CreateSegmentDto,
+  UpdateSegmentDto,
+} from '../../segment-service/src/dto';
+import { SegmentService } from '../../segment-service/src/services/segment.service';
 
 @Controller('segments')
-export class SegmentServiceController {
+export class SegmentsController {
   constructor(private readonly segmentService: SegmentService) {}
 
   @Post()

@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateSegmentDto, SegmentRuleKind, UpdateSegmentDto } from '../dto';
 import {
   SegmentDeltaDocument,
@@ -17,7 +18,6 @@ import { SegmentQueryService } from './segment-query.service';
 import { SegmentRuntimeService } from './segment-runtime.service';
 import { SegmentSignalService } from './segment-signal.service';
 import { SegmentValidationService } from './segment-validation.service';
-import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 
 @Injectable()
 export class SegmentService {
@@ -39,11 +39,14 @@ export class SegmentService {
     await this.segmentValidationService.assertDependencySegmentsExist(
       dependencyIds,
     );
-    this.segmentValidationService.assertNoSelfDependency(undefined, dependencyIds);
+    this.segmentValidationService.assertNoSelfDependency(
+      undefined,
+      dependencyIds,
+    );
     await this.segmentValidationService.assertRuleReferencedSegmentsExist(
       payload.rules,
     );
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
     this.segmentValidationService.assertCompositionDependenciesMatch(
       payload.rules,
       dependencyIds,
@@ -55,9 +58,7 @@ export class SegmentService {
 
     return await this.segmentRepository.create({
       ...payload,
-      dependsOnSegmentIds: dependencyIds.map(
-        (id) => new Types.ObjectId(id),
-      ),
+      dependsOnSegmentIds: dependencyIds.map((id) => new Types.ObjectId(id)),
       isActive: payload.isActive ?? true,
       lastComputedAt: undefined,
     });
@@ -69,15 +70,19 @@ export class SegmentService {
   ): Promise<SegmentDocument> {
     const current = await this.segmentRepository.findOne({ _id: segmentId });
     const currentRules = current.rules as CreateSegmentDto['rules'];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const effectiveRules = payload.rules ?? currentRules;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const effectiveType = payload.type ?? current.type;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const effectiveDependencyIds =
       payload.dependsOnSegmentIds !== undefined
         ? [...new Set(payload.dependsOnSegmentIds)]
-        : [...new Set((current.dependsOnSegmentIds ?? []).map((id) => id.toString()))];
+        : [
+            ...new Set(
+              (current.dependsOnSegmentIds ?? []).map((id) => id.toString()),
+            ),
+          ];
 
     if (payload.name && payload.name !== current.name) {
       await this.segmentValidationService.assertUniqueSegmentName(payload.name);
@@ -97,13 +102,12 @@ export class SegmentService {
     await this.segmentValidationService.assertRuleReferencedSegmentsExist(
       effectiveRules,
     );
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
     this.segmentValidationService.assertCompositionDependenciesMatch(
       effectiveRules,
       effectiveDependencyIds,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const effectiveKind: SegmentRuleKind | undefined = effectiveRules?.kind;
     this.segmentValidationService.assertRuleCompatibleWithType(
       effectiveType,
@@ -117,10 +121,9 @@ export class SegmentService {
           ...payload,
           ...(payload.dependsOnSegmentIds
             ? {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                dependsOnSegmentIds: [...new Set(payload.dependsOnSegmentIds)].map(
-                  (id) => new Types.ObjectId(id),
-                ),
+                dependsOnSegmentIds: [
+                  ...new Set(payload.dependsOnSegmentIds),
+                ].map((id) => new Types.ObjectId(id)),
               }
             : {}),
         },
@@ -131,7 +134,9 @@ export class SegmentService {
   async removeSegment(segmentId: string): Promise<SegmentDocument | null> {
     const hasDependents = await this.segmentRepository.hasDependents(segmentId);
     if (hasDependents) {
-      throw new BadRequestException(SEGMENT_ERROR_MESSAGES.SEGMENT_HAS_DEPENDENTS);
+      throw new BadRequestException(
+        SEGMENT_ERROR_MESSAGES.SEGMENT_HAS_DEPENDENTS,
+      );
     }
     return await this.segmentRepository.findOneAndDelete({ _id: segmentId });
   }
@@ -163,7 +168,9 @@ export class SegmentService {
     return { segment, delta };
   }
 
-  async recomputeAll(reason: 'time_advanced' | 'profile_updated' | 'bulk_import') {
+  async recomputeDynamicSegments(
+    reason: 'time_advanced' | 'profile_updated' | 'bulk_import',
+  ) {
     const now = this.segmentRuntimeService.now();
     return await this.segmentOrchestrationService.recomputeAllDynamicSegments(
       reason,
@@ -171,46 +178,54 @@ export class SegmentService {
     );
   }
 
-  async addTransaction(payload: {
+  async ingestTransactionEvent(payload: {
     customerId: string;
     amount: number;
     at?: string;
   }) {
-    const eventTime = payload.at ? new Date(payload.at) : this.segmentRuntimeService.now();
+    const eventTime = payload.at
+      ? new Date(payload.at)
+      : this.segmentRuntimeService.now();
     await this.customerActivityRepository.appendTransaction(
       payload.customerId,
       payload.amount,
       eventTime,
     );
-    const deltas = await this.segmentOrchestrationService.recomputeAllDynamicSegments(
-      'transaction_added',
-      this.segmentRuntimeService.now(),
-    );
+    const deltas =
+      await this.segmentOrchestrationService.recomputeAllDynamicSegments(
+        'transaction_added',
+        this.segmentRuntimeService.now(),
+      );
     return { appliedAt: eventTime.toISOString(), deltas };
   }
 
-  async updateProfile(payload: {
+  async ingestProfileUpdateEvent(payload: {
     customerId: string;
     patch: Record<string, unknown>;
   }) {
-    await this.customerActivityRepository.mergeProfile(payload.customerId, payload.patch);
-    const deltas = await this.segmentOrchestrationService.recomputeAllDynamicSegments(
-      'profile_updated',
-      this.segmentRuntimeService.now(),
+    await this.customerActivityRepository.mergeProfile(
+      payload.customerId,
+      payload.patch,
     );
+    const deltas =
+      await this.segmentOrchestrationService.recomputeAllDynamicSegments(
+        'profile_updated',
+        this.segmentRuntimeService.now(),
+      );
     return { deltas };
   }
 
-  async advanceTime(days: number) {
+  async simulateTimeAdvance(days: number) {
     const now = this.segmentRuntimeService.advanceByDays(days);
-    const deltas = await this.segmentOrchestrationService.recomputeAllDynamicSegments(
-      'time_advanced',
-      now,
-    );
+    const deltas =
+      await this.segmentOrchestrationService.recomputeAllDynamicSegments(
+        'time_advanced',
+        now,
+      );
     return { now: now.toISOString(), deltas };
   }
 
-  async importTransactions(
+  async importTransactionsInChunks(
     payload: Array<{ customerId: string; amount: number; at?: string }>,
     chunkSize = 1000,
   ) {
@@ -219,26 +234,28 @@ export class SegmentService {
       amount: x.amount,
       at: x.at ? new Date(x.at) : this.segmentRuntimeService.now(),
     }));
-    const processed = await this.customerActivityRepository.upsertTransactionsInChunks(
-      normalized,
-      chunkSize,
-    );
-    const deltas = await this.segmentOrchestrationService.recomputeAllDynamicSegments(
-      'bulk_import',
-      this.segmentRuntimeService.now(),
-    );
+    const processed =
+      await this.customerActivityRepository.upsertTransactionsInChunks(
+        normalized,
+        chunkSize,
+      );
+    const deltas =
+      await this.segmentOrchestrationService.recomputeAllDynamicSegments(
+        'bulk_import',
+        this.segmentRuntimeService.now(),
+      );
     return { processed, chunkSize, deltas };
   }
 
-  pullUiSignals() {
+  pullUiDeltaSignals() {
     return this.segmentSignalService.pullUiSignals();
   }
 
-  pullBackgroundSignals() {
+  pullBackgroundDeltaSignals() {
     return this.segmentSignalService.pullBackgroundSignals();
   }
 
-  async bootstrapDemoSegments() {
+  async seedDemoSegments() {
     const specs: CreateSegmentDto[] = [
       {
         name: 'Active Buyers',
@@ -282,7 +299,8 @@ export class SegmentService {
 
     const vip = created.find((x) => x.name === 'VIP Customers');
     const risk = created.find((x) => x.name === 'Risk Group');
-    const vipRiskExisting = await this.segmentRepository.findByName('VIP ∩ Risk');
+    const vipRiskExisting =
+      await this.segmentRepository.findByName('VIP ∩ Risk');
     if (!vipRiskExisting && vip && risk) {
       created.push(
         await this.createSegment({
