@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CreateSegmentDto, SegmentRuleKind, UpdateSegmentDto } from '../dto';
 import {
@@ -17,6 +17,7 @@ import { SegmentQueryService } from './segment-query.service';
 import { SegmentRuntimeService } from './segment-runtime.service';
 import { SegmentSignalService } from './segment-signal.service';
 import { SegmentValidationService } from './segment-validation.service';
+import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 
 @Injectable()
 export class SegmentService {
@@ -32,12 +33,13 @@ export class SegmentService {
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentDocument> {
-    const dependencyIds = payload.dependsOnSegmentIds ?? [];
+    const dependencyIds = [...new Set(payload.dependsOnSegmentIds ?? [])];
 
     await this.segmentValidationService.assertUniqueSegmentName(payload.name);
     await this.segmentValidationService.assertDependencySegmentsExist(
       dependencyIds,
     );
+    this.segmentValidationService.assertNoSelfDependency(undefined, dependencyIds);
     await this.segmentValidationService.assertRuleReferencedSegmentsExist(
       payload.rules,
     );
@@ -53,7 +55,7 @@ export class SegmentService {
 
     return await this.segmentRepository.create({
       ...payload,
-      dependsOnSegmentIds: (payload.dependsOnSegmentIds ?? []).map(
+      dependsOnSegmentIds: dependencyIds.map(
         (id) => new Types.ObjectId(id),
       ),
       isActive: payload.isActive ?? true,
@@ -73,14 +75,23 @@ export class SegmentService {
     const effectiveType = payload.type ?? current.type;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const effectiveDependencyIds =
-      payload.dependsOnSegmentIds ??
-      (current.dependsOnSegmentIds ?? []).map((id) => id.toString());
+      payload.dependsOnSegmentIds !== undefined
+        ? [...new Set(payload.dependsOnSegmentIds)]
+        : [...new Set((current.dependsOnSegmentIds ?? []).map((id) => id.toString()))];
 
     if (payload.name && payload.name !== current.name) {
       await this.segmentValidationService.assertUniqueSegmentName(payload.name);
     }
 
     await this.segmentValidationService.assertDependencySegmentsExist(
+      effectiveDependencyIds,
+    );
+    this.segmentValidationService.assertNoSelfDependency(
+      segmentId,
+      effectiveDependencyIds,
+    );
+    await this.segmentValidationService.assertNoDependencyCycle(
+      segmentId,
       effectiveDependencyIds,
     );
     await this.segmentValidationService.assertRuleReferencedSegmentsExist(
@@ -107,7 +118,7 @@ export class SegmentService {
           ...(payload.dependsOnSegmentIds
             ? {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                dependsOnSegmentIds: payload.dependsOnSegmentIds.map(
+                dependsOnSegmentIds: [...new Set(payload.dependsOnSegmentIds)].map(
                   (id) => new Types.ObjectId(id),
                 ),
               }
@@ -118,6 +129,10 @@ export class SegmentService {
   }
 
   async removeSegment(segmentId: string): Promise<SegmentDocument | null> {
+    const hasDependents = await this.segmentRepository.hasDependents(segmentId);
+    if (hasDependents) {
+      throw new BadRequestException(SEGMENT_ERROR_MESSAGES.SEGMENT_HAS_DEPENDENTS);
+    }
     return await this.segmentRepository.findOneAndDelete({ _id: segmentId });
   }
 

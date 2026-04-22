@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
-  ParseIntPipe,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -76,8 +76,11 @@ export class SegmentServiceController {
   @Post('simulate/import')
   simulateImport(
     @Body()
-    payload: { transactions: Array<{ customerId: string; amount: number; at?: string }> },
-    @Query('chunkSize', new ParseIntPipe({ optional: true })) chunkSize?: number,
+    payload: {
+      transactions: Array<{ customerId: string; amount: number; at?: string }>;
+    },
+    @Query('chunkSize', new ParseIntPipe({ optional: true }))
+    chunkSize?: number,
   ) {
     return this.segmentService.importTransactions(
       payload.transactions,
@@ -87,9 +90,14 @@ export class SegmentServiceController {
 
   @Post('recompute')
   recomputeAll(
-    @Body() payload: { reason?: 'time_advanced' | 'profile_updated' | 'bulk_import' },
+    @Body()
+    payload: {
+      reason?: 'time_advanced' | 'profile_updated' | 'bulk_import';
+    },
   ) {
-    return this.segmentService.recomputeAll(payload.reason ?? 'profile_updated');
+    return this.segmentService.recomputeAll(
+      payload.reason ?? 'profile_updated',
+    );
   }
 
   @Post('simulate/bootstrap')

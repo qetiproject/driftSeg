@@ -35,6 +35,63 @@ export class SegmentValidationService {
     }
   }
 
+  assertNoSelfDependency(
+    segmentId: string | undefined,
+    dependencyIds: string[],
+  ): void {
+    if (!segmentId) {
+      return;
+    }
+    if (dependencyIds.includes(segmentId)) {
+      throw new BadRequestException(SEGMENT_ERROR_MESSAGES.SELF_DEPENDENCY);
+    }
+  }
+
+  async assertNoDependencyCycle(
+    segmentId: string | undefined,
+    dependencyIds: string[],
+  ): Promise<void> {
+    if (!segmentId || dependencyIds.length === 0) {
+      return;
+    }
+
+    const allSegments = await this.segmentRepository.find({});
+    const adjacency = new Map<string, string[]>();
+    for (const segment of allSegments) {
+      adjacency.set(
+        segment._id.toString(),
+        (segment.dependsOnSegmentIds ?? []).map((id) => id.toString()),
+      );
+    }
+    adjacency.set(segmentId, [...new Set(dependencyIds)]);
+
+    const visiting = new Set<string>();
+    const visited = new Set<string>();
+
+    const dfs = (node: string): boolean => {
+      if (visiting.has(node)) {
+        return true;
+      }
+      if (visited.has(node)) {
+        return false;
+      }
+      visiting.add(node);
+      const neighbors = adjacency.get(node) ?? [];
+      for (const next of neighbors) {
+        if (dfs(next)) {
+          return true;
+        }
+      }
+      visiting.delete(node);
+      visited.add(node);
+      return false;
+    };
+
+    if (dfs(segmentId)) {
+      throw new BadRequestException(SEGMENT_ERROR_MESSAGES.CYCLIC_DEPENDENCY);
+    }
+  }
+
   assertRuleCompatibleWithType(
     type: SegmentTypeEnum,
     ruleKind: SegmentRuleKind | undefined,

@@ -23,4 +23,11 @@ export class SegmentRepository extends AbstractRepository<SegmentDocument> {
   async findByName(name: string): Promise<SegmentDocument | null> {
     return await this.model.findOne({ name }).lean<SegmentDocument>(true);
   }
+
+  async hasDependents(segmentId: string): Promise<boolean> {
+    const count = await this.model.countDocuments({
+      dependsOnSegmentIds: new Types.ObjectId(segmentId),
+    });
+    return count > 0;
+  }
 }

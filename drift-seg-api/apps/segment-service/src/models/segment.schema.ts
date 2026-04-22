@@ -32,3 +32,4 @@ export class SegmentDocument extends AbstractDocument {
 }
 
 export const SegmentSchema = SchemaFactory.createForClass(SegmentDocument);
+SegmentSchema.index({ dependsOnSegmentIds: 1 });

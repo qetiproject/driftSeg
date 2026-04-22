@@ -7,6 +7,11 @@ export const SEGMENT_ERROR_MESSAGES = {
     'For segment_composition, dependsOnSegmentIds must match rules.segmentIds.',
   MISSING_DEPENDENCY:
     'One or more dependsOnSegmentIds do not reference existing segments.',
+  SELF_DEPENDENCY: 'Segment cannot depend on itself.',
+  CYCLIC_DEPENDENCY:
+    'Segment dependency graph cannot contain cycles.',
+  SEGMENT_HAS_DEPENDENTS:
+    'Segment is used by other segments and cannot be removed.',
   STATIC_RULE_MISMATCH: 'Static segment must use rules.kind "manual_snapshot".',
   DYNAMIC_RULE_MISMATCH:
     'Dynamic segment cannot use rules.kind "manual_snapshot".',
