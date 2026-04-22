@@ -23,6 +23,5 @@ export class SegmentDeltaDocument extends AbstractDocument {
   triggeredBySegmentId?: Types.ObjectId;
 }
 
-export const SegmentDeltaSchema = SchemaFactory.createForClass(
-  SegmentDeltaDocument,
-);
+export const SegmentDeltaSchema =
+  SchemaFactory.createForClass(SegmentDeltaDocument);

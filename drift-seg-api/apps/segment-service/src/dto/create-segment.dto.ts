@@ -1,4 +1,3 @@
-import { SegmentTypeEnum } from '../models';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -13,7 +12,8 @@ import {
   MinLength,
   Validate,
 } from 'class-validator';
-import { SegmentRuleKind } from './rule-kinds';
+import { SegmentTypeEnum } from '../models';
+import { SegmentRuleKind } from './enums/rule-kinds';
 import { IsValidSegmentRuleConstraint } from './rules.validator';
 
 export interface SegmentRuleInput {

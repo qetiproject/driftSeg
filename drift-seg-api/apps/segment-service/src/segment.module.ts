@@ -19,6 +19,7 @@ import { SegmentDeltaRepository } from './repositories/segment-delta.repository'
 import { SegmentMembershipRepository } from './repositories/segment-membership.repository';
 import { SegmentRepository } from './repositories/segment.repository';
 import { SegmentOrchestrationService } from './services/segment-orchestration.service';
+import { SegmentQueryApiService } from './services/segment-query-api.service';
 import { SegmentQueryService } from './services/segment-query.service';
 import { SegmentRuntimeService } from './services/segment-runtime.service';
 import { SegmentSignalService } from './services/segment-signal.service';
@@ -51,6 +52,7 @@ import { SegmentService } from './services/segment.service';
     SegmentDeltaRepository,
     CustomerActivityRepository,
     SegmentValidationService,
+    SegmentQueryApiService,
     SegmentQueryService,
     SegmentOrchestrationService,
     SegmentRuntimeService,

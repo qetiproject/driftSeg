@@ -10,3 +10,8 @@ export enum SegmentCompositionOperator {
   INTERSECTION = 'intersection',
   UNION = 'union',
 }
+
+export interface SegmentRuleInput {
+  kind: SegmentRuleKind;
+  [key: string]: unknown;
+}

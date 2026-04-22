@@ -1,4 +1,5 @@
 export * from './segment.service';
+export * from './segment-query-api.service';
 export * from './segment-query.service';
 export * from './segment-validation.service';
 export * from './segment-orchestration.service';

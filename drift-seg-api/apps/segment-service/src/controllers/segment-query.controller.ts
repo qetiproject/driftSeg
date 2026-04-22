@@ -1,26 +1,40 @@
 import { Controller, Get, Param, Post } from '@nestjs/common';
-import { SegmentService } from '../services';
+import {
+  ManualRefreshResponseDto,
+  SegmentDeltaResponseDto,
+  SegmentMembershipResponseDto,
+  SegmentResponseDto,
+} from '../dto';
+import { SegmentQueryApiService } from '../services/segment-query-api.service';
 
 @Controller('segments')
 export class SegmentQueryController {
-  constructor(private readonly segmentService: SegmentService) {}
+  constructor(
+    private readonly segmentQueryApiService: SegmentQueryApiService,
+  ) {}
 
   @Post(':segmentId/refresh')
-  manualRefresh(@Param('segmentId') segmentId: string) {
-    return this.segmentService.manualRefreshSegment(segmentId);
+  manualRefresh(
+    @Param('segmentId') segmentId: string,
+  ): Promise<ManualRefreshResponseDto> {
+    return this.segmentQueryApiService.manualRefresh(segmentId);
   }
   @Get()
-  list() {
-    return this.segmentService.listSegments();
+  segments(): Promise<SegmentResponseDto[]> {
+    return this.segmentQueryApiService.listSegments();
   }
 
   @Get(':segmentId/memberships')
-  memberships(@Param('segmentId') segmentId: string) {
-    return this.segmentService.listSegmentMemberships(segmentId);
+  segmentMemberships(
+    @Param('segmentId') segmentId: string,
+  ): Promise<SegmentMembershipResponseDto[]> {
+    return this.segmentQueryApiService.listMemberships(segmentId);
   }
 
   @Get(':segmentId/deltas')
-  deltas(@Param('segmentId') segmentId: string) {
-    return this.segmentService.listSegmentDeltas(segmentId);
+  segmentDeltas(
+    @Param('segmentId') segmentId: string,
+  ): Promise<SegmentDeltaResponseDto[]> {
+    return this.segmentQueryApiService.listDeltas(segmentId);
   }
 }

@@ -1,17 +1,15 @@
 import {
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
+    ValidationArguments,
+    ValidatorConstraint,
+    ValidatorConstraintInterface,
 } from 'class-validator';
 import {
-  SegmentCompositionOperator,
-  SegmentRuleKind,
-} from './rule-kinds';
+    SegmentCompositionOperator,
+    SegmentRuleKind,
+} from './enums/rule-kinds';
 
 @ValidatorConstraint({ name: 'isValidSegmentRule', async: false })
-export class IsValidSegmentRuleConstraint
-  implements ValidatorConstraintInterface
-{
+export class IsValidSegmentRuleConstraint implements ValidatorConstraintInterface {
   validate(value: unknown): boolean {
     if (!value || typeof value !== 'object') {
       return false;
