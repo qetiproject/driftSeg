@@ -4,11 +4,7 @@ import {
 } from '@app/common/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
-import {
-  SegmentRuleInput,
-  SegmentRuleKind,
-  SegmentTypeEnum,
-} from '../dto/create-segment';
+import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../dto';
 import {
   CustomerActivityRepository,
   SegmentDeltaRepository,

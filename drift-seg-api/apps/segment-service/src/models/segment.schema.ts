@@ -1,7 +1,7 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
-import * as createSegment from '../dto/create-segment';
+import * as createSegment from '../dto/request';
 
 @Schema({
   versionKey: false,

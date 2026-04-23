@@ -1,5 +1,5 @@
-import { SegmentRuleInput } from '../create-segment';
-import { SegmentTypeEnum } from '../create-segment/segment-rule';
+import { SegmentRuleInput } from '../request';
+import { SegmentTypeEnum } from '../segment-rule';
 
 export interface SegmentResponseDto {
   _id: string;

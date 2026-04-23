@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
-import { CreateSegmentDto } from '../dto';
-import { SegmentRuleKind } from '../dto/create-segment';
+import { SegmentRuleKind } from '../dto';
+import { CreateSegmentDto } from '../dto/request';
 import { SegmentRepository } from '../repositories';
 import {
   ensureNoDependenciesSegment,

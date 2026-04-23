@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { SegmentDocument } from '../models';
-
+import { CreateSegmentDto } from '../dto/request';
 import {
-  CreateSegmentDto,
   SegmentDeltaResponseDto,
   SegmentMembersResponseDto,
   SegmentResponseDto,
-} from '../dto';
+} from '../dto/responses';
+import { SegmentDocument } from '../models';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../repositories';
-import { CreateSegmentFacade } from './create-segment.facade';
+import { CreateSegmentFacade } from './facades/create-segment.facade';
 
 @Injectable()
 export class SegmentService {
