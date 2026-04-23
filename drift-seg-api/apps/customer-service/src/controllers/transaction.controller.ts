@@ -7,9 +7,9 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post()
-  create(
+  createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<TransactionResponseDto> {
-    return this.transactionService.create(createTransactionDto);
+    return this.transactionService.createTransaction(createTransactionDto);
   }
 }
