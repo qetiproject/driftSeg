@@ -20,9 +20,6 @@ export class SegmentDocument extends AbstractDocument {
   @Prop({ type: [SchemaTypes.ObjectId], default: [] })
   dependsOnSegmentIds!: Types.ObjectId[];
 
-  @Prop({ default: false })
-  isActive?: boolean;
-
   @Prop()
   lastComputedAt?: Date;
 

@@ -22,7 +22,6 @@ export class SegmentService {
       dependsOnSegmentIds: (segment.dependsOnSegmentIds ?? []).map((id) =>
         id.toString(),
       ),
-      isActive: false,
     };
   }
 }

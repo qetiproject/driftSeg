@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsDefined,
   IsEnum,
   IsInt,
   IsMongoId,
@@ -9,7 +10,9 @@ import {
   IsOptional,
   IsString,
   MaxLength,
+  Min,
   MinLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import * as segmentRule from './create-segment/segment-rule';
@@ -20,6 +23,14 @@ export class SegmentRulesDto {
 
   @IsInt()
   days!: number;
+
+  @ValidateIf(
+    (rules: SegmentRulesDto) => rules.kind === segmentRule.SegmentRuleKind.VIP,
+  )
+  @IsDefined()
+  @IsInt()
+  @Min(1)
+  minSpend?: number;
 }
 
 export class CreateSegmentDto {

@@ -7,7 +7,6 @@ export interface SegmentResponseDto {
   type: SegmentTypeEnum;
   rules: SegmentRuleInput;
   dependsOnSegmentIds: string[];
-  isActive: boolean;
   lastComputedAt?: string;
   createdAt?: string;
   updatedAt?: string;

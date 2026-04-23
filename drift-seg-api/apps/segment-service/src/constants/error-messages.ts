@@ -1,9 +1,14 @@
 export const SEGMENT_ERROR_MESSAGES = {
-  ONLY_ACTIVE_BUYERS_SUPPORTED: 'Only active_buyers rule is supported.',
+  ONLY_ACTIVE_AND_VIP_SUPPORTED:
+    'Only active_buyers and vip rules are supported.',
   ACTIVE_BUYERS_REQUIRES_DAYS: (days: number) =>
     `active_buyers segment requires days=${days}.`,
+  VIP_REQUIRES_DAYS: (days: number) => `vip segment requires days=${days}.`,
+  VIP_REQUIRES_MIN_SPEND: (minSpend: number) =>
+    `vip segment requires minSpend >= ${minSpend}.`,
   ACTIVE_BUYERS_NO_DEPENDENCIES:
     'active_buyers must not depend on other segments.',
+  VIP_NO_DEPENDENCIES: 'vip segment must not depend on other segments.',
   DUPLICATE_NAME: 'Segment with this name already exists.',
   INVALID_DEPENDENCY_ID: 'dependsOnSegmentIds must contain ObjectId values.',
   INVALID_RULE_SEGMENT_IDS:

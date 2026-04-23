@@ -4,29 +4,34 @@ import { CreateSegmentDto } from '../dto';
 import { SegmentRuleKind } from '../dto/create-segment';
 import { SegmentRepository } from '../repositories';
 import {
-  ensureNoDependenciesForActiveSegment,
+  ensureNoDependenciesSegment,
   ensureSegmentNameIsUnique,
 } from '../utils/helper/create-segment.helpers';
 
 @Injectable()
 export class CreateSegmentFacade {
   private readonly activeDays = 30;
+  private readonly vipDays = 60;
+  private readonly minSpend = 5000;
 
   constructor(private readonly segmentRepository: SegmentRepository) {}
 
   async createSegment(payload: CreateSegmentDto) {
     await ensureSegmentNameIsUnique(this.segmentRepository, payload.name);
-    return await this.segmentDynamic(payload);
+    return this.segmentDynamic(payload);
   }
 
   private async segmentDynamic(payload: CreateSegmentDto) {
-    if (payload.rules.kind !== SegmentRuleKind.ACTIVE_BUYERS) {
-      throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_BUYERS_SUPPORTED,
-      );
+    switch (payload.rules.kind) {
+      case SegmentRuleKind.ACTIVE_BUYERS:
+        return this.createActiveSegment(payload);
+      case SegmentRuleKind.VIP:
+        return this.createVipSegment(payload);
+      default:
+        throw new BadRequestException(
+          SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_SUPPORTED,
+        );
     }
-
-    return await this.createActiveSegment(payload);
   }
 
   private async createActiveSegment(payload: CreateSegmentDto) {
@@ -36,14 +41,48 @@ export class CreateSegmentFacade {
       );
     }
 
-    ensureNoDependenciesForActiveSegment(payload.dependsOnSegmentIds);
+    ensureNoDependenciesSegment(
+      payload.dependsOnSegmentIds,
+      SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
+    );
 
-    return await this.segmentRepository.create({
-      name: payload.name,
+    return this.segmentRepository.create({
+      name: SegmentRuleKind.ACTIVE_BUYERS,
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.ACTIVE_BUYERS,
         days: payload.rules.days,
+      },
+      dependsOnSegmentIds: [],
+    });
+  }
+
+  private async createVipSegment(payload: CreateSegmentDto) {
+    if (payload.rules.days !== this.vipDays) {
+      throw new BadRequestException(
+        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_DAYS(this.vipDays),
+      );
+    }
+
+    const minSpend = payload.rules.minSpend;
+    if (minSpend === undefined || minSpend < this.minSpend) {
+      throw new BadRequestException(
+        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_MIN_SPEND(this.minSpend),
+      );
+    }
+
+    ensureNoDependenciesSegment(
+      payload.dependsOnSegmentIds,
+      SEGMENT_ERROR_MESSAGES.VIP_NO_DEPENDENCIES,
+    );
+
+    return this.segmentRepository.create({
+      name: SegmentRuleKind.VIP,
+      type: payload.type,
+      rules: {
+        kind: SegmentRuleKind.VIP,
+        days: payload.rules.days,
+        minSpend,
       },
       dependsOnSegmentIds: [],
     });
