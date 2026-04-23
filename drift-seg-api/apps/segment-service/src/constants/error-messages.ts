@@ -1,4 +1,9 @@
 export const SEGMENT_ERROR_MESSAGES = {
+  ONLY_ACTIVE_BUYERS_SUPPORTED: 'Only active_buyers rule is supported.',
+  ACTIVE_BUYERS_REQUIRES_DAYS: (days: number) =>
+    `active_buyers segment requires days=${days}.`,
+  ACTIVE_BUYERS_NO_DEPENDENCIES:
+    'active_buyers must not depend on other segments.',
   DUPLICATE_NAME: 'Segment with this name already exists.',
   INVALID_DEPENDENCY_ID: 'dependsOnSegmentIds must contain ObjectId values.',
   INVALID_RULE_SEGMENT_IDS:
@@ -8,8 +13,7 @@ export const SEGMENT_ERROR_MESSAGES = {
   MISSING_DEPENDENCY:
     'One or more dependsOnSegmentIds do not reference existing segments.',
   SELF_DEPENDENCY: 'Segment cannot depend on itself.',
-  CYCLIC_DEPENDENCY:
-    'Segment dependency graph cannot contain cycles.',
+  CYCLIC_DEPENDENCY: 'Segment dependency graph cannot contain cycles.',
   SEGMENT_HAS_DEPENDENTS:
     'Segment is used by other segments and cannot be removed.',
   STATIC_RULE_MISMATCH: 'Static segment must use rules.kind "manual_snapshot".',

@@ -5,6 +5,8 @@ export enum SegmentTypeEnum {
 
 export enum SegmentRuleKind {
   ACTIVE_BUYERS = 'active_buyers',
+  VIP = 'vip',
+  RISK = 'risk',
 }
 
 export interface ActiveBuyersRuleInput {
@@ -12,4 +14,19 @@ export interface ActiveBuyersRuleInput {
   days: number;
 }
 
-export type SegmentRuleInput = ActiveBuyersRuleInput;
+export interface VipBuyersRuleInput {
+  kind: SegmentRuleKind.VIP;
+  days: number;
+  minSpend: number;
+}
+
+export interface RiskRuleInput {
+  kind: SegmentRuleKind.RISK;
+  days: number;
+  inActiveDays: number;
+}
+
+export type SegmentRuleInput =
+  | ActiveBuyersRuleInput
+  | VipBuyersRuleInput
+  | RiskRuleInput;

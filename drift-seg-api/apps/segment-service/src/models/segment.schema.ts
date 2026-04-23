@@ -21,10 +21,13 @@ export class SegmentDocument extends AbstractDocument {
   dependsOnSegmentIds!: Types.ObjectId[];
 
   @Prop({ default: false })
-  isActive!: boolean;
+  isActive?: boolean;
 
   @Prop()
   lastComputedAt?: Date;
+
+  @Prop()
+  inActiveDays?: number;
 }
 
 export const SegmentSchema = SchemaFactory.createForClass(SegmentDocument);
