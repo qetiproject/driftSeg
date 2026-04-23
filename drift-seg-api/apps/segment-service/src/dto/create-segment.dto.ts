@@ -1,6 +1,8 @@
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsMongoId,
   IsNotEmpty,
   IsObject,
@@ -10,8 +12,15 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import type { SegmentRuleInput } from './create-segment/segment-rule';
 import * as segmentRule from './create-segment/segment-rule';
+
+export class SegmentRulesDto {
+  @IsEnum(segmentRule.SegmentRuleKind)
+  kind!: segmentRule.SegmentRuleKind;
+
+  @IsInt()
+  days!: number;
+}
 
 export class CreateSegmentDto {
   @IsString()
@@ -25,7 +34,8 @@ export class CreateSegmentDto {
 
   @IsObject()
   @ValidateNested()
-  rules!: SegmentRuleInput;
+  @Type(() => SegmentRulesDto)
+  rules!: SegmentRulesDto;
 
   @IsOptional()
   @IsArray()

@@ -3,6 +3,10 @@ import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateSegmentDto } from '../dto';
 import { SegmentRuleKind } from '../dto/create-segment';
 import { SegmentRepository } from '../repositories';
+import {
+  ensureNoDependenciesForActiveSegment,
+  ensureSegmentNameIsUnique,
+} from '../utils/helper/create-segment.helpers';
 
 @Injectable()
 export class CreateSegmentFacade {
@@ -11,7 +15,7 @@ export class CreateSegmentFacade {
   constructor(private readonly segmentRepository: SegmentRepository) {}
 
   async createSegment(payload: CreateSegmentDto) {
-    await this.ensureNameIsUnique(payload.name);
+    await ensureSegmentNameIsUnique(this.segmentRepository, payload.name);
     return await this.segmentDynamic(payload);
   }
 
@@ -32,7 +36,7 @@ export class CreateSegmentFacade {
       );
     }
 
-    this.ensureNoDependenciesForActiveSegment(payload.dependsOnSegmentIds);
+    ensureNoDependenciesForActiveSegment(payload.dependsOnSegmentIds);
 
     return await this.segmentRepository.create({
       name: payload.name,
@@ -43,20 +47,5 @@ export class CreateSegmentFacade {
       },
       dependsOnSegmentIds: [],
     });
-  }
-
-  private ensureNoDependenciesForActiveSegment(dependsOnSegmentIds?: string[]) {
-    if ((dependsOnSegmentIds?.length ?? 0) > 0) {
-      throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
-      );
-    }
-  }
-
-  private async ensureNameIsUnique(name: string) {
-    const alreadyExists = await this.segmentRepository.existsByName(name);
-    if (alreadyExists) {
-      throw new BadRequestException(SEGMENT_ERROR_MESSAGES.DUPLICATE_NAME);
-    }
   }
 }
