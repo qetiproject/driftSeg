@@ -1,0 +1,56 @@
+services:
+  customer-service:
+    build:
+      context: .
+      dockerfile: ./apps/customer-service/Dockerfile
+      target: development
+    container_name: drift-seg-customer-service
+    command: pnpm run start:customer:dev
+    env_file:
+      - ./apps/customer-service/.env
+    depends_on:
+      - mongo
+      - rabbitmq
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  segment-service:
+    build:
+      context: .
+      dockerfile: ./apps/segment-service/Dockerfile
+      target: development
+    container_name: drift-seg-segment-service
+    command: pnpm run start:segment:dev
+    env_file:
+      - ./apps/segment-service/.env
+    depends_on:
+      - mongo
+      - rabbitmq
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  mongo:
+    image: mongo:7
+    container_name: drift-seg-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: drift-seg-rabbitmq
+    restart: unless-stopped
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+volumes:
+  mongo_data:

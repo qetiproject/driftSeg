@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/customer-service/tsconfig.app.json"
       }
+    },
+    "segment-service": {
+      "type": "application",
+      "root": "apps/segment-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/segment-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/segment-service/tsconfig.app.json"
+      }
     }
   }
 }
