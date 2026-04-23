@@ -21,6 +21,12 @@ export class SegmentRulesDto {
   @IsEnum(segmentRule.SegmentRuleKind)
   kind!: segmentRule.SegmentRuleKind;
 
+  @ValidateIf(
+    (rules: SegmentRulesDto) =>
+      rules.kind === segmentRule.SegmentRuleKind.ACTIVE_BUYERS ||
+      rules.kind === segmentRule.SegmentRuleKind.VIP,
+  )
+  @IsDefined()
   @IsInt()
   days!: number;
 
@@ -31,6 +37,14 @@ export class SegmentRulesDto {
   @IsInt()
   @Min(1)
   minSpend?: number;
+
+  @ValidateIf(
+    (rules: SegmentRulesDto) => rules.kind === segmentRule.SegmentRuleKind.RISK,
+  )
+  @IsDefined()
+  @IsInt()
+  @Min(1)
+  inActiveDays?: number;
 }
 
 export class CreateSegmentDto {

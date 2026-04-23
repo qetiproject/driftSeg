@@ -12,6 +12,7 @@ import {
 export class CreateSegmentFacade {
   private readonly activeDays = 30;
   private readonly vipDays = 60;
+  private readonly inActiveDays = 90;
   private readonly minSpend = 5000;
 
   constructor(private readonly segmentRepository: SegmentRepository) {}
@@ -27,9 +28,11 @@ export class CreateSegmentFacade {
         return this.createActiveSegment(payload);
       case SegmentRuleKind.VIP:
         return this.createVipSegment(payload);
+      case SegmentRuleKind.RISK:
+        return this.createRiskSegment(payload);
       default:
         throw new BadRequestException(
-          SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_SUPPORTED,
+          SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED,
         );
     }
   }
@@ -47,7 +50,7 @@ export class CreateSegmentFacade {
     );
 
     return this.segmentRepository.create({
-      name: SegmentRuleKind.ACTIVE_BUYERS,
+      name: payload.name,
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.ACTIVE_BUYERS,
@@ -73,16 +76,40 @@ export class CreateSegmentFacade {
 
     ensureNoDependenciesSegment(
       payload.dependsOnSegmentIds,
-      SEGMENT_ERROR_MESSAGES.VIP_NO_DEPENDENCIES,
+      SEGMENT_ERROR_MESSAGES.VIP_SEGMENT_NO_DEPENDENCIES,
     );
 
     return this.segmentRepository.create({
-      name: SegmentRuleKind.VIP,
+      name: payload.name,
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.VIP,
         days: payload.rules.days,
         minSpend,
+      },
+      dependsOnSegmentIds: [],
+    });
+  }
+
+  private async createRiskSegment(payload: CreateSegmentDto) {
+    const inActiveDays = payload.rules.inActiveDays;
+    if (inActiveDays !== this.inActiveDays) {
+      throw new BadRequestException(
+        SEGMENT_ERROR_MESSAGES.RISK_REQUIRES_INACTIVE_DAYS(this.inActiveDays),
+      );
+    }
+
+    ensureNoDependenciesSegment(
+      payload.dependsOnSegmentIds,
+      SEGMENT_ERROR_MESSAGES.RISK_SEGMENT_NO_DEPENDENCIES,
+    );
+
+    return this.segmentRepository.create({
+      name: payload.name,
+      type: payload.type,
+      rules: {
+        kind: SegmentRuleKind.RISK,
+        inActiveDays,
       },
       dependsOnSegmentIds: [],
     });

@@ -22,7 +22,6 @@ export interface VipBuyersRuleInput {
 
 export interface RiskRuleInput {
   kind: SegmentRuleKind.RISK;
-  days: number;
   inActiveDays: number;
 }
 
