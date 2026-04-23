@@ -1,13 +1,13 @@
-import { CustomerStatusEnum } from '@app/common/models';
 import type { CustomerDocument } from '@app/common/models';
+import { CustomerStatusEnum } from '@app/common/models';
 import {
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CustomerRepository } from './customer.repository';
-import { CreateCustomerDto, CustomerResponseDto } from './dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { CreateCustomerDto, CustomerResponseDto } from '../dto';
+import { UpdateCustomerDto } from '../dto/update-customer.dto';
+import { CustomerRepository } from '../repositories/customer.repository';
 
 @Injectable()
 export class CustomerService {

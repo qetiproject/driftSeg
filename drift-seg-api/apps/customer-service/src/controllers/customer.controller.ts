@@ -7,11 +7,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CustomerService } from './customer.service';
-import { CreateCustomerDto, UpdateCustomerDto } from './dto';
+import { CreateCustomerDto, UpdateCustomerDto } from '../dto';
+import { CustomerService } from '../services/customer.service';
 
 @Controller('customers')
-export class CustomerServiceController {
+export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
