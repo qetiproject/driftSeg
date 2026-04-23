@@ -3,6 +3,6 @@ export interface TransactionResponseDto {
   customerId: string;
   amount: number;
   occurredAt: string;
-  externalId: string;
-  description: string;
+  externalId?: string;
+  description?: string;
 }

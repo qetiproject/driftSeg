@@ -18,7 +18,7 @@ export class CreateTransactionDto {
 
   @IsOptional()
   @IsDateString()
-  occurredAt!: string;
+  occurredAt?: string;
 
   @IsOptional()
   @IsString()
