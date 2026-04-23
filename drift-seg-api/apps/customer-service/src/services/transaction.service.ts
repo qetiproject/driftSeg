@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  TRANSACTION_CREATED_EVENT,
+  TransactionCreatedEvent,
+} from '@app/common/dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
 import { CreateTransactionDto, TransactionResponseDto } from '../dto';
 import { CustomerRepository, TransactionRepository } from '../repositories';
@@ -13,6 +19,8 @@ export class TransactionService {
   constructor(
     private readonly transactionRepository: TransactionRepository,
     private readonly customerRepository: CustomerRepository,
+    @Inject('SEGMENT_EVENTS_CLIENT')
+    private readonly segmentEventsClient: ClientProxy,
   ) {}
 
   async createTransaction(
@@ -32,10 +40,26 @@ export class TransactionService {
       description: createTransactionDto.description,
     });
 
-    await updateCustomerAfterTransaction(
+    const updatedCustomer = await updateCustomerAfterTransaction(
       this.customerRepository,
       createTransactionDto,
     );
+
+    const eventPayload: TransactionCreatedEvent = {
+      eventId: randomUUID(),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      eventType: TRANSACTION_CREATED_EVENT,
+      occurredAt: new Date().toISOString(),
+      data: {
+        transactionId: created._id.toString(),
+        customerMongoId: createTransactionDto.customerId,
+        amount: createTransactionDto.amount,
+        transactionOccurredAt: created.occurredAt.toISOString(),
+        totalSpent: updatedCustomer.totalSpent,
+      },
+    };
+
+    this.segmentEventsClient.emit(TRANSACTION_CREATED_EVENT, eventPayload);
 
     return toTransactionResponse(created);
   }

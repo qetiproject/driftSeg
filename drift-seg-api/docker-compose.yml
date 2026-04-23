@@ -10,6 +10,7 @@ services:
       - ./apps/customer-service/.env
     depends_on:
       - mongo
+      - rabbitmq
     ports:
       - '3000:3000'
     volumes:
@@ -27,6 +28,7 @@ services:
       - ./apps/segment-service/.env
     depends_on:
       - mongo
+      - rabbitmq
     ports:
       - '3001:3001'
     volumes:
@@ -41,6 +43,14 @@ services:
       - '27017:27017'
     volumes:
       - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: drift-seg-rabbitmq
+    restart: unless-stopped
+    ports:
+      - '5672:5672'
+      - '15672:15672'
 
 volumes:
   mongo_data:

@@ -1,5 +1,5 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
-import { TransactionDocument } from '@app/common/models';
+import type { CustomerDocument, TransactionDocument } from '@app/common/models';
 import { CreateTransactionDto, TransactionResponseDto } from '../../dto';
 import { CustomerRepository } from '../../repositories';
 
@@ -25,8 +25,8 @@ export async function existCustomerById(
 export async function updateCustomerAfterTransaction(
   customerRepository: CustomerRepository,
   createTransactionDto: CreateTransactionDto,
-): Promise<void> {
-  await customerRepository.findOneAndUpdate(
+): Promise<CustomerDocument> {
+  return await customerRepository.findOneAndUpdate(
     { _id: createTransactionDto.customerId },
     {
       $inc: { totalSpent: createTransactionDto.amount },
