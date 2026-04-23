@@ -39,4 +39,11 @@ export class TransactionService {
 
     return toTransactionResponse(created);
   }
+
+  async getTransactions(): Promise<TransactionResponseDto[]> {
+    const transactions = await this.transactionRepository.find({});
+    return transactions.map((transaction) =>
+      toTransactionResponse(transaction),
+    );
+  }
 }

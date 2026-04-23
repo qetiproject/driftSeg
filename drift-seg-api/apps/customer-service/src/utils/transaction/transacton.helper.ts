@@ -11,7 +11,6 @@ export function toTransactionResponse(
     customerId: transaction.customerId.toString(),
     amount: transaction.amount,
     occurredAt: transaction.occurredAt.toISOString(),
-    externalId: transaction.externalId,
     description: transaction.description,
   };
 }
