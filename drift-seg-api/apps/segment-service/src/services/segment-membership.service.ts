@@ -1,7 +1,7 @@
 import {
   TRANSACTION_CREATED_EVENT,
-  TransactionCreatedEvent,
 } from '@app/common/dto';
+import type { TransactionCreatedEvent } from '@app/common/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import {
@@ -10,7 +10,11 @@ import {
   SegmentTypeEnum,
 } from '../dto/create-segment';
 import { SegmentMembershipDocument } from '../models';
-import { SegmentMembershipRepository, SegmentRepository } from '../repositories';
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from '../repositories';
 
 @Injectable()
 export class SegmentMembershipService {
@@ -19,6 +23,7 @@ export class SegmentMembershipService {
   constructor(
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
+    private readonly segmentDeltaRepository: SegmentDeltaRepository,
   ) {}
 
   async processTransactionCreated(event: TransactionCreatedEvent): Promise<void> {
@@ -45,6 +50,14 @@ export class SegmentMembershipService {
           customerId: customerObjectId,
           isActive: true,
         } as Omit<SegmentMembershipDocument, '_id'>);
+        await this.segmentDeltaRepository.create({
+          segmentId: segment._id,
+          addedCustomerIds: [customerObjectId],
+          removedCustomerIds: [],
+          triggerEventId: event.eventId,
+          triggerEventType: event.eventType,
+          computedAt: new Date(),
+        });
         this.logger.log(
           `customer ${customerObjectId} added to segment ${segment._id.toString()}`,
         );
@@ -55,6 +68,14 @@ export class SegmentMembershipService {
           { _id: currentMembership._id },
           { $set: { isActive: false } },
         );
+        await this.segmentDeltaRepository.create({
+          segmentId: segment._id,
+          addedCustomerIds: [],
+          removedCustomerIds: [customerObjectId],
+          triggerEventId: event.eventId,
+          triggerEventType: event.eventType,
+          computedAt: new Date(),
+        });
         this.logger.log(
           `customer ${customerObjectId} removed from segment ${segment._id.toString()}`,
         );

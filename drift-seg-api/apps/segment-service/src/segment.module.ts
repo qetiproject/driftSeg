@@ -4,12 +4,19 @@ import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { SegmentController, SegmentEventsController } from './controllers';
 import {
-  SegmentDocument,
+  SegmentDeltaDocument,
+  SegmentDeltaSchema,
+} from './models/segment-delta.schema';
+import {
   SegmentMembershipDocument,
   SegmentMembershipSchema,
-  SegmentSchema,
-} from './models';
-import { SegmentMembershipRepository, SegmentRepository } from './repositories';
+} from './models/segment-membership.schema';
+import { SegmentDocument, SegmentSchema } from './models/segment.schema';
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from './repositories';
 import {
   CreateSegmentFacade,
   SegmentMembershipService,
@@ -22,6 +29,7 @@ import {
     DatabaseModule.forFeature([
       { name: SegmentDocument.name, schema: SegmentSchema },
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
+      { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -40,6 +48,7 @@ import {
     SegmentMembershipService,
     SegmentRepository,
     SegmentMembershipRepository,
+    SegmentDeltaRepository,
   ],
 })
 export class SegmentServiceModule {}

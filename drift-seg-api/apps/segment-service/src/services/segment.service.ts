@@ -4,10 +4,15 @@ import { SegmentDocument } from '../models';
 
 import {
   CreateSegmentDto,
+  SegmentDeltaResponseDto,
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '../dto';
-import { SegmentMembershipRepository, SegmentRepository } from '../repositories';
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from '../repositories';
 import { CreateSegmentFacade } from './create-segment.facade';
 
 @Injectable()
@@ -16,6 +21,7 @@ export class SegmentService {
     private readonly createSegmentFacade: CreateSegmentFacade,
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
+    private readonly segmentDeltaRepository: SegmentDeltaRepository,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -28,7 +34,9 @@ export class SegmentService {
     return segments.map((segment) => this.toSegmentResponse(segment));
   }
 
-  async getSegmentMembers(segmentId: string): Promise<SegmentMembersResponseDto> {
+  async getSegmentMembers(
+    segmentId: string,
+  ): Promise<SegmentMembersResponseDto> {
     const segment = await this.segmentRepository.findOne({ _id: segmentId });
     const memberships =
       await this.segmentMembershipRepository.findActiveMembersBySegmentId(
@@ -42,6 +50,29 @@ export class SegmentService {
         customerId: membership.customerId.toString(),
       })),
     };
+  }
+
+  async getSegmentDeltas(
+    segmentId: string,
+  ): Promise<SegmentDeltaResponseDto[]> {
+    await this.segmentRepository.findOne({ _id: segmentId });
+    const deltas = await this.segmentDeltaRepository.findBySegmentId(
+      new Types.ObjectId(segmentId),
+    );
+
+    return deltas.map((delta) => ({
+      _id: delta._id.toString(),
+      segmentId: delta.segmentId.toString(),
+      addedCustomerIds: (delta.addedCustomerIds ?? []).map((id) =>
+        id.toString(),
+      ),
+      removedCustomerIds: (delta.removedCustomerIds ?? []).map((id) =>
+        id.toString(),
+      ),
+      triggerEventId: delta.triggerEventId,
+      triggerEventType: delta.triggerEventType,
+      computedAt: delta.computedAt.toISOString(),
+    }));
   }
 
   private toSegmentResponse(segment: SegmentDocument): SegmentResponseDto {
