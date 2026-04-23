@@ -1,6 +1,4 @@
-import { StatusEnum } from '@app/common/models';
-import { Type } from 'class-transformer';
-import { IsDate, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -11,15 +9,4 @@ export class CreateCustomerDto {
 
   @IsEmail()
   email!: string;
-
-  @IsNumber()
-  @Type(() => Number)
-  totalSpent!: number;
-
-  @IsDate()
-  @Type(() => Date)
-  lastTransactionDate!: Date;
-
-  @IsEnum(StatusEnum)
-  status!: StatusEnum;
 }

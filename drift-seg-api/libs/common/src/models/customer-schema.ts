@@ -1,15 +1,15 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export enum StatusEnum {
+export enum CustomerStatusEnum {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
 }
 
-export class TransactionEntry {
-  amount!: number;
-  at!: Date;
-}
+// export class TransactionEntry {
+//   amount!: number;
+//   at!: Date;
+// }
 
 @Schema({
   versionKey: false,
@@ -28,26 +28,26 @@ export class CustomerDocument extends AbstractDocument {
   @Prop({ default: 0 })
   totalSpent!: number;
 
-  @Prop({ default: () => new Date() })
-  lastTransactionDate!: Date;
+  // @Prop({ default: () => new Date() })
+  // lastTransactionDate!: Date;
 
-  @Prop({
-    type: [
-      {
-        amount: { type: Number, required: true },
-        at: { type: Date, required: true },
-      },
-    ],
-    default: [],
-  })
-  transactions?: TransactionEntry[];
+  // @Prop({
+  //   type: [
+  //     {
+  //       amount: { type: Number, required: true },
+  //       at: { type: Date, required: true },
+  //     },
+  //   ],
+  //   default: [],
+  // })
+  // transactions?: TransactionEntry[];
 
   @Prop({
     type: String,
-    enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    enum: CustomerStatusEnum,
+    default: CustomerStatusEnum.INACTIVE,
   })
-  status!: StatusEnum;
+  status!: CustomerStatusEnum;
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(CustomerDocument);
