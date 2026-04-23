@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { SegmentDocument } from '../models';
 
-import { CreateSegmentDto, SegmentResponseDto } from '../dto';
-import { SegmentRepository } from '../repositories';
+import {
+  CreateSegmentDto,
+  SegmentMembersResponseDto,
+  SegmentResponseDto,
+} from '../dto';
+import { SegmentMembershipRepository, SegmentRepository } from '../repositories';
 import { CreateSegmentFacade } from './create-segment.facade';
 
 @Injectable()
@@ -10,6 +15,7 @@ export class SegmentService {
   constructor(
     private readonly createSegmentFacade: CreateSegmentFacade,
     private readonly segmentRepository: SegmentRepository,
+    private readonly segmentMembershipRepository: SegmentMembershipRepository,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -20,6 +26,22 @@ export class SegmentService {
   async getAllSegments(): Promise<SegmentResponseDto[]> {
     const segments = await this.segmentRepository.find({});
     return segments.map((segment) => this.toSegmentResponse(segment));
+  }
+
+  async getSegmentMembers(segmentId: string): Promise<SegmentMembersResponseDto> {
+    const segment = await this.segmentRepository.findOne({ _id: segmentId });
+    const memberships =
+      await this.segmentMembershipRepository.findActiveMembersBySegmentId(
+        new Types.ObjectId(segmentId),
+      );
+
+    return {
+      segmentId: segment._id.toString(),
+      totalMembers: memberships.length,
+      members: memberships.map((membership) => ({
+        customerId: membership.customerId.toString(),
+      })),
+    };
   }
 
   private toSegmentResponse(segment: SegmentDocument): SegmentResponseDto {

@@ -21,4 +21,10 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
   ): Promise<SegmentMembershipDocument | null> {
     return this.model.findOne({ segmentId, customerId, isActive: true }).lean(true);
   }
+
+  async findActiveMembersBySegmentId(
+    segmentId: Types.ObjectId,
+  ): Promise<SegmentMembershipDocument[]> {
+    return this.model.find({ segmentId, isActive: true }).lean(true);
+  }
 }
