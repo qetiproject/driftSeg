@@ -1,10 +1,6 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-export enum CustomerStatusEnum {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
+import { CustomerStatusEnum } from '../enum/status.enum';
 
 // export class TransactionEntry {
 //   amount!: number;

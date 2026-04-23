@@ -1,4 +1,5 @@
-import { CustomerStatusEnum, TransactionDocument } from '@app/common/models';
+import { CustomerStatusEnum } from '@app/common/enum/status.enum';
+import { TransactionDocument } from '@app/common/models';
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CreateTransactionDto, TransactionResponseDto } from '../dto';
@@ -14,9 +15,7 @@ export class TransactionService {
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
   ): Promise<TransactionResponseDto> {
-    await this.customerRepository.findOne({
-      _id: createTransactionDto.customerId,
-    });
+    this.existCustomerById(createTransactionDto.customerId);
 
     const created = await this.transactionRepository.create({
       customerId: new Types.ObjectId(createTransactionDto.customerId),
@@ -27,13 +26,7 @@ export class TransactionService {
       description: createTransactionDto.description,
     });
 
-    await this.customerRepository.findOneAndUpdate(
-      { _id: createTransactionDto.customerId },
-      {
-        $inc: { totalSpent: createTransactionDto.amount },
-        $set: { status: CustomerStatusEnum.ACTIVE },
-      },
-    );
+    this.updateCustomerTransaction(createTransactionDto);
 
     return this.toTransactionResponse(created);
   }
@@ -49,5 +42,23 @@ export class TransactionService {
       externalId: transaction.externalId,
       description: transaction.description,
     };
+  }
+
+  private async existCustomerById(customerId: string) {
+    await this.customerRepository.findOne({
+      _id: customerId,
+    });
+  }
+
+  private async updateCustomerTransaction(
+    createTransactionDto: CreateTransactionDto,
+  ) {
+    await this.customerRepository.findOneAndUpdate(
+      { _id: createTransactionDto.customerId },
+      {
+        $inc: { totalSpent: createTransactionDto.amount },
+        $set: { status: CustomerStatusEnum.ACTIVE },
+      },
+    );
   }
 }
