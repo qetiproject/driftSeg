@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
 import { SegmentRepository } from '../../repositories';
 
-export function ensureNoDependenciesSegment(
+export function noDependenciesSegment(
   dependsOnSegmentIds?: string[],
   message: string = SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
 ): void {
@@ -11,7 +11,7 @@ export function ensureNoDependenciesSegment(
   }
 }
 
-export async function ensureSegmentNameIsUnique(
+export async function segmentNameIsUnique(
   segmentRepository: SegmentRepository,
   name: string,
 ): Promise<void> {

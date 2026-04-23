@@ -1,14 +1,13 @@
 import * as dto from '@app/common/dto';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import { CreateSegmentDto } from '../dto/request';
 import {
-  CreateSegmentDto,
   SegmentDeltaResponseDto,
   SegmentMembersResponseDto,
   SegmentResponseDto,
-} from '../dto';
-import { SegmentMembershipService } from '../services/segment-membership.service';
-import { SegmentService } from '../services/segment.service';
+} from '../dto/responses';
+import { SegmentMembershipService, SegmentService } from '../services';
 
 @Controller('segments')
 export class SegmentController {

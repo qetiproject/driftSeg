@@ -1,24 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
-import { SegmentRuleKind } from '../dto';
-import { CreateSegmentDto } from '../dto/request';
-import { SegmentRepository } from '../repositories';
+import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
+import { SEGMENT_RULE } from '../../constants/segment-rule';
+import { SegmentRuleKind } from '../../dto';
+import { CreateSegmentDto } from '../../dto/request';
+import { SegmentRepository } from '../../repositories';
 import {
-  ensureNoDependenciesSegment,
-  ensureSegmentNameIsUnique,
-} from '../utils/helper/create-segment.helpers';
+  noDependenciesSegment,
+  segmentNameIsUnique,
+} from '../../utils/helper/create-segment.helpers';
 
 @Injectable()
 export class CreateSegmentFacade {
-  private readonly activeDays = 30;
-  private readonly vipDays = 60;
-  private readonly inActiveDays = 90;
-  private readonly minSpend = 5000;
-
   constructor(private readonly segmentRepository: SegmentRepository) {}
 
   async createSegment(payload: CreateSegmentDto) {
-    await ensureSegmentNameIsUnique(this.segmentRepository, payload.name);
+    await segmentNameIsUnique(this.segmentRepository, payload.name);
     return this.segmentDynamic(payload);
   }
 
@@ -38,19 +34,22 @@ export class CreateSegmentFacade {
   }
 
   private async createActiveSegment(payload: CreateSegmentDto) {
-    if (payload.rules.days !== this.activeDays) {
+    if (payload.rules.days !== SEGMENT_RULE.ACTIVE_DAYS) {
       throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_REQUIRES_DAYS(this.activeDays),
+        SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_REQUIRES_DAYS(
+          SEGMENT_RULE.ACTIVE_DAYS,
+        ),
       );
     }
 
-    ensureNoDependenciesSegment(
+    noDependenciesSegment(
       payload.dependsOnSegmentIds,
       SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
     );
 
     return this.segmentRepository.create({
       name: payload.name,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.ACTIVE_BUYERS,
@@ -61,26 +60,29 @@ export class CreateSegmentFacade {
   }
 
   private async createVipSegment(payload: CreateSegmentDto) {
-    if (payload.rules.days !== this.vipDays) {
+    if (payload.rules.days !== SEGMENT_RULE.VIP_DAYS) {
       throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_DAYS(this.vipDays),
+        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_DAYS(SEGMENT_RULE.VIP_DAYS),
       );
     }
 
     const minSpend = payload.rules.minSpend;
-    if (minSpend === undefined || minSpend < this.minSpend) {
+    if (minSpend === undefined || minSpend < SEGMENT_RULE.VIP_MIN_SPEND) {
       throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_MIN_SPEND(this.minSpend),
+        SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_MIN_SPEND(
+          SEGMENT_RULE.VIP_MIN_SPEND,
+        ),
       );
     }
 
-    ensureNoDependenciesSegment(
+    noDependenciesSegment(
       payload.dependsOnSegmentIds,
       SEGMENT_ERROR_MESSAGES.VIP_SEGMENT_NO_DEPENDENCIES,
     );
 
     return this.segmentRepository.create({
       name: payload.name,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.VIP,
@@ -93,19 +95,22 @@ export class CreateSegmentFacade {
 
   private async createRiskSegment(payload: CreateSegmentDto) {
     const inActiveDays = payload.rules.inActiveDays;
-    if (inActiveDays !== this.inActiveDays) {
+    if (inActiveDays !== SEGMENT_RULE.RISK_INACTIVE_DAYS) {
       throw new BadRequestException(
-        SEGMENT_ERROR_MESSAGES.RISK_REQUIRES_INACTIVE_DAYS(this.inActiveDays),
+        SEGMENT_ERROR_MESSAGES.RISK_REQUIRES_INACTIVE_DAYS(
+          SEGMENT_RULE.RISK_INACTIVE_DAYS,
+        ),
       );
     }
 
-    ensureNoDependenciesSegment(
+    noDependenciesSegment(
       payload.dependsOnSegmentIds,
       SEGMENT_ERROR_MESSAGES.RISK_SEGMENT_NO_DEPENDENCIES,
     );
 
     return this.segmentRepository.create({
       name: payload.name,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       type: payload.type,
       rules: {
         kind: SegmentRuleKind.RISK,
