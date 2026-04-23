@@ -1,6 +1,5 @@
 import {
   IsDateString,
-  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
@@ -9,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateTransactionDto {
-  @IsMongoId()
+  @IsString()
   customerId!: string;
 
   @IsNumber()

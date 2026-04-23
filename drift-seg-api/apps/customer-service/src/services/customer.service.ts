@@ -1,5 +1,5 @@
-import type { CustomerDocument } from '@app/common/models';
-import { CustomerStatusEnum } from '@app/common/models';
+import { CustomerStatusEnum } from '@app/common/enum/status.enum';
+import { CustomerDocument } from '@app/common/models';
 import {
   Injectable,
   NotFoundException,
@@ -65,6 +65,7 @@ export class CustomerService {
 
   private toCustomerResponse(customer: CustomerDocument): CustomerResponseDto {
     return {
+      _id: customer._id.toString(),
       firstName: customer.firstName,
       lastName: customer.lastName,
       email: customer.email,

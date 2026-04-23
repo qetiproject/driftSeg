@@ -7,7 +7,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreateCustomerDto, UpdateCustomerDto } from '../dto';
+import {
+  CreateCustomerDto,
+  CustomerResponseDto,
+  UpdateCustomerDto,
+} from '../dto';
 import { CustomerService } from '../services/customer.service';
 
 @Controller('customers')
@@ -15,7 +19,9 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
+  create(
+    @Body() createCustomerDto: CreateCustomerDto,
+  ): Promise<CustomerResponseDto> {
     return this.customerService.create(createCustomerDto);
   }
 
