@@ -5,7 +5,7 @@ import Joi from 'joi';
 import { SegmentController } from './controllers';
 import { SegmentDocument, SegmentSchema } from './models';
 import { SegmentRepository } from './repositories';
-import { SegmentService } from './services/segment.service';
+import { CreateSegmentFacade, SegmentService } from './services';
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { SegmentService } from './services/segment.service';
     }),
   ],
   controllers: [SegmentController],
-  providers: [SegmentService, SegmentRepository],
+  providers: [SegmentService, CreateSegmentFacade, SegmentRepository],
 })
 export class SegmentServiceModule {}

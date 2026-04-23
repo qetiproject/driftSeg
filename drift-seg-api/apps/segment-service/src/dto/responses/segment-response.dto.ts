@@ -1,10 +1,10 @@
 import { SegmentRuleInput } from '../create-segment';
-import { SegmentType } from '../enums/segment.enum';
+import { SegmentTypeEnum } from '../create-segment/segment-rule';
 
 export interface SegmentResponseDto {
   _id: string;
   name: string;
-  type: SegmentType;
+  type: SegmentTypeEnum;
   rules: SegmentRuleInput;
   dependsOnSegmentIds: string[];
   isActive: boolean;

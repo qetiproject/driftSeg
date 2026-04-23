@@ -1,7 +1,7 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
-import { SegmentTypeEnum } from '../dto/create-segment';
+import * as createSegment from '../dto/create-segment';
 
 @Schema({
   versionKey: false,
@@ -11,11 +11,11 @@ export class SegmentDocument extends AbstractDocument {
   @Prop({ required: true, unique: true, trim: true })
   name!: string;
 
-  @Prop({ type: String, enum: SegmentTypeEnum, required: true })
-  type!: SegmentTypeEnum;
+  @Prop({ type: String, enum: createSegment.SegmentTypeEnum, required: true })
+  type!: createSegment.SegmentTypeEnum;
 
   @Prop({ type: SchemaTypes.Mixed, required: true })
-  rules!: Record<string, unknown>;
+  rules!: createSegment.SegmentRuleInput;
 
   @Prop({ type: [SchemaTypes.ObjectId], default: [] })
   dependsOnSegmentIds!: Types.ObjectId[];

@@ -38,7 +38,7 @@ export class CreateSegmentFacade {
       name: payload.name,
       type: payload.type,
       rules: {
-        kind: payload.rules.kind,
+        kind: SegmentRuleKind.ACTIVE_BUYERS,
         days: payload.rules.days,
       },
       dependsOnSegmentIds: [],

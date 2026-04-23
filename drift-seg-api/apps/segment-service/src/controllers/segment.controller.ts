@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreateSegmentDto, SegmentResponseDto } from '../dto';
-import { SegmentService } from '../services';
+import { SegmentService } from '../services/segment.service';
 
 @Controller('segments')
 export class SegmentController {
