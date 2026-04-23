@@ -1,6 +1,11 @@
 import { DatabaseModule } from '@app/common';
+import {
+  TransactionDocument,
+  TransactionSchema,
+} from '@app/common/models/transaction-schema';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import Joi from 'joi';
 import { SegmentController, SegmentEventsController } from './controllers';
 import {
@@ -13,23 +18,28 @@ import {
 } from './models/segment-membership.schema';
 import { SegmentDocument, SegmentSchema } from './models/segment.schema';
 import {
+  CustomerActivityRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from './repositories';
 import {
   CreateSegmentFacade,
+  SegmentMembershipSchedulerService,
   SegmentMembershipService,
+  SegmentRuleEvaluatorService,
   SegmentService,
 } from './services';
 
 @Module({
   imports: [
     DatabaseModule,
+    ScheduleModule.forRoot(),
     DatabaseModule.forFeature([
       { name: SegmentDocument.name, schema: SegmentSchema },
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
+      { name: TransactionDocument.name, schema: TransactionSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -46,9 +56,12 @@ import {
     SegmentService,
     CreateSegmentFacade,
     SegmentMembershipService,
+    SegmentMembershipSchedulerService,
+    SegmentRuleEvaluatorService,
     SegmentRepository,
     SegmentMembershipRepository,
     SegmentDeltaRepository,
+    CustomerActivityRepository,
   ],
 })
 export class SegmentServiceModule {}

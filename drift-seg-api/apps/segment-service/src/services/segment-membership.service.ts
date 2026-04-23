@@ -1,7 +1,7 @@
 import {
   TRANSACTION_CREATED_EVENT,
+  type TransactionCreatedEvent,
 } from '@app/common/dto';
-import type { TransactionCreatedEvent } from '@app/common/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import {
@@ -9,12 +9,13 @@ import {
   SegmentRuleKind,
   SegmentTypeEnum,
 } from '../dto/create-segment';
-import { SegmentMembershipDocument } from '../models';
 import {
+  CustomerActivityRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../repositories';
+import { SegmentRuleEvaluatorService } from './segment-rule-evaluator.service';
 
 @Injectable()
 export class SegmentMembershipService {
@@ -24,20 +25,70 @@ export class SegmentMembershipService {
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly customerActivityRepository: CustomerActivityRepository,
+    private readonly segmentRuleEvaluatorService: SegmentRuleEvaluatorService,
   ) {}
 
-  async processTransactionCreated(event: TransactionCreatedEvent): Promise<void> {
+  private isSegmentRuleInput(value: unknown): value is SegmentRuleInput {
+    if (!value || typeof value !== 'object') {
+      return false;
+    }
+
+    const kind = (value as { kind?: unknown }).kind;
+    return (
+      kind === SegmentRuleKind.ACTIVE_BUYERS ||
+      kind === SegmentRuleKind.VIP ||
+      kind === SegmentRuleKind.RISK
+    );
+  }
+
+  async processTransactionCreated(
+    event: TransactionCreatedEvent,
+  ): Promise<void> {
     if (event.eventType !== TRANSACTION_CREATED_EVENT) {
       return;
     }
 
+    const customerObjectId = new Types.ObjectId(event.data.customerMongoId);
+    await this.recomputeMembershipForCustomer(customerObjectId, {
+      eventId: event.eventId,
+      eventType: event.eventType,
+    });
+  }
+
+  async recomputeAllDynamicMemberships(): Promise<void> {
+    const customerIds =
+      await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
+
+    for (const customerId of customerIds) {
+      await this.recomputeMembershipForCustomer(customerId, {
+        eventId: `scheduler-${new Date().toISOString()}-${customerId.toString()}`,
+        eventType: 'segment.recompute.scheduler',
+      });
+    }
+  }
+
+  private async recomputeMembershipForCustomer(
+    customerObjectId: Types.ObjectId,
+    trigger: SegmentMembershipTrigger,
+  ): Promise<void> {
     const segments = await this.segmentRepository.find({
       type: SegmentTypeEnum.DYNAMIC,
     });
 
     for (const segment of segments) {
-      const shouldBeMember = this.resolveMembership(segment.rules, event);
-      const customerObjectId = new Types.ObjectId(event.data.customerMongoId);
+      if (!this.isSegmentRuleInput(segment.rules)) {
+        this.logger.warn(
+          `Skipping segment ${segment._id.toString()} because rules are invalid`,
+        );
+        continue;
+      }
+
+      const shouldBeMember =
+        await this.segmentRuleEvaluatorService.evaluateMembership(
+          segment.rules,
+          customerObjectId,
+        );
       const currentMembership =
         await this.segmentMembershipRepository.findActiveMembership(
           segment._id,
@@ -49,13 +100,13 @@ export class SegmentMembershipService {
           segmentId: segment._id,
           customerId: customerObjectId,
           isActive: true,
-        } as Omit<SegmentMembershipDocument, '_id'>);
+        });
         await this.segmentDeltaRepository.create({
           segmentId: segment._id,
           addedCustomerIds: [customerObjectId],
           removedCustomerIds: [],
-          triggerEventId: event.eventId,
-          triggerEventType: event.eventType,
+          triggerEventId: trigger.eventId,
+          triggerEventType: trigger.eventType,
           computedAt: new Date(),
         });
         this.logger.log(
@@ -72,8 +123,8 @@ export class SegmentMembershipService {
           segmentId: segment._id,
           addedCustomerIds: [],
           removedCustomerIds: [customerObjectId],
-          triggerEventId: event.eventId,
-          triggerEventType: event.eventType,
+          triggerEventId: trigger.eventId,
+          triggerEventType: trigger.eventType,
           computedAt: new Date(),
         });
         this.logger.log(
@@ -82,26 +133,9 @@ export class SegmentMembershipService {
       }
     }
   }
+}
 
-  private resolveMembership(
-    rules: SegmentRuleInput,
-    event: TransactionCreatedEvent,
-  ): boolean {
-    const kind = rules.kind;
-
-    if (kind === SegmentRuleKind.ACTIVE_BUYERS) {
-      return true;
-    }
-
-    if (kind === SegmentRuleKind.VIP) {
-      const minSpend = Number(rules.minSpend ?? 0);
-      return event.data.totalSpent >= minSpend;
-    }
-
-    if (kind === SegmentRuleKind.RISK) {
-      return false;
-    }
-
-    return false;
-  }
+interface SegmentMembershipTrigger {
+  eventId: string;
+  eventType: string;
 }
