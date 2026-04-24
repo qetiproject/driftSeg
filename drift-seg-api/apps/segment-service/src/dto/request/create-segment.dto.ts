@@ -1,21 +1,21 @@
 import { Type } from 'class-transformer';
 import {
-  IsArray,
-  IsDefined,
-  IsEnum,
-  IsInt,
-  IsMongoId,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-  MaxLength,
-  Min,
-  MinLength,
-  ValidateIf,
-  ValidateNested,
+    IsArray,
+    IsDefined,
+    IsEnum,
+    IsInt,
+    IsMongoId,
+    IsNotEmpty,
+    IsObject,
+    IsOptional,
+    IsString,
+    MaxLength,
+    Min,
+    MinLength,
+    ValidateIf,
+    ValidateNested,
 } from 'class-validator';
-import * as segmentRule from './create-segment/segment-rule';
+import * as segmentRule from '../segment-rule';
 
 export class SegmentRulesDto {
   @IsEnum(segmentRule.SegmentRuleKind)

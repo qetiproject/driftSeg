@@ -6,7 +6,7 @@ import {
   SegmentRuleInput,
   SegmentRuleKind,
   VipBuyersRuleInput,
-} from '../dto/create-segment';
+} from '../dto';
 import { CustomerActivityRepository } from '../repositories';
 
 @Injectable()
@@ -38,7 +38,10 @@ export class SegmentRuleEvaluatorService {
     asOf: Date,
   ): Promise<boolean> {
     const since = new Date(asOf.getTime() - rules.days * 24 * 60 * 60 * 1000);
-    return this.customerActivityRepository.hasTransactionSince(customerId, since);
+    return this.customerActivityRepository.hasTransactionSince(
+      customerId,
+      since,
+    );
   }
 
   private async evaluateVip(
@@ -63,9 +66,15 @@ export class SegmentRuleEvaluatorService {
       asOf.getTime() - rules.inActiveDays * 24 * 60 * 60 * 1000,
     );
     const hasRecentTransaction =
-      await this.customerActivityRepository.hasTransactionSince(customerId, cutoff);
+      await this.customerActivityRepository.hasTransactionSince(
+        customerId,
+        cutoff,
+      );
     const hadOlderTransaction =
-      await this.customerActivityRepository.hasTransactionBefore(customerId, cutoff);
+      await this.customerActivityRepository.hasTransactionBefore(
+        customerId,
+        cutoff,
+      );
 
     return !hasRecentTransaction && hadOlderTransaction;
   }

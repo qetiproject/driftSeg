@@ -7,7 +7,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import Joi from 'joi';
-import { SegmentController, SegmentEventsController } from './controllers';
+import { SegmentController } from './controllers';
 import {
   SegmentDeltaDocument,
   SegmentDeltaSchema,
@@ -51,7 +51,7 @@ import {
       }),
     }),
   ],
-  controllers: [SegmentController, SegmentEventsController],
+  controllers: [SegmentController],
   providers: [
     SegmentService,
     CreateSegmentFacade,
