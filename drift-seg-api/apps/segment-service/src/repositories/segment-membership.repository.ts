@@ -29,4 +29,13 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
   ): Promise<SegmentMembershipDocument[]> {
     return this.model.find({ segmentId, isActive: true }).lean(true);
   }
+
+  deactivateMembership(
+    membershipId: Types.ObjectId,
+  ): Promise<SegmentMembershipDocument> {
+    return this.findOneAndUpdate(
+      { _id: membershipId },
+      { $set: { isActive: false } },
+    );
+  }
 }

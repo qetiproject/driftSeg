@@ -10,3 +10,4 @@ export const REMOVE_CUSTOMER_FROM_SEGMENT = (
   segmentId: string,
 ): string =>
   `customer customerId=${customerId} removed from segment segmentId=${segmentId}`;
+export const SCHEDULER_EVENT_TYPE = 'segment.recompute.scheduler';

@@ -9,7 +9,7 @@ import {
   REMOVE_CUSTOMER_FROM_SEGMENT,
 } from '../constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
-import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../dto';
+import { SegmentTypeEnum } from '../dto';
 import { SegmentMembershipTrigger } from '../models/segment-trigger.interface';
 import {
   CustomerActivityRepository,
@@ -17,6 +17,10 @@ import {
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../repositories';
+import {
+  buildSchedulerTrigger,
+  isSegmentRuleInput,
+} from '../utils/helper/segment-membership.helper';
 import { SegmentRuleEvaluatorService } from './segment-rule-evaluator.service';
 
 @Injectable()
@@ -30,19 +34,6 @@ export class SegmentMembershipService {
     private readonly customerActivityRepository: CustomerActivityRepository,
     private readonly segmentRuleEvaluatorService: SegmentRuleEvaluatorService,
   ) {}
-
-  private isSegmentRuleInput(value: unknown): value is SegmentRuleInput {
-    if (!value || typeof value !== 'object') {
-      return false;
-    }
-
-    const kind = (value as { kind?: unknown }).kind;
-    return (
-      kind === SegmentRuleKind.ACTIVE_BUYERS ||
-      kind === SegmentRuleKind.VIP ||
-      kind === SegmentRuleKind.RISK
-    );
-  }
 
   async processTransactionCreated(
     event: TransactionCreatedEvent,
@@ -63,10 +54,10 @@ export class SegmentMembershipService {
       await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
 
     for (const customerId of customerIds) {
-      await this.recomputeMembershipForCustomer(customerId, {
-        eventId: `scheduler-${new Date().toISOString()}-${customerId.toString()}`,
-        eventType: 'segment.recompute.scheduler',
-      });
+      await this.recomputeMembershipForCustomer(
+        customerId,
+        buildSchedulerTrigger(customerId),
+      );
     }
   }
 
@@ -79,7 +70,7 @@ export class SegmentMembershipService {
     });
 
     for (const segment of segments) {
-      if (!this.isSegmentRuleInput(segment.rules)) {
+      if (!isSegmentRuleInput(segment.rules)) {
         this.logger.warn(
           SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
             segment._id.toString(),
@@ -142,10 +133,7 @@ export class SegmentMembershipService {
     customerObjectId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
-    await this.segmentMembershipRepository.findOneAndUpdate(
-      { _id: membershipId },
-      { $set: { isActive: false } },
-    );
+    await this.segmentMembershipRepository.deactivateMembership(membershipId);
     await this.segmentDeltaRepository.create({
       segmentId,
       addedCustomerIds: [],
