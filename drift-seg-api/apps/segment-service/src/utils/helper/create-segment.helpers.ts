@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
 import { SegmentTypeEnum } from '../../dto';
 import { CreateSegmentDto } from '../../dto/request';
@@ -26,11 +27,13 @@ export async function segmentNameIsUnique(
 export function baseSegmentCreatePayload(payload: CreateSegmentDto): {
   name: string;
   type: SegmentTypeEnum;
-  dependsOnSegmentIds: [];
+  dependsOnSegmentIds: Types.ObjectId[];
 } {
   return {
     name: payload.name,
     type: payload.type,
-    dependsOnSegmentIds: [],
+    dependsOnSegmentIds: (payload.dependsOnSegmentIds ?? []).map(
+      (id) => new Types.ObjectId(id),
+    ),
   };
 }

@@ -2,7 +2,6 @@ import { BadRequestException } from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
 import { SEGMENT_RULE } from '../../constants/segment-rule';
 import { CreateSegmentDto } from '../../dto/request';
-import { noDependenciesSegment } from './create-segment.helpers';
 
 type DynamicCreatePayload = CreateSegmentDto & {
   rules: NonNullable<CreateSegmentDto['rules']>;
@@ -17,10 +16,6 @@ export function validateActiveRules(payload: DynamicCreatePayload): void {
     );
   }
 
-  noDependenciesSegment(
-    payload.dependsOnSegmentIds,
-    SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
-  );
 }
 
 export function validateVipRules(payload: DynamicCreatePayload): number {
@@ -37,11 +32,6 @@ export function validateVipRules(payload: DynamicCreatePayload): number {
     );
   }
 
-  noDependenciesSegment(
-    payload.dependsOnSegmentIds,
-    SEGMENT_ERROR_MESSAGES.VIP_SEGMENT_NO_DEPENDENCIES,
-  );
-
   return minSpend;
 }
 
@@ -54,11 +44,6 @@ export function validateRiskRules(payload: DynamicCreatePayload): number {
       ),
     );
   }
-
-  noDependenciesSegment(
-    payload.dependsOnSegmentIds,
-    SEGMENT_ERROR_MESSAGES.RISK_SEGMENT_NO_DEPENDENCIES,
-  );
 
   return inActiveDays;
 }

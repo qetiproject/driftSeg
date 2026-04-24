@@ -1,7 +1,7 @@
 import { AbstractRepository } from '@app/common';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SegmentDocument } from '../models';
 
 @Injectable()
@@ -19,5 +19,11 @@ export class SegmentRepository extends AbstractRepository<SegmentDocument> {
     const normalizedName = name.trim();
     const existing = await this.model.exists({ name: normalizedName });
     return existing !== null;
+  }
+
+  findDependentsBySegmentId(segmentId: Types.ObjectId): Promise<SegmentDocument[]> {
+    return this.model
+      .find({ dependsOnSegmentIds: segmentId })
+      .lean<SegmentDocument[]>(true);
   }
 }

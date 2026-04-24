@@ -31,48 +31,133 @@ export class SegmentMembershipFacade {
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
-    const segments = await this.segmentRepository.find({
-      type: SegmentTypeEnum.DYNAMIC,
-    });
+    const segments = await this.segmentRepository.find({});
+    const dynamicSegments = segments.filter(
+      (segment) =>
+        segment.type === SegmentTypeEnum.DYNAMIC && isSegmentRuleInput(segment.rules),
+    );
+
+    const dynamicById = new Map(
+      dynamicSegments.map((segment) => [segment._id.toString(), segment]),
+    );
+    const dependentBySegmentId = new Map<string, string[]>();
     for (const segment of segments) {
-      if (!isSegmentRuleInput(segment.rules)) {
-        this.logger.warn(
-          SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
-            segment._id.toString(),
-          ),
-        );
+      for (const dependencyId of segment.dependsOnSegmentIds ?? []) {
+        const key = dependencyId.toString();
+        const dependents = dependentBySegmentId.get(key) ?? [];
+        dependents.push(segment._id.toString());
+        dependentBySegmentId.set(key, dependents);
+      }
+    }
+
+    const queue = dynamicSegments.map((segment) => segment._id.toString());
+    const queued = new Set(queue);
+    while (queue.length > 0) {
+      const segmentId = queue.shift();
+      if (!segmentId) {
         continue;
       }
-      const shouldBeMember =
-        await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
-          segment.rules,
-          customerId,
-        );
-      const currentMembership =
-        await this.segmentMembershipRepository.findActiveMembership(
-          segment._id,
-          customerId,
-        );
-      if (shouldBeMember && !currentMembership) {
-        await this.addCustomerToSegment(
-          segment._id,
-          segment.rules.kind,
-          customerId,
-          trigger,
-        );
+      queued.delete(segmentId);
+
+      const segment = dynamicById.get(segmentId);
+      if (!segment) {
         continue;
       }
 
-      if (!shouldBeMember && currentMembership) {
-        await this.removeCustomerFromSegment(
-          currentMembership._id,
-          segment._id,
-          segment.rules.kind,
-          customerId,
-          trigger,
-        );
+      const hasChanged = await this.reconcileSegmentMembershipForCustomer(
+        segment,
+        customerId,
+        trigger,
+      );
+      if (!hasChanged) {
+        continue;
+      }
+
+      const dependentIds = dependentBySegmentId.get(segmentId) ?? [];
+      for (const dependentId of dependentIds) {
+        if (!dynamicById.has(dependentId) || queued.has(dependentId)) {
+          continue;
+        }
+        queue.push(dependentId);
+        queued.add(dependentId);
       }
     }
+  }
+
+  private async reconcileSegmentMembershipForCustomer(
+    segment: SegmentDocument,
+    customerId: Types.ObjectId,
+    trigger: SegmentMembershipTrigger,
+  ): Promise<boolean> {
+    if (!isSegmentRuleInput(segment.rules)) {
+      this.logger.warn(
+        SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
+          segment._id.toString(),
+        ),
+      );
+      return false;
+    }
+
+    const matchesRule =
+      await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+        segment.rules,
+        customerId,
+      );
+    const satisfiesDependencies = await this.satisfiesDependencies(
+      segment,
+      customerId,
+    );
+    const shouldBeMember = matchesRule && satisfiesDependencies;
+    const currentMembership =
+      await this.segmentMembershipRepository.findActiveMembership(
+        segment._id,
+        customerId,
+      );
+
+    if (shouldBeMember && !currentMembership) {
+      await this.addCustomerToSegment(
+        segment._id,
+        segment.rules.kind,
+        customerId,
+        trigger,
+      );
+      return true;
+    }
+
+    if (!shouldBeMember && currentMembership) {
+      await this.removeCustomerFromSegment(
+        currentMembership._id,
+        segment._id,
+        segment.rules.kind,
+        customerId,
+        trigger,
+      );
+      return true;
+    }
+
+    return false;
+  }
+
+  private async satisfiesDependencies(
+    segment: SegmentDocument,
+    customerId: Types.ObjectId,
+  ): Promise<boolean> {
+    const dependencyIds = segment.dependsOnSegmentIds ?? [];
+    if (dependencyIds.length === 0) {
+      return true;
+    }
+
+    for (const dependencyId of dependencyIds) {
+      const membership = await this.segmentMembershipRepository.findActiveMembership(
+        dependencyId,
+        customerId,
+      );
+      if (!membership) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   async refreshStaticSegmentMemberships(

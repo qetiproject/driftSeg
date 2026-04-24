@@ -38,4 +38,8 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
       { $set: { isActive: false } },
     );
   }
+
+  async deleteBySegmentId(segmentId: Types.ObjectId): Promise<void> {
+    await this.model.deleteMany({ segmentId });
+  }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { SegmentTypeEnum } from '../dto';
 import { CreateSegmentDto } from '../dto/request';
 import {
@@ -97,5 +98,31 @@ export class SegmentService {
     }
 
     await this.segmentMembershipService.refreshStaticSegmentMemberships(segment);
+  }
+
+  async deleteSegmentCascade(segmentId: string): Promise<void> {
+    await this.deleteSegmentRecursive(segmentId, new Set<string>());
+  }
+
+  private async deleteSegmentRecursive(
+    segmentId: string,
+    visited: Set<string>,
+  ): Promise<void> {
+    if (visited.has(segmentId)) {
+      return;
+    }
+    visited.add(segmentId);
+
+    const segmentObjectId = new Types.ObjectId(segmentId);
+    const dependents =
+      await this.segmentRepository.findDependentsBySegmentId(segmentObjectId);
+
+    for (const dependent of dependents) {
+      await this.deleteSegmentRecursive(dependent._id.toString(), visited);
+    }
+
+    await this.segmentMembershipRepository.deleteBySegmentId(segmentObjectId);
+    await this.segmentDeltaRepository.deleteBySegmentId(segmentObjectId);
+    await this.segmentRepository.findOneAndDelete({ _id: segmentId });
   }
 }

@@ -1,5 +1,5 @@
 import * as dto from '@app/common/dto';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreateSegmentDto } from '../dto/request';
 import {
@@ -40,6 +40,14 @@ export class SegmentController {
   async refreshStatic(@Param('id') id: string): Promise<{ refreshed: true }> {
     await this.segmentService.refreshStaticSegment(id);
     return { refreshed: true };
+  }
+
+  @Delete(':id')
+  async deleteWithDependents(
+    @Param('id') id: string,
+  ): Promise<{ deleted: true }> {
+    await this.segmentService.deleteSegmentCascade(id);
+    return { deleted: true };
   }
 
   @EventPattern(dto.TRANSACTION_CREATED_EVENT)
