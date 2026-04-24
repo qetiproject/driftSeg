@@ -1,5 +1,4 @@
 import { Types } from 'mongoose';
-import { CustomerRepository } from '../../../../customer-service/src/repositories/customer.repository';
 import { DAY_IN_MS } from '../../constants/constants';
 import {
   SegmentMembersResponseDto,
@@ -7,6 +6,7 @@ import {
 } from '../../dto/responses';
 import { SegmentDocument, SegmentMembershipDocument } from '../../models';
 import {
+  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,

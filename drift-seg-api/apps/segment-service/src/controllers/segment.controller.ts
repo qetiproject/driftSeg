@@ -36,6 +36,12 @@ export class SegmentController {
     return this.segmentService.createSegment(payload);
   }
 
+  @Post(':id/refresh')
+  async refreshStatic(@Param('id') id: string): Promise<{ refreshed: true }> {
+    await this.segmentService.refreshStaticSegment(id);
+    return { refreshed: true };
+  }
+
   @EventPattern(dto.TRANSACTION_CREATED_EVENT)
   async tansactionCreatedEvent(
     @Payload() event: dto.TransactionCreatedEvent,

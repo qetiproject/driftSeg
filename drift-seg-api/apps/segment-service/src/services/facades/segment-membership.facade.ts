@@ -6,6 +6,7 @@ import {
 } from '../../constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
 import { SegmentRuleKind, SegmentTypeEnum } from '../../dto';
+import { SegmentDocument } from '../../models';
 import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
 import {
     SegmentDeltaRepository,
@@ -72,6 +73,74 @@ export class SegmentMembershipFacade {
         );
       }
     }
+  }
+
+  async refreshStaticSegmentMemberships(
+    segment: SegmentDocument,
+    customerIds: Types.ObjectId[],
+    trigger: SegmentMembershipTrigger,
+  ): Promise<void> {
+    if (segment.type !== SegmentTypeEnum.STATIC || !isSegmentRuleInput(segment.rules)) {
+      return;
+    }
+
+    const eligibleCustomerIds: Types.ObjectId[] = [];
+    for (const customerId of customerIds) {
+      const shouldBeMember =
+        await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+          segment.rules,
+          customerId,
+        );
+      if (shouldBeMember) {
+        eligibleCustomerIds.push(customerId);
+      }
+    }
+
+    const activeMemberships =
+      await this.segmentMembershipRepository.findActiveMembersBySegmentId(segment._id);
+    const activeByCustomerId = new Map(
+      activeMemberships.map((membership) => [
+        membership.customerId.toString(),
+        membership,
+      ]),
+    );
+    const eligibleIdSet = new Set(eligibleCustomerIds.map((id) => id.toString()));
+
+    const addedCustomerIds: Types.ObjectId[] = [];
+    for (const customerId of eligibleCustomerIds) {
+      if (activeByCustomerId.has(customerId.toString())) {
+        continue;
+      }
+      await this.segmentMembershipRepository.create({
+        segmentId: segment._id,
+        customerId,
+        isActive: true,
+      });
+      addedCustomerIds.push(customerId);
+    }
+
+    const removedCustomerIds: Types.ObjectId[] = [];
+    for (const activeMembership of activeMemberships) {
+      if (eligibleIdSet.has(activeMembership.customerId.toString())) {
+        continue;
+      }
+      await this.segmentMembershipRepository.deactivateMembership(activeMembership._id);
+      removedCustomerIds.push(activeMembership.customerId);
+    }
+
+    if (addedCustomerIds.length === 0 && removedCustomerIds.length === 0) {
+      return;
+    }
+
+    await this.segmentDeltaRepository.create({
+      segmentId: segment._id,
+      segmentkind: segment.rules.kind,
+      addedCustomerIds,
+      removedCustomerIds,
+      triggerEventId: trigger.eventId,
+      triggerEventType: trigger.eventType,
+      computedAt: new Date(),
+    });
   }
 
   private async addCustomerToSegment(

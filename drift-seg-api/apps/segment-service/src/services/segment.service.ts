@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CustomerRepository } from '../../../customer-service/src/repositories/customer.repository';
+import { SegmentTypeEnum } from '../dto';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentDeltaResponseDto,
@@ -7,6 +7,7 @@ import {
   SegmentResponseDto,
 } from '../dto/responses';
 import {
+  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
@@ -19,6 +20,7 @@ import {
   toSegmentResponse,
 } from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
+import { SegmentMembershipService } from './segment-membership.service';
 
 @Injectable()
 export class SegmentService {
@@ -28,6 +30,7 @@ export class SegmentService {
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
     private readonly customerRepository: CustomerRepository,
+    private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -85,5 +88,14 @@ export class SegmentService {
       triggerEventType: delta.triggerEventType,
       computedAt: delta.computedAt.toISOString(),
     }));
+  }
+
+  async refreshStaticSegment(segmentId: string): Promise<void> {
+    const segment = await getSegmentById(this.segmentRepository, segmentId);
+    if (segment.type !== SegmentTypeEnum.STATIC) {
+      return;
+    }
+
+    await this.segmentMembershipService.refreshStaticSegmentMemberships(segment);
   }
 }
