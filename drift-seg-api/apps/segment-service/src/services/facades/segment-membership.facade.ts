@@ -5,7 +5,7 @@ import {
     REMOVE_CUSTOMER_FROM_SEGMENT,
 } from '../../constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
-import { SegmentTypeEnum } from '../../dto';
+import { SegmentRuleKind, SegmentTypeEnum } from '../../dto';
 import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
 import {
     SegmentDeltaRepository,
@@ -53,7 +53,12 @@ export class SegmentMembershipFacade {
           customerId,
         );
       if (shouldBeMember && !currentMembership) {
-        await this.addCustomerToSegment(segment._id, customerId, trigger);
+        await this.addCustomerToSegment(
+          segment._id,
+          segment.rules.kind,
+          customerId,
+          trigger,
+        );
         continue;
       }
 
@@ -61,6 +66,7 @@ export class SegmentMembershipFacade {
         await this.removeCustomerFromSegment(
           currentMembership._id,
           segment._id,
+          segment.rules.kind,
           customerId,
           trigger,
         );
@@ -70,6 +76,7 @@ export class SegmentMembershipFacade {
 
   private async addCustomerToSegment(
     segmentId: Types.ObjectId,
+    segmentkind: SegmentRuleKind,
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
@@ -80,6 +87,7 @@ export class SegmentMembershipFacade {
     });
     await this.segmentDeltaRepository.create({
       segmentId,
+      segmentkind,
       addedCustomerIds: [customerId],
       removedCustomerIds: [],
       triggerEventId: trigger.eventId,
@@ -92,12 +100,14 @@ export class SegmentMembershipFacade {
   private async removeCustomerFromSegment(
     membershipId: Types.ObjectId,
     segmentId: Types.ObjectId,
+    segmentkind: SegmentRuleKind,
     customerObjectId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
     await this.segmentMembershipRepository.deactivateMembership(membershipId);
     await this.segmentDeltaRepository.create({
       segmentId,
+      segmentkind,
       addedCustomerIds: [],
       removedCustomerIds: [customerObjectId],
       triggerEventId: trigger.eventId,

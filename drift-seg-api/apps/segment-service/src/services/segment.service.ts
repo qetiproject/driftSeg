@@ -67,6 +67,7 @@ export class SegmentService {
     return deltas.map((delta) => ({
       _id: delta._id.toString(),
       segmentId: delta.segmentId.toString(),
+      segmentkind: delta.segmentkind,
       addedCustomerIds: (delta.addedCustomerIds ?? []).map((id) =>
         id.toString(),
       ),
