@@ -4,8 +4,13 @@ import {
 } from '@app/common/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
+import {
+  ADD_CUSTOMER_TO_SEGMENT,
+  REMOVE_CUSTOMER_FROM_SEGMENT,
+} from '../constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../dto';
+import { SegmentMembershipTrigger } from '../models/segment-trigger.interface';
 import {
   CustomerActivityRepository,
   SegmentDeltaRepository,
@@ -112,26 +117,23 @@ export class SegmentMembershipService {
 
   private async addCustomerToSegment(
     segmentId: Types.ObjectId,
-    customerObjectId: Types.ObjectId,
+    customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
     await this.segmentMembershipRepository.create({
       segmentId,
-      customerId: customerObjectId,
+      customerId,
       isActive: true,
     });
     await this.segmentDeltaRepository.create({
       segmentId,
-      addedCustomerIds: [customerObjectId],
+      addedCustomerIds: [customerId],
       removedCustomerIds: [],
       triggerEventId: trigger.eventId,
       triggerEventType: trigger.eventType,
       computedAt: new Date(),
     });
-    this.logger.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `customer ${customerObjectId} added to segment ${segmentId.toString()}`,
-    );
+    this.logger.log(ADD_CUSTOMER_TO_SEGMENT);
   }
 
   private async removeCustomerFromSegment(
@@ -152,14 +154,6 @@ export class SegmentMembershipService {
       triggerEventType: trigger.eventType,
       computedAt: new Date(),
     });
-    this.logger.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `customer ${customerObjectId} removed from segment ${segmentId.toString()}`,
-    );
+    this.logger.log(REMOVE_CUSTOMER_FROM_SEGMENT);
   }
-}
-
-interface SegmentMembershipTrigger {
-  eventId: string;
-  eventType: string;
 }
