@@ -13,12 +13,11 @@ import {
     SegmentRepository,
 } from '../../repositories';
 import { isSegmentRuleInput } from '../../utils/helper/segment-membership.helper';
-import { SegmentMembershipService } from '../segment-membership.service';
 import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 
 @Injectable()
 export class SegmentMembershipFacade {
-  private readonly logger = new Logger(SegmentMembershipService.name);
+  private readonly logger = new Logger(SegmentMembershipFacade.name);
 
   constructor(
     private readonly segmentRepository: SegmentRepository,
