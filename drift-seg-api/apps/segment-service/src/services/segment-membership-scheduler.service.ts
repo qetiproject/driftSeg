@@ -1,16 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { SEGMENT_RECOMPUTE_CRON } from '../constants/constants';
 import { SegmentMembershipService } from './segment-membership.service';
 
 @Injectable()
 export class SegmentMembershipSchedulerService {
-  private readonly logger = new Logger(SegmentMembershipSchedulerService.name);
+  constructor(
+    private readonly segmentMembershipService: SegmentMembershipService,
+  ) {}
 
-  constructor(private readonly segmentMembershipService: SegmentMembershipService) {}
-
-  @Cron('*/1 * * * *')
+  @Cron(SEGMENT_RECOMPUTE_CRON)
   async recomputeDynamicSegments(): Promise<void> {
-    this.logger.debug('Running scheduled segment membership recompute');
     await this.segmentMembershipService.recomputeAllDynamicMemberships();
   }
 }
