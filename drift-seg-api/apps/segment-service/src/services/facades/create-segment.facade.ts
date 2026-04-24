@@ -4,11 +4,13 @@ import { SegmentRuleKind } from '../../dto';
 import { CreateSegmentDto } from '../../dto/request';
 import { SegmentRepository } from '../../repositories';
 import {
-  baseSegmentCreatePayload,
-  segmentNameIsUnique,
   validateActiveRules,
   validateRiskRules,
   validateVipRules,
+} from '../../utils/helper/create-segment-validate.helper';
+import {
+  baseSegmentCreatePayload,
+  segmentNameIsUnique,
 } from '../../utils/helper/create-segment.helpers';
 
 @Injectable()
