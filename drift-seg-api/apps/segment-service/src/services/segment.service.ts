@@ -6,12 +6,12 @@ import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '../dto/responses';
-import { SegmentDocument } from '../models';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../repositories';
+import { toSegmentResponse } from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
 
 @Injectable()
@@ -25,12 +25,12 @@ export class SegmentService {
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
     const created = await this.createSegmentFacade.createSegment(payload);
-    return this.toSegmentResponse(created);
+    return toSegmentResponse(created);
   }
 
   async getAllSegments(): Promise<SegmentResponseDto[]> {
     const segments = await this.segmentRepository.find({});
-    return segments.map((segment) => this.toSegmentResponse(segment));
+    return segments.map((segment) => toSegmentResponse(segment));
   }
 
   async getSegmentMembers(
@@ -72,18 +72,5 @@ export class SegmentService {
       triggerEventType: delta.triggerEventType,
       computedAt: delta.computedAt.toISOString(),
     }));
-  }
-
-  private toSegmentResponse(segment: SegmentDocument): SegmentResponseDto {
-    return {
-      _id: segment._id.toString(),
-      name: segment.name,
-      type: segment.type,
-      rules: segment.rules,
-      dependsOnSegmentIds: (segment.dependsOnSegmentIds ?? []).map((id) =>
-        id.toString(),
-      ),
-      lastComputedAt: segment.lastComputedAt?.toISOString(),
-    };
   }
 }

@@ -1,5 +1,4 @@
-import { SegmentRuleInput } from '../request';
-import { SegmentTypeEnum } from '../segment-rule';
+import { SegmentRuleInput, SegmentTypeEnum } from '../segment-rule';
 
 export interface SegmentResponseDto {
   _id: string;
