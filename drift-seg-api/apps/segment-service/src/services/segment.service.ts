@@ -11,7 +11,11 @@ import {
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../repositories';
-import { toSegmentResponse } from '../utils/helper/segment.helper';
+import {
+  segmentById,
+  segmentMemberships,
+  toSegmentResponse,
+} from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
 
 @Injectable()
@@ -36,11 +40,11 @@ export class SegmentService {
   async getSegmentMembers(
     segmentId: string,
   ): Promise<SegmentMembersResponseDto> {
-    const segment = await this.segmentRepository.findOne({ _id: segmentId });
-    const memberships =
-      await this.segmentMembershipRepository.findActiveMembersBySegmentId(
-        new Types.ObjectId(segmentId),
-      );
+    const segment = await segmentById(this.segmentRepository, segmentId);
+    const memberships = await segmentMemberships(
+      this.segmentMembershipRepository,
+      segmentId,
+    );
 
     return {
       segmentId: segment._id.toString(),

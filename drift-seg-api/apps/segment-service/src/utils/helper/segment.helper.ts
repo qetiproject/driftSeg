@@ -1,5 +1,10 @@
+import { Types } from 'mongoose';
 import { SegmentResponseDto } from '../../dto/responses';
 import { SegmentDocument } from '../../models';
+import {
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from '../../repositories';
 
 export function toSegmentResponse(
   segment: SegmentDocument,
@@ -14,4 +19,20 @@ export function toSegmentResponse(
     ),
     lastComputedAt: segment.lastComputedAt?.toISOString(),
   };
+}
+
+export function segmentById(
+  segmentRepository: SegmentRepository,
+  segmentId: string,
+): Promise<SegmentDocument> {
+  return segmentRepository.findOne({ _id: segmentId });
+}
+
+export function segmentMemberships(
+  segmentMembershipRepository: SegmentMembershipRepository,
+  segmentId: string,
+) {
+  return segmentMembershipRepository.findActiveMembersBySegmentId(
+    new Types.ObjectId(segmentId),
+  );
 }
