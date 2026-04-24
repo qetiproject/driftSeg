@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
+import { SegmentTypeEnum } from '../dto';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentDeltaResponseDto,
@@ -6,6 +8,7 @@ import {
   SegmentResponseDto,
 } from '../dto/responses';
 import {
+  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
@@ -14,9 +17,11 @@ import {
   getSegmentById,
   getSegmentDeltas,
   getSegmentMembers,
+  segmentMembersInfo,
   toSegmentResponse,
 } from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
+import { SegmentMembershipService } from './segment-membership.service';
 
 @Injectable()
 export class SegmentService {
@@ -25,6 +30,8 @@ export class SegmentService {
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly customerRepository: CustomerRepository,
+    private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -45,13 +52,17 @@ export class SegmentService {
       this.segmentMembershipRepository,
       segmentId,
     );
+    const membersWithEmail = await segmentMembersInfo(
+      this.customerRepository,
+      members,
+    );
 
     return {
       segmentId: segment._id.toString(),
+      segmentkind: segment.rules?.kind,
+      staticSegmentKind: segment.staticSegmentKind,
       totalMembers: members.length,
-      members: members.map((member) => ({
-        customerId: member.customerId.toString(),
-      })),
+      members: membersWithEmail,
     };
   }
 
@@ -67,6 +78,7 @@ export class SegmentService {
     return deltas.map((delta) => ({
       _id: delta._id.toString(),
       segmentId: delta.segmentId.toString(),
+      segmentkind: delta.segmentkind,
       addedCustomerIds: (delta.addedCustomerIds ?? []).map((id) =>
         id.toString(),
       ),
@@ -77,5 +89,40 @@ export class SegmentService {
       triggerEventType: delta.triggerEventType,
       computedAt: delta.computedAt.toISOString(),
     }));
+  }
+
+  async refreshStaticSegment(segmentId: string): Promise<void> {
+    const segment = await getSegmentById(this.segmentRepository, segmentId);
+    if (segment.type !== SegmentTypeEnum.STATIC) {
+      return;
+    }
+
+    await this.segmentMembershipService.refreshStaticSegmentMemberships(segment);
+  }
+
+  async deleteSegmentCascade(segmentId: string): Promise<void> {
+    await this.deleteSegmentRecursive(segmentId, new Set<string>());
+  }
+
+  private async deleteSegmentRecursive(
+    segmentId: string,
+    visited: Set<string>,
+  ): Promise<void> {
+    if (visited.has(segmentId)) {
+      return;
+    }
+    visited.add(segmentId);
+
+    const segmentObjectId = new Types.ObjectId(segmentId);
+    const dependents =
+      await this.segmentRepository.findDependentsBySegmentId(segmentObjectId);
+
+    for (const dependent of dependents) {
+      await this.deleteSegmentRecursive(dependent._id.toString(), visited);
+    }
+
+    await this.segmentMembershipRepository.deleteBySegmentId(segmentObjectId);
+    await this.segmentDeltaRepository.deleteBySegmentId(segmentObjectId);
+    await this.segmentRepository.findOneAndDelete({ _id: segmentId });
   }
 }

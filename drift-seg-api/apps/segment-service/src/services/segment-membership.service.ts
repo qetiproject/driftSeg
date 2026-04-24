@@ -4,6 +4,7 @@ import {
 } from '@app/common/dto';
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
 import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
@@ -42,5 +43,19 @@ export class SegmentMembershipService {
         buildSchedulerTrigger(customerId),
       );
     }
+  }
+
+  async refreshStaticSegmentMemberships(segment: SegmentDocument): Promise<void> {
+    const customerIds =
+      await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
+
+    await this.segmentMembershipFacade.refreshStaticSegmentMemberships(
+      segment,
+      customerIds,
+      {
+        eventId: `segment-static-refresh-${segment._id.toString()}-${new Date().toISOString()}`,
+        eventType: 'segment.static.manual_refresh',
+      },
+    );
   }
 }
