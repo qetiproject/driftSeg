@@ -1,7 +1,11 @@
 import { Types } from 'mongoose';
+import { CustomerRepository } from '../../../../customer-service/src/repositories/customer.repository';
 import { DAY_IN_MS } from '../../constants/constants';
-import { SegmentResponseDto } from '../../dto/responses';
-import { SegmentDocument } from '../../models';
+import {
+  SegmentMembersResponseDto,
+  SegmentResponseDto,
+} from '../../dto/responses';
+import { SegmentDocument, SegmentMembershipDocument } from '../../models';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
@@ -48,4 +52,21 @@ export function getSegmentDeltas(
 
 export function getSinceDateByDays(date: Date, days: number): Date {
   return new Date(date.getTime() - days * DAY_IN_MS);
+}
+
+export async function segmentMembersInfo(
+  customerRepository: CustomerRepository,
+  members: SegmentMembershipDocument[],
+): Promise<SegmentMembersResponseDto['members']> {
+  return Promise.all(
+    members.map(async (member) => {
+      const customer = await customerRepository.findOne({
+        _id: member.customerId,
+      });
+      return {
+        customerId: member.customerId.toString(),
+        customerEmail: customer.email,
+      };
+    }),
+  );
 }

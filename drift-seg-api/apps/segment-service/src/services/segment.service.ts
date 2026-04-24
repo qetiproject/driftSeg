@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CustomerRepository } from '../../../customer-service/src/repositories/customer.repository';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentDeltaResponseDto,
@@ -14,6 +15,7 @@ import {
   getSegmentById,
   getSegmentDeltas,
   getSegmentMembers,
+  segmentMembersInfo,
   toSegmentResponse,
 } from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
@@ -25,6 +27,7 @@ export class SegmentService {
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly customerRepository: CustomerRepository,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -45,14 +48,16 @@ export class SegmentService {
       this.segmentMembershipRepository,
       segmentId,
     );
+    const membersWithEmail = await segmentMembersInfo(
+      this.customerRepository,
+      members,
+    );
 
     return {
       segmentId: segment._id.toString(),
       segmentkind: segment.rules.kind,
       totalMembers: members.length,
-      members: members.map((member) => ({
-        customerId: member.customerId.toString(),
-      })),
+      members: membersWithEmail,
     };
   }
 

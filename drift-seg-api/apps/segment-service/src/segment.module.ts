@@ -1,4 +1,5 @@
 import { DatabaseModule } from '@app/common';
+import { CustomerRepository } from '../../customer-service/src/repositories/customer.repository';
 import {
   CustomerDocument,
   CustomerSchema,
@@ -69,6 +70,7 @@ import {
     SegmentMembershipRepository,
     SegmentDeltaRepository,
     CustomerActivityRepository,
+    CustomerRepository,
   ],
 })
 export class SegmentServiceModule {}
