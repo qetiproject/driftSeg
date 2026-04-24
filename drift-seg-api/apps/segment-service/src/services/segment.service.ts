@@ -12,8 +12,8 @@ import {
   SegmentRepository,
 } from '../repositories';
 import {
-  segmentById,
-  segmentMemberships,
+  getSegmentById,
+  getSegmentMembers,
   toSegmentResponse,
 } from '../utils/helper/segment.helper';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
@@ -40,17 +40,17 @@ export class SegmentService {
   async getSegmentMembers(
     segmentId: string,
   ): Promise<SegmentMembersResponseDto> {
-    const segment = await segmentById(this.segmentRepository, segmentId);
-    const memberships = await segmentMemberships(
+    const segment = await getSegmentById(this.segmentRepository, segmentId);
+    const members = await getSegmentMembers(
       this.segmentMembershipRepository,
       segmentId,
     );
 
     return {
       segmentId: segment._id.toString(),
-      totalMembers: memberships.length,
-      members: memberships.map((membership) => ({
-        customerId: membership.customerId.toString(),
+      totalMembers: members.length,
+      members: members.map((member) => ({
+        customerId: member.customerId.toString(),
       })),
     };
   }

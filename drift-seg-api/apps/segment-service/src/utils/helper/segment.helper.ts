@@ -21,14 +21,14 @@ export function toSegmentResponse(
   };
 }
 
-export function segmentById(
+export function getSegmentById(
   segmentRepository: SegmentRepository,
   segmentId: string,
 ): Promise<SegmentDocument> {
   return segmentRepository.findOne({ _id: segmentId });
 }
 
-export function segmentMemberships(
+export function getSegmentMembers(
   segmentMembershipRepository: SegmentMembershipRepository,
   segmentId: string,
 ) {
