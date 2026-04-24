@@ -8,7 +8,9 @@ import {
   TransactionSchema,
 } from '@app/common/models/transaction-schema';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import Joi from 'joi';
 import { SegmentController } from './controllers';
@@ -30,9 +32,11 @@ import {
 } from './repositories';
 import {
   CreateSegmentFacade,
+  SegmentEventBufferService,
   SegmentMembershipFacade,
   SegmentMembershipSchedulerService,
   SegmentMembershipService,
+  SegmentSearchIndexerService,
   SegmentRuleEvaluatorService,
   SegmentService,
 } from './services';
@@ -55,8 +59,32 @@ import {
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().optional(),
         RABBITMQ_URI: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
+        ELASTICSEARCH_NODE: Joi.string().required(),
       }),
     }),
+    ElasticsearchModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        node: configService.getOrThrow<string>('ELASTICSEARCH_NODE'),
+      }),
+    }),
+    ClientsModule.registerAsync([
+      {
+        name: 'SEGMENT_NOTIFICATIONS_CLIENT',
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'segment.notifications.queue',
+            queueOptions: { durable: true },
+          },
+        }),
+      },
+    ]),
   ],
   controllers: [SegmentController],
   providers: [
@@ -65,6 +93,8 @@ import {
     SegmentMembershipFacade,
     SegmentMembershipService,
     SegmentMembershipSchedulerService,
+    SegmentEventBufferService,
+    SegmentSearchIndexerService,
     SegmentRuleEvaluatorService,
     SegmentRepository,
     SegmentMembershipRepository,
