@@ -65,7 +65,7 @@ export class SegmentMembershipService {
   }
 
   private async recomputeMembershipForCustomer(
-    customerObjectId: Types.ObjectId,
+    customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
     const segments = await this.segmentRepository.find({
@@ -81,53 +81,78 @@ export class SegmentMembershipService {
       }
 
       const shouldBeMember =
-        await this.segmentRuleEvaluatorService.evaluateMembership(
+        await this.segmentRuleEvaluatorService.shoulCustomerMemberToSegment(
           segment.rules,
-          customerObjectId,
+          customerId,
         );
       const currentMembership =
         await this.segmentMembershipRepository.findActiveMembership(
           segment._id,
-          customerObjectId,
+          customerId,
         );
 
       if (shouldBeMember && !currentMembership) {
-        await this.segmentMembershipRepository.create({
-          segmentId: segment._id,
-          customerId: customerObjectId,
-          isActive: true,
-        });
-        await this.segmentDeltaRepository.create({
-          segmentId: segment._id,
-          addedCustomerIds: [customerObjectId],
-          removedCustomerIds: [],
-          triggerEventId: trigger.eventId,
-          triggerEventType: trigger.eventType,
-          computedAt: new Date(),
-        });
-        this.logger.log(
-          `customer ${customerObjectId} added to segment ${segment._id.toString()}`,
-        );
+        await this.addCustomerToSegment(segment._id, customerId, trigger);
+        continue;
       }
 
       if (!shouldBeMember && currentMembership) {
-        await this.segmentMembershipRepository.findOneAndUpdate(
-          { _id: currentMembership._id },
-          { $set: { isActive: false } },
-        );
-        await this.segmentDeltaRepository.create({
-          segmentId: segment._id,
-          addedCustomerIds: [],
-          removedCustomerIds: [customerObjectId],
-          triggerEventId: trigger.eventId,
-          triggerEventType: trigger.eventType,
-          computedAt: new Date(),
-        });
-        this.logger.log(
-          `customer ${customerObjectId} removed from segment ${segment._id.toString()}`,
+        await this.removeCustomerFromSegment(
+          currentMembership._id,
+          segment._id,
+          customerId,
+          trigger,
         );
       }
     }
+  }
+
+  private async addCustomerToSegment(
+    segmentId: Types.ObjectId,
+    customerObjectId: Types.ObjectId,
+    trigger: SegmentMembershipTrigger,
+  ): Promise<void> {
+    await this.segmentMembershipRepository.create({
+      segmentId,
+      customerId: customerObjectId,
+      isActive: true,
+    });
+    await this.segmentDeltaRepository.create({
+      segmentId,
+      addedCustomerIds: [customerObjectId],
+      removedCustomerIds: [],
+      triggerEventId: trigger.eventId,
+      triggerEventType: trigger.eventType,
+      computedAt: new Date(),
+    });
+    this.logger.log(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `customer ${customerObjectId} added to segment ${segmentId.toString()}`,
+    );
+  }
+
+  private async removeCustomerFromSegment(
+    membershipId: Types.ObjectId,
+    segmentId: Types.ObjectId,
+    customerObjectId: Types.ObjectId,
+    trigger: SegmentMembershipTrigger,
+  ): Promise<void> {
+    await this.segmentMembershipRepository.findOneAndUpdate(
+      { _id: membershipId },
+      { $set: { isActive: false } },
+    );
+    await this.segmentDeltaRepository.create({
+      segmentId,
+      addedCustomerIds: [],
+      removedCustomerIds: [customerObjectId],
+      triggerEventId: trigger.eventId,
+      triggerEventType: trigger.eventType,
+      computedAt: new Date(),
+    });
+    this.logger.log(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `customer ${customerObjectId} removed from segment ${segmentId.toString()}`,
+    );
   }
 }
 
