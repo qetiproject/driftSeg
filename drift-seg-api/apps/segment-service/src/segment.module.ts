@@ -9,7 +9,6 @@ import {
 } from '@app/common/models/transaction-schema';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import Joi from 'joi';
@@ -32,6 +31,7 @@ import {
 } from './repositories';
 import {
   CreateSegmentFacade,
+  SegmentDeltaNotifierService,
   SegmentEventBufferService,
   SegmentMembershipFacade,
   SegmentMembershipSchedulerService,
@@ -59,15 +59,8 @@ import {
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().optional(),
         RABBITMQ_URI: Joi.string().required(),
-        REDIS_URL: Joi.string().required(),
-        ELASTICSEARCH_NODE: Joi.string().required(),
-      }),
-    }),
-    ElasticsearchModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        node: configService.getOrThrow<string>('ELASTICSEARCH_NODE'),
+        REDIS_URL: Joi.string().optional(),
+        ELASTICSEARCH_NODE: Joi.string().optional(),
       }),
     }),
     ClientsModule.registerAsync([
@@ -93,6 +86,7 @@ import {
     SegmentMembershipFacade,
     SegmentMembershipService,
     SegmentMembershipSchedulerService,
+    SegmentDeltaNotifierService,
     SegmentEventBufferService,
     SegmentSearchIndexerService,
     SegmentRuleEvaluatorService,

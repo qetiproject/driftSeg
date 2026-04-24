@@ -1,6 +1,7 @@
 export * from './facades/create-segment.facade';
 export * from './facades/segment-membership.facade';
 export * from './segment-event-buffer.service';
+export * from './segment-delta-notifier.service';
 export * from './segment-membership-scheduler.service';
 export * from './segment-membership.service';
 export * from './segment-search-indexer.service';

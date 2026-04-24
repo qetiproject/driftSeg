@@ -24,6 +24,16 @@ async function bootstrap() {
       },
     },
   });
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+      queue: 'segment.notifications.queue',
+      queueOptions: {
+        durable: true,
+      },
+    },
+  });
   await app.startAllMicroservices();
   await app.listen(configService.get('PORT') || 3001, '0.0.0.0');
 }

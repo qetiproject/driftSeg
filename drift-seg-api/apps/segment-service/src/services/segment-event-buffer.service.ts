@@ -1,71 +1,42 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
 
 interface PendingTrigger {
   eventId: string;
   eventType: string;
 }
 
-const PENDING_EVENTS_KEY = 'segment:pending:transaction-events';
-
 @Injectable()
 export class SegmentEventBufferService implements OnModuleDestroy {
-  private readonly redis: Redis;
-
-  constructor(private readonly configService: ConfigService) {
-    this.redis = new Redis(this.configService.getOrThrow<string>('REDIS_URL'));
-  }
+  private readonly pendingEventMap = new Map<string, PendingTrigger>();
 
   async upsertPendingEvent(
     customerMongoId: string,
     trigger: PendingTrigger,
   ): Promise<void> {
-    await this.redis.hset(
-      PENDING_EVENTS_KEY,
-      customerMongoId,
-      JSON.stringify(trigger),
-    );
+    this.pendingEventMap.set(customerMongoId, trigger);
   }
 
   async takePendingBatch(
     limit: number,
   ): Promise<Array<{ customerMongoId: string; trigger: PendingTrigger }>> {
-    const eventMap = await this.redis.hgetall(PENDING_EVENTS_KEY);
-    const entries = Object.entries(eventMap).slice(0, limit);
+    const entries = Array.from(this.pendingEventMap.entries()).slice(0, limit);
     if (entries.length === 0) {
       return [];
     }
 
-    const customerMongoIds = entries.map(
-      ([customerMongoId]) => customerMongoId,
-    );
-    await this.redis.hdel(PENDING_EVENTS_KEY, ...customerMongoIds);
+    for (const [customerMongoId] of entries) {
+      this.pendingEventMap.delete(customerMongoId);
+    }
 
-    return entries
-      .map(([customerMongoId, rawTrigger]) => {
-        try {
-          return {
-            customerMongoId,
-            trigger: JSON.parse(rawTrigger) as PendingTrigger,
-          };
-        } catch {
-          return null;
-        }
-      })
-      .filter(
-        (
-          entry,
-        ): entry is { customerMongoId: string; trigger: PendingTrigger } =>
-          entry !== null,
-      );
+    return entries.map(([customerMongoId, trigger]) => ({
+      customerMongoId,
+      trigger,
+    }));
   }
 
   async pendingSize(): Promise<number> {
-    return this.redis.hlen(PENDING_EVENTS_KEY);
+    return this.pendingEventMap.size;
   }
 
-  async onModuleDestroy(): Promise<void> {
-    await this.redis.quit();
-  }
+  async onModuleDestroy(): Promise<void> {}
 }

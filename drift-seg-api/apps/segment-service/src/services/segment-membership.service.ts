@@ -13,6 +13,7 @@ import {
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
 import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
+import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
 import { SegmentEventBufferService } from './segment-event-buffer.service';
 import { SegmentSearchIndexerService } from './segment-search-indexer.service';
@@ -25,6 +26,7 @@ export class SegmentMembershipService {
     private readonly customerActivityRepository: CustomerActivityRepository,
     private readonly segmentMembershipFacade: SegmentMembershipFacade,
     private readonly segmentEventBufferService: SegmentEventBufferService,
+    private readonly segmentDeltaNotifierService: SegmentDeltaNotifierService,
     private readonly segmentSearchIndexerService: SegmentSearchIndexerService,
     @Inject('SEGMENT_NOTIFICATIONS_CLIENT')
     private readonly notificationsClient: ClientProxy,
@@ -72,6 +74,9 @@ export class SegmentMembershipService {
     };
     this.notificationsClient.emit(SEGMENT_BATCH_RECOMPUTE_EVENT, payload);
     await this.segmentSearchIndexerService.indexBatchRecomputeEvent(payload);
+    await this.segmentDeltaNotifierService.publishAggregatedDeltaChangesByTriggerEventIds(
+      entries.map(({ trigger }) => trigger.eventId),
+    );
 
     this.logger.log(
       `Processed membership batch size=${entries.length}, pending=${pendingCustomers}`,
