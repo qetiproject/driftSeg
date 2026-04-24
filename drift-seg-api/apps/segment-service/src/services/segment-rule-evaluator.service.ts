@@ -8,6 +8,7 @@ import {
   VipBuyersRuleInput,
 } from '../dto';
 import { CustomerActivityRepository } from '../repositories';
+import { getSinceDateByDays } from '../utils/helper/segment.helper';
 
 @Injectable()
 export class SegmentRuleEvaluatorService {
@@ -15,41 +16,41 @@ export class SegmentRuleEvaluatorService {
     private readonly customerActivityRepository: CustomerActivityRepository,
   ) {}
 
-  async evaluateMembership(
+  async shouldCustomerBelongToSegment(
     rules: SegmentRuleInput,
     customerId: Types.ObjectId,
-    asOf: Date = new Date(),
+    date: Date = new Date(),
   ): Promise<boolean> {
     switch (rules.kind) {
       case SegmentRuleKind.ACTIVE_BUYERS:
-        return this.evaluateActiveBuyers(rules, customerId, asOf);
+        return this.isActiveBuyer(rules, customerId, date);
       case SegmentRuleKind.VIP:
-        return this.evaluateVip(rules, customerId, asOf);
+        return this.isVipCustomer(rules, customerId, date);
       case SegmentRuleKind.RISK:
-        return this.evaluateRisk(rules, customerId, asOf);
+        return this.isRiskCustomer(rules, customerId, date);
       default:
         return false;
     }
   }
 
-  private async evaluateActiveBuyers(
+  private async isActiveBuyer(
     rules: ActiveBuyersRuleInput,
     customerId: Types.ObjectId,
-    asOf: Date,
+    date: Date,
   ): Promise<boolean> {
-    const since = new Date(asOf.getTime() - rules.days * 24 * 60 * 60 * 1000);
+    const since = getSinceDateByDays(date, rules.days);
     return this.customerActivityRepository.hasTransactionSince(
       customerId,
       since,
     );
   }
 
-  private async evaluateVip(
+  private async isVipCustomer(
     rules: VipBuyersRuleInput,
     customerId: Types.ObjectId,
-    asOf: Date,
+    date: Date,
   ): Promise<boolean> {
-    const since = new Date(asOf.getTime() - rules.days * 24 * 60 * 60 * 1000);
+    const since = getSinceDateByDays(date, rules.days);
     const totalSpent = await this.customerActivityRepository.getTotalSpentSince(
       customerId,
       since,
@@ -57,14 +58,12 @@ export class SegmentRuleEvaluatorService {
     return totalSpent >= rules.minSpend;
   }
 
-  private async evaluateRisk(
+  private async isRiskCustomer(
     rules: RiskRuleInput,
     customerId: Types.ObjectId,
-    asOf: Date,
+    date: Date,
   ): Promise<boolean> {
-    const cutoff = new Date(
-      asOf.getTime() - rules.inActiveDays * 24 * 60 * 60 * 1000,
-    );
+    const cutoff = getSinceDateByDays(date, rules.inActiveDays);
     const hasRecentTransaction =
       await this.customerActivityRepository.hasTransactionSince(
         customerId,

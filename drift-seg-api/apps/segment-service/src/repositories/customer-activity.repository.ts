@@ -1,7 +1,7 @@
+import { TransactionDocument } from '@app/common/models/transaction-schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { TransactionDocument } from '@app/common/models/transaction-schema';
 
 @Injectable()
 export class CustomerActivityRepository {
@@ -12,20 +12,20 @@ export class CustomerActivityRepository {
 
   async hasTransactionSince(
     customerId: Types.ObjectId,
-    since: Date,
+    sinceDate: Date,
   ): Promise<boolean> {
     const doc = await this.transactionModel
-      .findOne({ customerId, occurredAt: { $gte: since } })
+      .findOne({ customerId, occurredAt: { $gte: sinceDate } })
       .lean(true);
     return doc !== null;
   }
 
   async getTotalSpentSince(
     customerId: Types.ObjectId,
-    since: Date,
+    sinceDate: Date,
   ): Promise<number> {
     const result = await this.transactionModel.aggregate<{ total: number }>([
-      { $match: { customerId, occurredAt: { $gte: since } } },
+      { $match: { customerId, occurredAt: { $gte: sinceDate } } },
       { $group: { _id: null, total: { $sum: '$amount' } } },
     ]);
 
@@ -34,10 +34,10 @@ export class CustomerActivityRepository {
 
   async hasTransactionBefore(
     customerId: Types.ObjectId,
-    before: Date,
+    beforeDate: Date,
   ): Promise<boolean> {
     const doc = await this.transactionModel
-      .findOne({ customerId, occurredAt: { $lt: before } })
+      .findOne({ customerId, occurredAt: { $lt: beforeDate } })
       .lean(true);
     return doc !== null;
   }
