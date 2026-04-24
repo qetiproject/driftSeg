@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Types } from 'mongoose';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentDeltaResponseDto,
@@ -13,6 +12,7 @@ import {
 } from '../repositories';
 import {
   getSegmentById,
+  getSegmentDeltas,
   getSegmentMembers,
   toSegmentResponse,
 } from '../utils/helper/segment.helper';
@@ -58,9 +58,10 @@ export class SegmentService {
   async getSegmentDeltas(
     segmentId: string,
   ): Promise<SegmentDeltaResponseDto[]> {
-    await this.segmentRepository.findOne({ _id: segmentId });
-    const deltas = await this.segmentDeltaRepository.findBySegmentId(
-      new Types.ObjectId(segmentId),
+    await getSegmentById(this.segmentRepository, segmentId);
+    const deltas = await getSegmentDeltas(
+      this.segmentDeltaRepository,
+      segmentId,
     );
 
     return deltas.map((delta) => ({

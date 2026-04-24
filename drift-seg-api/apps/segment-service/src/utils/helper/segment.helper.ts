@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import { SegmentResponseDto } from '../../dto/responses';
 import { SegmentDocument } from '../../models';
 import {
+  SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from '../../repositories';
@@ -35,4 +36,11 @@ export function getSegmentMembers(
   return segmentMembershipRepository.findActiveMembersBySegmentId(
     new Types.ObjectId(segmentId),
   );
+}
+
+export function getSegmentDeltas(
+  segmentDeltaRepository: SegmentDeltaRepository,
+  segmentId: string,
+) {
+  return segmentDeltaRepository.findBySegmentId(new Types.ObjectId(segmentId));
 }
