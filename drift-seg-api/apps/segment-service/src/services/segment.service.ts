@@ -48,6 +48,7 @@ export class SegmentService {
 
     return {
       segmentId: segment._id.toString(),
+      segmentkind: segment.rules.kind,
       totalMembers: members.length,
       members: members.map((member) => ({
         customerId: member.customerId.toString(),
