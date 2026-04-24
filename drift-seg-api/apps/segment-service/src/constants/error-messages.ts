@@ -14,4 +14,6 @@ export const SEGMENT_ERROR_MESSAGES = {
   RISK_SEGMENT_NO_DEPENDENCIES:
     'risk segment must not depend on other segments.',
   DUPLICATE_NAME: 'Segment with this name already exists.',
+  INVALID_SEGMENT_RULES_WARNING: (segmentId: string) =>
+    `Skipping segment segmentId=${segmentId} because rules are invalid`,
 } as const;

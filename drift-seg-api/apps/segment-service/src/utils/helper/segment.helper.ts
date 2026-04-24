@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { DAY_IN_MS } from '../../constants/constants';
 import { SegmentResponseDto } from '../../dto/responses';
 import { SegmentDocument } from '../../models';
 import {
@@ -43,4 +44,8 @@ export function getSegmentDeltas(
   segmentId: string,
 ) {
   return segmentDeltaRepository.findBySegmentId(new Types.ObjectId(segmentId));
+}
+
+export function getSinceDateByDays(date: Date, days: number): Date {
+  return new Date(date.getTime() - days * DAY_IN_MS);
 }

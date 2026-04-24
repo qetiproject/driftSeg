@@ -4,6 +4,7 @@ import {
 } from '@app/common/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { SEGMENT_ERROR_MESSAGES } from '../constants/error-messages';
 import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../dto';
 import {
   CustomerActivityRepository,
@@ -75,13 +76,15 @@ export class SegmentMembershipService {
     for (const segment of segments) {
       if (!this.isSegmentRuleInput(segment.rules)) {
         this.logger.warn(
-          `Skipping segment ${segment._id.toString()} because rules are invalid`,
+          SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
+            segment._id.toString(),
+          ),
         );
         continue;
       }
 
       const shouldBeMember =
-        await this.segmentRuleEvaluatorService.shoulCustomerMemberToSegment(
+        await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
           segment.rules,
           customerId,
         );
