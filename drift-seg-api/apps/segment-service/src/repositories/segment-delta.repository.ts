@@ -20,4 +20,8 @@ export class SegmentDeltaRepository extends AbstractRepository<SegmentDeltaDocum
   ): Promise<SegmentDeltaDocument[]> {
     return this.model.find({ segmentId }).sort({ computedAt: -1 }).lean(true);
   }
+
+  async deleteBySegmentId(segmentId: Types.ObjectId): Promise<void> {
+    await this.model.deleteMany({ segmentId });
+  }
 }

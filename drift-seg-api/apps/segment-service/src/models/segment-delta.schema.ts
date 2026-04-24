@@ -1,6 +1,7 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
+import { SegmentRuleKind } from '../dto';
 
 @Schema({
   versionKey: false,
@@ -16,6 +17,9 @@ export class SegmentDeltaDocument extends AbstractDocument {
   @Prop({ type: [SchemaTypes.ObjectId], required: true, default: [] })
   removedCustomerIds!: Types.ObjectId[];
 
+  @Prop({ type: String, enum: SegmentRuleKind, required: true })
+  segmentkind!: SegmentRuleKind;
+
   @Prop({ required: true })
   triggerEventId!: string;
 
@@ -26,6 +30,7 @@ export class SegmentDeltaDocument extends AbstractDocument {
   computedAt!: Date;
 }
 
-export const SegmentDeltaSchema = SchemaFactory.createForClass(SegmentDeltaDocument);
+export const SegmentDeltaSchema =
+  SchemaFactory.createForClass(SegmentDeltaDocument);
 
 SegmentDeltaSchema.index({ segmentId: 1, computedAt: -1 });

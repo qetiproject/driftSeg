@@ -1,5 +1,9 @@
 import { DatabaseModule } from '@app/common';
 import {
+  CustomerDocument,
+  CustomerSchema,
+} from '@app/common/models/customer-schema';
+import {
   TransactionDocument,
   TransactionSchema,
 } from '@app/common/models/transaction-schema';
@@ -19,12 +23,14 @@ import {
 import { SegmentDocument, SegmentSchema } from './models/segment.schema';
 import {
   CustomerActivityRepository,
+  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from './repositories';
 import {
   CreateSegmentFacade,
+  SegmentMembershipFacade,
   SegmentMembershipSchedulerService,
   SegmentMembershipService,
   SegmentRuleEvaluatorService,
@@ -40,6 +46,7 @@ import {
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
       { name: TransactionDocument.name, schema: TransactionSchema },
+      { name: CustomerDocument.name, schema: CustomerSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -55,6 +62,7 @@ import {
   providers: [
     SegmentService,
     CreateSegmentFacade,
+    SegmentMembershipFacade,
     SegmentMembershipService,
     SegmentMembershipSchedulerService,
     SegmentRuleEvaluatorService,
@@ -62,6 +70,7 @@ import {
     SegmentMembershipRepository,
     SegmentDeltaRepository,
     CustomerActivityRepository,
+    CustomerRepository,
   ],
 })
 export class SegmentServiceModule {}

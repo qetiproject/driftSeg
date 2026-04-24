@@ -66,4 +66,9 @@ export class CreateSegmentDto {
   @IsArray()
   @IsMongoId({ each: true })
   dependsOnSegmentIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  staticSegmentKind?: string;
 }
