@@ -57,13 +57,25 @@ export class CreateSegmentDto {
   @IsEnum(segmentRule.SegmentTypeEnum)
   type!: segmentRule.SegmentTypeEnum;
 
+  @ValidateIf(
+    (payload: CreateSegmentDto) =>
+      payload.type === segmentRule.SegmentTypeEnum.DYNAMIC,
+  )
   @IsObject()
   @ValidateNested()
   @Type(() => SegmentRulesDto)
-  rules!: SegmentRulesDto;
+  rules?: SegmentRulesDto;
 
   @IsOptional()
   @IsArray()
   @IsMongoId({ each: true })
   dependsOnSegmentIds?: string[];
+
+  @ValidateIf(
+    (payload: CreateSegmentDto) =>
+      payload.type === segmentRule.SegmentTypeEnum.STATIC,
+  )
+  @IsString()
+  @IsNotEmpty()
+  staticSegmentKind?: string;
 }

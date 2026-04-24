@@ -14,8 +14,13 @@ export class SegmentDocument extends AbstractDocument {
   @Prop({ type: String, enum: segmentRule.SegmentTypeEnum, required: true })
   type!: segmentRule.SegmentTypeEnum;
 
-  @Prop({ type: SchemaTypes.Mixed, required: true })
-  rules!: segmentRule.SegmentRuleInput;
+  @Prop({
+    type: SchemaTypes.Mixed,
+    required(this: SegmentDocument) {
+      return this.type === segmentRule.SegmentTypeEnum.DYNAMIC;
+    },
+  })
+  rules?: segmentRule.SegmentRuleInput;
 
   @Prop({ type: [SchemaTypes.ObjectId], default: [] })
   dependsOnSegmentIds!: Types.ObjectId[];
@@ -25,6 +30,14 @@ export class SegmentDocument extends AbstractDocument {
 
   @Prop()
   inActiveDays?: number;
+
+  @Prop({
+    type: SchemaTypes.Mixed,
+    required(this: SegmentDocument) {
+      return this.type === segmentRule.SegmentTypeEnum.STATIC;
+    },
+  })
+  staticSegmentKind?: string;
 }
 
 export const SegmentSchema = SchemaFactory.createForClass(SegmentDocument);

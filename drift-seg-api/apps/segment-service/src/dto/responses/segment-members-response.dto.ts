@@ -7,7 +7,8 @@ export interface SegmentMemberDto {
 
 export interface SegmentMembersResponseDto {
   segmentId: string;
-  segmentkind: SegmentRuleKind;
+  segmentkind?: SegmentRuleKind;
+  staticSegmentKind?: string;
   totalMembers: number;
   members: SegmentMemberDto[];
 }

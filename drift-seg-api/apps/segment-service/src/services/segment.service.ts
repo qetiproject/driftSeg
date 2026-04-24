@@ -55,7 +55,8 @@ export class SegmentService {
 
     return {
       segmentId: segment._id.toString(),
-      segmentkind: segment.rules.kind,
+      segmentkind: segment.rules?.kind,
+      staticSegmentKind: segment.staticSegmentKind,
       totalMembers: members.length,
       members: membersWithEmail,
     };

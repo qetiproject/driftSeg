@@ -4,7 +4,11 @@ import { SEGMENT_RULE } from '../../constants/segment-rule';
 import { CreateSegmentDto } from '../../dto/request';
 import { noDependenciesSegment } from './create-segment.helpers';
 
-export function validateActiveRules(payload: CreateSegmentDto): void {
+type DynamicCreatePayload = CreateSegmentDto & {
+  rules: NonNullable<CreateSegmentDto['rules']>;
+};
+
+export function validateActiveRules(payload: DynamicCreatePayload): void {
   if (payload.rules.days !== SEGMENT_RULE.ACTIVE_DAYS) {
     throw new BadRequestException(
       SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_REQUIRES_DAYS(
@@ -19,7 +23,7 @@ export function validateActiveRules(payload: CreateSegmentDto): void {
   );
 }
 
-export function validateVipRules(payload: CreateSegmentDto): number {
+export function validateVipRules(payload: DynamicCreatePayload): number {
   if (payload.rules.days !== SEGMENT_RULE.VIP_DAYS) {
     throw new BadRequestException(
       SEGMENT_ERROR_MESSAGES.VIP_REQUIRES_DAYS(SEGMENT_RULE.VIP_DAYS),
@@ -41,7 +45,7 @@ export function validateVipRules(payload: CreateSegmentDto): number {
   return minSpend;
 }
 
-export function validateRiskRules(payload: CreateSegmentDto): number {
+export function validateRiskRules(payload: DynamicCreatePayload): number {
   const inActiveDays = payload.rules.inActiveDays;
   if (inActiveDays !== SEGMENT_RULE.RISK_INACTIVE_DAYS) {
     throw new BadRequestException(
