@@ -6,6 +6,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
+import { SEGMENT_EVENTS_CLIENT } from '../constants/tokens';
 import { CreateTransactionDto, TransactionResponseDto } from '../dto';
 import { CustomerRepository, TransactionRepository } from '../repositories';
 import {
@@ -19,7 +20,7 @@ export class TransactionService {
   constructor(
     private readonly transactionRepository: TransactionRepository,
     private readonly customerRepository: CustomerRepository,
-    @Inject('SEGMENT_EVENTS_CLIENT')
+    @Inject(SEGMENT_EVENTS_CLIENT)
     private readonly segmentEventsClient: ClientProxy,
   ) {}
 

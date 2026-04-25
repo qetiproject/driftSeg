@@ -13,7 +13,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import Redis from 'ioredis';
 import Joi from 'joi';
-import { SEGMENT_NOTIFICATIONS_QUEUE } from './constants/constants';
+import {
+  SEGMENT_NOTIFICATIONS_QUEUE,
+  SEGMENT_SERVICE_ENV_FILE_PATH,
+} from './constants/constants';
 import {
   SEGMENT_NOTIFICATIONS_CLIENT,
   SEGMENT_REDIS_CLIENT,
@@ -60,7 +63,7 @@ import {
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'apps/segment-service/.env',
+      envFilePath: SEGMENT_SERVICE_ENV_FILE_PATH,
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().optional(),

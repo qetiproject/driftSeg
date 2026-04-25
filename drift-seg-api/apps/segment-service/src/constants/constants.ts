@@ -46,6 +46,7 @@ export const SEGMENT_BATCH_EVENT_ID_PREFIX = 'batch';
 export const SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX = 'segment-static-refresh';
 export const SEGMENT_EVENTS_QUEUE = 'segment.events.queue';
 export const SEGMENT_NOTIFICATIONS_QUEUE = 'segment.notifications.queue';
+export const SEGMENT_SERVICE_ENV_FILE_PATH = 'apps/segment-service/.env';
 export const SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY =
   'segment:pending-events:map';
 export const SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY =

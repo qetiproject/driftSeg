@@ -22,17 +22,17 @@ export class CustomerController {
   create(
     @Body() createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
-    return this.customerService.create(createCustomerDto);
+    return this.customerService.createCustomer(createCustomerDto);
   }
 
   @Get()
   findAll() {
-    return this.customerService.findAll();
+    return this.customerService.getCustomers();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.customerService.findOne(id);
+    return this.customerService.getCustomerById(id);
   }
 
   @Patch(':id')
@@ -40,11 +40,11 @@ export class CustomerController {
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    return this.customerService.update(id, updateCustomerDto);
+    return this.customerService.updateCustomer(id, updateCustomerDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.customerService.remove(id);
+    return this.customerService.removeCustomer(id);
   }
 }

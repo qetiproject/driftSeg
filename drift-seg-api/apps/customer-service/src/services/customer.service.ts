@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateCustomerDto, CustomerResponseDto } from '../dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerRepository } from '../repositories/customer.repository';
@@ -13,7 +14,7 @@ import { CustomerRepository } from '../repositories/customer.repository';
 export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
-  async create(
+  async createCustomer(
     createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
     await this.validateCreateCustomerDto(createCustomerDto);
@@ -34,31 +35,33 @@ export class CustomerService {
     } catch (err) {
       return;
     }
-    throw new UnprocessableEntityException('Email already exists.');
+    throw new UnprocessableEntityException(
+      CUSTOMER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS,
+    );
   }
 
-  async findAll(): Promise<CustomerResponseDto[]> {
+  async getCustomers(): Promise<CustomerResponseDto[]> {
     const customers = await this.customerRepository.find({});
     return customers.map((customer) => this.toCustomerResponse(customer));
   }
 
-  async findOne(_id: string) {
+  async getCustomerById(_id: string) {
     return await this.customerRepository.findOne({ _id });
   }
 
-  async update(_id: string, updateCustomerDto: UpdateCustomerDto) {
+  async updateCustomer(_id: string, updateCustomerDto: UpdateCustomerDto) {
     return await this.customerRepository.findOneAndUpdate(
       { _id },
       { $set: updateCustomerDto },
     );
   }
 
-  async remove(_id: string) {
+  async removeCustomer(_id: string) {
     const deletedCustomer = await this.customerRepository.findOneAndDelete({
       _id,
     });
     if (!deletedCustomer) {
-      throw new NotFoundException('Customer was not found');
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
     }
     return deletedCustomer;
   }

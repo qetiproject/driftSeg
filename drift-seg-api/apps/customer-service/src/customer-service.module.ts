@@ -9,6 +9,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Joi from 'joi';
+import {
+  CUSTOMER_SERVICE_ENV_FILE_PATH,
+  SEGMENT_EVENTS_QUEUE,
+} from './constants/constants';
+import { SEGMENT_EVENTS_CLIENT } from './constants/tokens';
 import { CustomerController } from './controllers/customer.controller';
 import { TransactionController } from './controllers/transaction.controller';
 import { TransactionRepository } from './repositories';
@@ -25,7 +30,7 @@ import { TransactionService } from './services/transaction.service';
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'apps/customer-service/.env',
+      envFilePath: CUSTOMER_SERVICE_ENV_FILE_PATH,
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         RABBITMQ_URI: Joi.string().required(),
@@ -33,14 +38,14 @@ import { TransactionService } from './services/transaction.service';
     }),
     ClientsModule.registerAsync([
       {
-        name: 'SEGMENT_EVENTS_CLIENT',
+        name: SEGMENT_EVENTS_CLIENT,
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
           transport: Transport.RMQ,
           options: {
             urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
-            queue: 'segment.events.queue',
+            queue: SEGMENT_EVENTS_QUEUE,
             queueOptions: {
               durable: true,
             },
