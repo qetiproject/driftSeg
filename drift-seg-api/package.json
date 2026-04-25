@@ -7,6 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build customer && nest build segment",
+    "compodoc": "compodoc -p tsconfig.json -d docs/compodoc --name \"Drift Seg API\" --serve",
+    "compodoc:generate": "compodoc -p tsconfig.json -d docs/compodoc --name \"Drift Seg API\"",
+    "compodoc:serve": "compodoc -s -d docs/compodoc",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -47,6 +50,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.31",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",

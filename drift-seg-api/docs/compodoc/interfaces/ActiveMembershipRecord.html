@@ -1,0 +1,681 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Drift Seg API</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">Drift Seg API</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  ActiveMembershipRecord</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>apps/segment/src/utils/helper/segment-membership.facade.helper.ts</code>
+        </p>
+
+
+
+
+        <section data-compodoc="block-index">
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#_id" 
+>
+                                            _id
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#customerId" 
+>
+                                            customerId
+                                        </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section data-compodoc="block-properties">
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="_id"></a>
+                                        <span class="name "><b>_id</b>
+                                            <a href="#_id">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>_id:     <code>Types.ObjectId</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>    <code>Types.ObjectId</code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="customerId"></a>
+                                        <span class="name "><b>customerId</b>
+                                            <a href="#customerId">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>customerId:     <code>Types.ObjectId</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>    <code>Types.ObjectId</code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Logger } from &#x27;@nestjs/common&#x27;;
+import { Types } from &#x27;mongoose&#x27;;
+import {
+  ADD_CUSTOMER_TO_SEGMENT,
+  REMOVE_CUSTOMER_FROM_SEGMENT,
+} from &#x27;../../constants/constants&#x27;;
+import { SEGMENT_ERROR_MESSAGES } from &#x27;../../constants/error-messages&#x27;;
+import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from &#x27;../../dto&#x27;;
+import { SegmentDocument } from &#x27;../../models&#x27;;
+import { SegmentMembershipTrigger } from &#x27;../../models/segment-trigger.interface&#x27;;
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+} from &#x27;../../repositories&#x27;;
+import { SegmentRuleEvaluatorService } from &#x27;../../services/segment-rule-evaluator.service&#x27;;
+import { isSegmentRuleInput } from &#x27;./segment-membership.helper&#x27;;
+
+interface ActiveMembershipRecord {
+  _id: Types.ObjectId;
+  customerId: Types.ObjectId;
+}
+
+interface SegmentMembershipFacadeDeps {
+  logger: Logger;
+  segmentRuleEvaluatorService: SegmentRuleEvaluatorService;
+  segmentMembershipRepository: SegmentMembershipRepository;
+  segmentDeltaRepository: SegmentDeltaRepository;
+}
+
+export function getDynamicSegments(
+  segments: SegmentDocument[],
+): SegmentDocument[] {
+  return segments.filter(
+    (segment) &#x3D;&gt;
+      segment.type &#x3D;&#x3D;&#x3D; SegmentTypeEnum.DYNAMIC &amp;&amp;
+      isSegmentRuleInput(segment.rules),
+  );
+}
+
+export function buildSegmentByIdMap(
+  segments: SegmentDocument[],
+): Map&lt;string, SegmentDocument&gt; {
+  return new Map(segments.map((segment) &#x3D;&gt; [segment._id.toString(), segment]));
+}
+
+export function buildDependentSegmentMap(
+  segments: SegmentDocument[],
+): Map&lt;string, string[]&gt; {
+  const dependentBySegmentId &#x3D; new Map&lt;string, string[]&gt;();
+  for (const segment of segments) {
+    for (const dependencyId of segment.dependsOnSegmentIds ?? []) {
+      const key &#x3D; dependencyId.toString();
+      const dependents &#x3D; dependentBySegmentId.get(key) ?? [];
+      dependents.push(segment._id.toString());
+      dependentBySegmentId.set(key, dependents);
+    }
+  }
+  return dependentBySegmentId;
+}
+
+export function enqueueDependentDynamicSegments(
+  segmentId: string,
+  dependentBySegmentId: Map&lt;string, string[]&gt;,
+  dynamicById: Map&lt;string, SegmentDocument&gt;,
+  queue: string[],
+  queued: Set&lt;string&gt;,
+): void {
+  const dependentIds &#x3D; dependentBySegmentId.get(segmentId) ?? [];
+  for (const dependentId of dependentIds) {
+    if (!dynamicById.has(dependentId) || queued.has(dependentId)) {
+      continue;
+    }
+    queue.push(dependentId);
+    queued.add(dependentId);
+  }
+}
+
+export async function processDynamicSegmentQueue(
+  dynamicSegments: SegmentDocument[],
+  dynamicById: Map&lt;string, SegmentDocument&gt;,
+  dependentBySegmentId: Map&lt;string, string[]&gt;,
+  customerId: Types.ObjectId,
+  trigger: SegmentMembershipTrigger,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;void&gt; {
+  const queue &#x3D; dynamicSegments.map((segment) &#x3D;&gt; segment._id.toString());
+  const queued &#x3D; new Set(queue);
+
+  while (queue.length &gt; 0) {
+    const segmentId &#x3D; queue.shift();
+    if (!segmentId) {
+      continue;
+    }
+    queued.delete(segmentId);
+
+    const segment &#x3D; dynamicById.get(segmentId);
+    if (!segment) {
+      continue;
+    }
+
+    const hasChanged &#x3D; await reconcileSegmentMembershipForCustomer(
+      segment,
+      customerId,
+      trigger,
+      deps,
+    );
+    if (!hasChanged) {
+      continue;
+    }
+
+    enqueueDependentDynamicSegments(
+      segmentId,
+      dependentBySegmentId,
+      dynamicById,
+      queue,
+      queued,
+    );
+  }
+}
+
+export async function reconcileSegmentMembershipForCustomer(
+  segment: SegmentDocument,
+  customerId: Types.ObjectId,
+  trigger: SegmentMembershipTrigger,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;boolean&gt; {
+  if (!isSegmentRuleInput(segment.rules)) {
+    deps.logger.warn(
+      SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
+        segment._id.toString(),
+      ),
+    );
+    return false;
+  }
+
+  const matchesRule &#x3D;
+    await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+      segment.rules,
+      customerId,
+    );
+  const dependenciesSatisfied &#x3D; await satisfiesDependencies(
+    segment,
+    customerId,
+    deps,
+  );
+  const shouldBeMember &#x3D; matchesRule &amp;&amp; dependenciesSatisfied;
+  const currentMembership &#x3D;
+    await deps.segmentMembershipRepository.findActiveMembership(
+      segment._id,
+      customerId,
+    );
+
+  if (shouldBeMember &amp;&amp; !currentMembership) {
+    await addCustomerToSegment(
+      segment._id,
+      segment.rules.kind,
+      customerId,
+      trigger,
+      deps,
+    );
+    return true;
+  }
+
+  if (!shouldBeMember &amp;&amp; currentMembership) {
+    await removeCustomerFromSegment(
+      currentMembership._id,
+      segment._id,
+      segment.rules.kind,
+      customerId,
+      trigger,
+      deps,
+    );
+    return true;
+  }
+
+  return false;
+}
+
+export async function satisfiesDependencies(
+  segment: SegmentDocument,
+  customerId: Types.ObjectId,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;boolean&gt; {
+  const dependencyIds &#x3D; segment.dependsOnSegmentIds ?? [];
+  if (dependencyIds.length &#x3D;&#x3D;&#x3D; 0) {
+    return true;
+  }
+
+  for (const dependencyId of dependencyIds) {
+    const membership &#x3D;
+      await deps.segmentMembershipRepository.findActiveMembership(
+        dependencyId,
+        customerId,
+      );
+    if (!membership) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export async function collectEligibleCustomerIds(
+  segment: SegmentDocument,
+  customerIds: Types.ObjectId[],
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;Types.ObjectId[]&gt; {
+  const eligibleCustomerIds: Types.ObjectId[] &#x3D; [];
+  for (const customerId of customerIds) {
+    const shouldBeMember &#x3D;
+      await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+        segment.rules as SegmentRuleInput,
+        customerId,
+      );
+    if (shouldBeMember) {
+      eligibleCustomerIds.push(customerId);
+    }
+  }
+  return eligibleCustomerIds;
+}
+
+export async function syncStaticMembershipChanges(
+  segmentId: Types.ObjectId,
+  eligibleCustomerIds: Types.ObjectId[],
+  activeMemberships: ActiveMembershipRecord[],
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;{
+  addedCustomerIds: Types.ObjectId[];
+  removedCustomerIds: Types.ObjectId[];
+}&gt; {
+  const activeByCustomerId &#x3D; new Map(
+    activeMemberships.map((membership) &#x3D;&gt; [
+      membership.customerId.toString(),
+      membership,
+    ]),
+  );
+  const eligibleIdSet &#x3D; new Set(
+    eligibleCustomerIds.map((customerId) &#x3D;&gt; customerId.toString()),
+  );
+
+  const addedCustomerIds &#x3D; await addMissingStaticMembers(
+    segmentId,
+    eligibleCustomerIds,
+    activeByCustomerId,
+    deps,
+  );
+  const removedCustomerIds &#x3D; await removeOutdatedStaticMembers(
+    activeMemberships,
+    eligibleIdSet,
+    deps,
+  );
+
+  return { addedCustomerIds, removedCustomerIds };
+}
+
+export async function addMissingStaticMembers(
+  segmentId: Types.ObjectId,
+  eligibleCustomerIds: Types.ObjectId[],
+  activeByCustomerId: Map&lt;string, unknown&gt;,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;Types.ObjectId[]&gt; {
+  const addedCustomerIds: Types.ObjectId[] &#x3D; [];
+  for (const customerId of eligibleCustomerIds) {
+    if (activeByCustomerId.has(customerId.toString())) {
+      continue;
+    }
+    await deps.segmentMembershipRepository.create({
+      segmentId,
+      customerId,
+      isActive: true,
+    });
+    addedCustomerIds.push(customerId);
+  }
+  return addedCustomerIds;
+}
+
+export async function removeOutdatedStaticMembers(
+  activeMemberships: ActiveMembershipRecord[],
+  eligibleIdSet: Set&lt;string&gt;,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;Types.ObjectId[]&gt; {
+  const removedCustomerIds: Types.ObjectId[] &#x3D; [];
+  for (const activeMembership of activeMemberships) {
+    if (eligibleIdSet.has(activeMembership.customerId.toString())) {
+      continue;
+    }
+    await deps.segmentMembershipRepository.deactivateMembership(
+      activeMembership._id,
+    );
+    removedCustomerIds.push(activeMembership.customerId);
+  }
+  return removedCustomerIds;
+}
+
+export async function addCustomerToSegment(
+  segmentId: Types.ObjectId,
+  segmentkind: SegmentRuleKind,
+  customerId: Types.ObjectId,
+  trigger: SegmentMembershipTrigger,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;void&gt; {
+  await deps.segmentMembershipRepository.create({
+    segmentId,
+    customerId,
+    isActive: true,
+  });
+  await deps.segmentDeltaRepository.create({
+    segmentId,
+    segmentkind,
+    addedCustomerIds: [customerId],
+    removedCustomerIds: [],
+    triggerEventId: trigger.eventId,
+    triggerEventType: trigger.eventType,
+    computedAt: new Date(),
+  });
+  deps.logger.log(
+    ADD_CUSTOMER_TO_SEGMENT(customerId.toString(), segmentId.toString()),
+  );
+}
+
+export async function removeCustomerFromSegment(
+  membershipId: Types.ObjectId,
+  segmentId: Types.ObjectId,
+  segmentkind: SegmentRuleKind,
+  customerObjectId: Types.ObjectId,
+  trigger: SegmentMembershipTrigger,
+  deps: SegmentMembershipFacadeDeps,
+): Promise&lt;void&gt; {
+  await deps.segmentMembershipRepository.deactivateMembership(membershipId);
+  await deps.segmentDeltaRepository.create({
+    segmentId,
+    segmentkind,
+    addedCustomerIds: [],
+    removedCustomerIds: [customerObjectId],
+    triggerEventId: trigger.eventId,
+    triggerEventType: trigger.eventType,
+    computedAt: new Date(),
+  });
+  deps.logger.log(
+    REMOVE_CUSTOMER_FROM_SEGMENT(
+      customerObjectId.toString(),
+      segmentId.toString(),
+    ),
+  );
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'ActiveMembershipRecord.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
