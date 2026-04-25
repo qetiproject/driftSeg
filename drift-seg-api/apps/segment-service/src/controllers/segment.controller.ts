@@ -1,6 +1,20 @@
 import * as dto from '@app/common/dto';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import {
+  CAMPAIGN_DELTA_EVENT_CONSUMED_LOG,
+  SEGMENT_CAMPAIGN_DELTA_EVENT,
+  SEGMENT_UI_DELTA_EVENT,
+  UI_DELTA_EVENT_CONSUMED_LOG,
+} from '../constants/constants';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentDeltaResponseDto,
@@ -11,6 +25,8 @@ import { SegmentMembershipService, SegmentService } from '../services';
 
 @Controller('segments')
 export class SegmentController {
+  private readonly logger = new Logger(SegmentController.name);
+
   constructor(
     private readonly segmentService: SegmentService,
     private readonly segmentMembershipService: SegmentMembershipService,
@@ -51,9 +67,19 @@ export class SegmentController {
   }
 
   @EventPattern(dto.TRANSACTION_CREATED_EVENT)
-  async tansactionCreatedEvent(
+  tansactionCreatedEvent(
     @Payload() event: dto.TransactionCreatedEvent,
   ): Promise<void> {
-    await this.segmentMembershipService.processTransactionCreated(event);
+    return this.segmentMembershipService.transactionCreated(event);
+  }
+
+  @EventPattern(SEGMENT_UI_DELTA_EVENT)
+  handleUiDeltaEvent(@Payload() event: unknown): void {
+    this.logger.debug(UI_DELTA_EVENT_CONSUMED_LOG(JSON.stringify(event)));
+  }
+
+  @EventPattern(SEGMENT_CAMPAIGN_DELTA_EVENT)
+  handleCampaignDeltaEvent(@Payload() event: unknown): void {
+    this.logger.debug(CAMPAIGN_DELTA_EVENT_CONSUMED_LOG(JSON.stringify(event)));
   }
 }

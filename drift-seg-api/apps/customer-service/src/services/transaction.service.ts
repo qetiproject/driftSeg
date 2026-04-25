@@ -1,6 +1,6 @@
 import {
-  TRANSACTION_CREATED_EVENT,
-  TransactionCreatedEvent,
+    TRANSACTION_CREATED_EVENT,
+    TransactionCreatedEvent,
 } from '@app/common/dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -9,9 +9,9 @@ import { Types } from 'mongoose';
 import { CreateTransactionDto, TransactionResponseDto } from '../dto';
 import { CustomerRepository, TransactionRepository } from '../repositories';
 import {
-  existCustomerById,
-  toTransactionResponse,
-  updateCustomerAfterTransaction,
+    existCustomerById,
+    toTransactionResponse,
+    updateCustomerAfterTransaction,
 } from '../utils/transaction/transacton.helper';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class TransactionService {
       occurredAt: new Date().toISOString(),
       data: {
         transactionId: created._id.toString(),
-        customerMongoId: createTransactionDto.customerId,
+        customerId: createTransactionDto.customerId,
         amount: createTransactionDto.amount,
         transactionOccurredAt: created.occurredAt.toISOString(),
         totalSpent: updatedCustomer.totalSpent,

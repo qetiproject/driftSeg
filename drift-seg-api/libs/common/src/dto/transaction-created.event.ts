@@ -6,7 +6,7 @@ export interface TransactionCreatedEvent {
   occurredAt: string;
   data: {
     transactionId: string;
-    customerMongoId: string;
+    customerId: string;
     amount: number;
     transactionOccurredAt: string;
     totalSpent: number;
