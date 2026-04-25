@@ -17,3 +17,5 @@ export const SCHEDULER_EVENT_TYPE = 'segment.recompute.scheduler';
 export const SEGMENT_BATCH_RECOMPUTE_EVENT = 'segment.membership.batch.recomputed';
 export const SEGMENT_UI_DELTA_EVENT = 'segment.ui.delta.changed';
 export const SEGMENT_CAMPAIGN_DELTA_EVENT = 'segment.campaign.delta.changed';
+export const SEGMENT_EVENTS_QUEUE = 'segment.events.queue';
+export const SEGMENT_NOTIFICATIONS_QUEUE = 'segment.notifications.queue';

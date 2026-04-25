@@ -10,6 +10,7 @@ import {
   SEGMENT_EVENT_BATCH_SIZE,
   SEGMENT_RECOMPUTE_CHUNK_SIZE,
 } from '../constants/constants';
+import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
 import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
@@ -28,7 +29,7 @@ export class SegmentMembershipService {
     private readonly segmentEventBufferService: SegmentEventBufferService,
     private readonly segmentDeltaNotifierService: SegmentDeltaNotifierService,
     private readonly segmentSearchIndexerService: SegmentSearchIndexerService,
-    @Inject('SEGMENT_NOTIFICATIONS_CLIENT')
+    @Inject(SEGMENT_NOTIFICATIONS_CLIENT)
     private readonly notificationsClient: ClientProxy,
   ) {}
 

@@ -12,6 +12,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import Joi from 'joi';
+import { SEGMENT_NOTIFICATIONS_QUEUE } from './constants/constants';
+import { SEGMENT_NOTIFICATIONS_CLIENT } from './constants/tokens';
 import { SegmentController } from './controllers';
 import {
   SegmentDeltaDocument,
@@ -65,14 +67,14 @@ import {
     }),
     ClientsModule.registerAsync([
       {
-        name: 'SEGMENT_NOTIFICATIONS_CLIENT',
+        name: SEGMENT_NOTIFICATIONS_CLIENT,
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
           transport: Transport.RMQ,
           options: {
             urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
-            queue: 'segment.notifications.queue',
+            queue: SEGMENT_NOTIFICATIONS_QUEUE,
             queueOptions: { durable: true },
           },
         }),

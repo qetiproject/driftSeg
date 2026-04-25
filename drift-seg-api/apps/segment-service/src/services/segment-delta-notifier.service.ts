@@ -4,6 +4,7 @@ import {
   SEGMENT_CAMPAIGN_DELTA_EVENT,
   SEGMENT_UI_DELTA_EVENT,
 } from '../constants/constants';
+import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDeltaRepository } from '../repositories';
 import { SegmentSearchIndexerService } from './segment-search-indexer.service';
 
@@ -12,7 +13,7 @@ export class SegmentDeltaNotifierService {
   constructor(
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
     private readonly segmentSearchIndexerService: SegmentSearchIndexerService,
-    @Inject('SEGMENT_NOTIFICATIONS_CLIENT')
+    @Inject(SEGMENT_NOTIFICATIONS_CLIENT)
     private readonly notificationsClient: ClientProxy,
   ) {}
 
