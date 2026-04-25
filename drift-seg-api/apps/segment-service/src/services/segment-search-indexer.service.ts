@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { FAILED_TO_INDEX_BATCH_EVENT_LOG } from '../constants/constants';
 
 @Injectable()
 export class SegmentSearchIndexerService {
@@ -8,7 +9,6 @@ export class SegmentSearchIndexerService {
 
   constructor(private readonly configService: ConfigService) {
     this.elasticsearchNode =
-     
       this.configService.get<string>('ELASTICSEARCH_NODE');
   }
 
@@ -31,7 +31,7 @@ export class SegmentSearchIndexerService {
         body: JSON.stringify(payload),
       });
     } catch (error) {
-      this.logger.warn(`Failed to index batch event: ${String(error)}`);
+      this.logger.warn(FAILED_TO_INDEX_BATCH_EVENT_LOG(String(error)));
     }
   }
 }

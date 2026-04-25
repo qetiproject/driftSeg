@@ -6,9 +6,13 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Types } from 'mongoose';
 import {
+  PROCESSED_MEMBERSHIP_BATCH_LOG,
+  SEGMENT_BATCH_EVENT_ID_PREFIX,
   SEGMENT_BATCH_RECOMPUTE_EVENT,
   SEGMENT_EVENT_BATCH_SIZE,
   SEGMENT_RECOMPUTE_CHUNK_SIZE,
+  SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
+  SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX,
 } from '../constants/constants';
 import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
@@ -45,37 +49,66 @@ export class SegmentMembershipService {
   }
 
   async flushPendingTransactionEvents(): Promise<void> {
-    const entries = this.segmentEventBufferService.takePendingBatch(
+    const pendingBatch = this.segmentEventBufferService.takePendingBatch(
       SEGMENT_EVENT_BATCH_SIZE,
     );
-    if (entries.length === 0) {
+    if (pendingBatch.length === 0) {
       return;
     }
 
-    for (const { customerId, trigger } of entries) {
+    await this.recomputeMembershipForPendingBatch(pendingBatch);
+    const pendingCustomers = this.segmentEventBufferService.pendingSize();
+    const payload = this.buildBatchRecomputePayload(
+      pendingBatch,
+      pendingCustomers,
+    );
+    await this.publishBatchSideEffects(pendingBatch, payload);
+    this.logProcessedBatch(pendingBatch.length, pendingCustomers);
+  }
+
+  private async recomputeMembershipForPendingBatch(
+    pendingBatch: PendingBatchEntry[],
+  ): Promise<void> {
+    for (const { customerId, trigger } of pendingBatch) {
       await this.segmentMembershipFacade.recomputeMembershipForCustomer(
         new Types.ObjectId(customerId),
         trigger,
       );
     }
+  }
 
-    const pendingCustomers = this.segmentEventBufferService.pendingSize();
-    const payload = {
-      eventId: `batch-${new Date().toISOString()}`,
+  private buildBatchRecomputePayload(
+    pendingBatch: PendingBatchEntry[],
+    pendingCustomers: number,
+  ): BatchRecomputePayload {
+    const occurredAt = new Date().toISOString();
+    return {
+      eventId: `${SEGMENT_BATCH_EVENT_ID_PREFIX}-${occurredAt}`,
       eventType: SEGMENT_BATCH_RECOMPUTE_EVENT,
-      processedCustomers: entries.length,
-      customerIds: entries.map(({ customerId }) => customerId),
+      processedCustomers: pendingBatch.length,
+      customerIds: pendingBatch.map(({ customerId }) => customerId),
       pendingCustomers,
-      occurredAt: new Date().toISOString(),
+      occurredAt,
     };
+  }
+
+  private async publishBatchSideEffects(
+    pendingBatch: PendingBatchEntry[],
+    payload: BatchRecomputePayload,
+  ): Promise<void> {
     this.notificationsClient.emit(SEGMENT_BATCH_RECOMPUTE_EVENT, payload);
     await this.segmentSearchIndexerService.indexBatchRecomputeEvent(payload);
     await this.segmentDeltaNotifierService.publishAggregatedDeltaChangesByTriggerEventIds(
-      entries.map(({ trigger }) => trigger.eventId),
+      pendingBatch.map(({ trigger }) => trigger.eventId),
     );
+  }
 
+  private logProcessedBatch(
+    processedCustomers: number,
+    pendingCustomers: number,
+  ): void {
     this.logger.log(
-      `Processed membership batch size=${entries.length}, pending=${pendingCustomers}`,
+      PROCESSED_MEMBERSHIP_BATCH_LOG(processedCustomers, pendingCustomers),
     );
   }
 
@@ -104,9 +137,22 @@ export class SegmentMembershipService {
       segment,
       customerIds,
       {
-        eventId: `segment-static-refresh-${segment._id.toString()}-${new Date().toISOString()}`,
-        eventType: 'segment.static.manual_refresh',
+        eventId: `${SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX}-${segment._id.toString()}-${new Date().toISOString()}`,
+        eventType: SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
       },
     );
   }
+}
+
+type PendingBatchEntry = ReturnType<
+  SegmentEventBufferService['takePendingBatch']
+>[number];
+
+interface BatchRecomputePayload {
+  eventId: string;
+  eventType: string;
+  processedCustomers: number;
+  customerIds: string[];
+  pendingCustomers: number;
+  occurredAt: string;
 }
