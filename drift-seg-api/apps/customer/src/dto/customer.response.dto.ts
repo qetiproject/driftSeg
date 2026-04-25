@@ -1,10 +1,22 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
-export interface CustomerResponseDto {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  totalSpent: number;
-  status: CustomerStatusEnum;
+export class CustomerResponseDto {
+  @ApiProperty({ example: '680baf22a9d7a5946a2d06c1' })
+  _id!: string;
+
+  @ApiProperty({ example: 'John' })
+  firstName!: string;
+
+  @ApiProperty({ example: 'Doe' })
+  lastName!: string;
+
+  @ApiProperty({ example: 'john.doe@example.com' })
+  email!: string;
+
+  @ApiProperty({ example: 1420.5 })
+  totalSpent!: number;
+
+  @ApiProperty({ enum: CustomerStatusEnum, example: CustomerStatusEnum.ACTIVE })
+  status!: CustomerStatusEnum;
 }

@@ -97,7 +97,9 @@ export class SegmentService {
       return;
     }
 
-    await this.segmentMembershipService.refreshStaticSegmentMemberships(segment);
+    await this.segmentMembershipService.refreshStaticSegmentMemberships(
+      segment,
+    );
   }
 
   async deleteSegmentCascade(segmentId: string): Promise<void> {

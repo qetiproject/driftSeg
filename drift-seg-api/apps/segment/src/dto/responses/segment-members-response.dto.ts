@@ -1,14 +1,27 @@
 import { SegmentRuleKind } from '../segment-rule';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export interface SegmentMemberDto {
-  customerId: string;
-  customerEmail: string;
+export class SegmentMemberDto {
+  @ApiProperty({ example: '680baf22a9d7a5946a2d06c1' })
+  customerId!: string;
+
+  @ApiProperty({ example: 'john.doe@example.com' })
+  customerEmail!: string;
 }
 
-export interface SegmentMembersResponseDto {
-  segmentId: string;
+export class SegmentMembersResponseDto {
+  @ApiProperty({ example: '680baf22a9d7a5946a2d06c2' })
+  segmentId!: string;
+
+  @ApiPropertyOptional({ enum: SegmentRuleKind })
   segmentkind?: SegmentRuleKind;
+
+  @ApiPropertyOptional({ example: 'manual_upload' })
   staticSegmentKind?: string;
-  totalMembers: number;
-  members: SegmentMemberDto[];
+
+  @ApiProperty({ example: 24 })
+  totalMembers!: number;
+
+  @ApiProperty({ type: [SegmentMemberDto] })
+  members!: SegmentMemberDto[];
 }

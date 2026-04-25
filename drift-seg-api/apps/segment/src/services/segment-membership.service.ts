@@ -72,6 +72,9 @@ export class SegmentMembershipService {
       segmentSearchIndexerService: this.segmentSearchIndexerService,
       segmentDeltaNotifierService: this.segmentDeltaNotifierService,
     });
+    await this.segmentPendingEventQueueService.removePendingEvents(
+      pendingBatch.map(({ customerId }) => customerId),
+    );
     logProcessedBatch(this.logger, pendingBatch.length, pendingCustomers);
   }
 

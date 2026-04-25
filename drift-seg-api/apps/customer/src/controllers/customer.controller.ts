@@ -8,6 +8,12 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
   CreateCustomerDto,
   CustomerResponseDto,
   UpdateCustomerDto,
@@ -15,10 +21,13 @@ import {
 import { CustomerService } from '../services/customer.service';
 
 @Controller('customers')
+@ApiTags('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
+  @ApiBody({ type: CreateCustomerDto })
+  @ApiCreatedResponse({ type: CustomerResponseDto })
   create(
     @Body() createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
@@ -26,16 +35,20 @@ export class CustomerController {
   }
 
   @Get()
-  findAll() {
+  @ApiOkResponse({ type: CustomerResponseDto, isArray: true })
+  findAll(): Promise<CustomerResponseDto[]> {
     return this.customerService.getCustomers();
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: CustomerResponseDto })
   findOne(@Param('id') id: string) {
     return this.customerService.getCustomerById(id);
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateCustomerDto })
+  @ApiOkResponse({ type: CustomerResponseDto })
   update(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -44,6 +57,7 @@ export class CustomerController {
   }
 
   @Delete(':id')
+  @ApiOkResponse({ type: CustomerResponseDto })
   remove(@Param('id') id: string) {
     return this.customerService.removeCustomer(id);
   }

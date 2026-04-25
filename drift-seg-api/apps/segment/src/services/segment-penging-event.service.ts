@@ -62,14 +62,20 @@ export class SegmentPendingEventQueueService implements OnModuleDestroy {
       SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY,
       ...customerIds,
     );
+    return this.mapCustomerIdsToPendingBatch(customerIds, triggersRaw);
+  }
 
+  async removePendingEvents(customerIds: string[]): Promise<void> {
+    if (customerIds.length === 0) {
+      return;
+    }
+
+    await this.ensureRedisConnected();
     await this.redisClient
       .multi()
       .zrem(SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY, ...customerIds)
       .hdel(SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY, ...customerIds)
       .exec();
-
-    return this.mapCustomerIdsToPendingBatch(customerIds, triggersRaw);
   }
 
   async getPendingCount(): Promise<number> {
