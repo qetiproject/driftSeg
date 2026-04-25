@@ -19,9 +19,8 @@ export class SegmentDeltaNotifierService {
   async publishAggregatedDeltaChangesByTriggerEventIds(
     triggerEventIds: string[],
   ): Promise<void> {
-    const deltas = await this.segmentDeltaRepository.findByTriggerEventIds(
-      triggerEventIds,
-    );
+    const deltas =
+      await this.segmentDeltaRepository.findByTriggerEventIds(triggerEventIds);
     const grouped = new Map<
       string,
       {
@@ -72,7 +71,7 @@ export class SegmentDeltaNotifierService {
         eventType: 'segment.delta.aggregated',
         processedCustomers:
           payload.addedCustomerIds.length + payload.removedCustomerIds.length,
-        customerMongoIds: [
+        customerIds: [
           ...payload.addedCustomerIds,
           ...payload.removedCustomerIds,
         ],

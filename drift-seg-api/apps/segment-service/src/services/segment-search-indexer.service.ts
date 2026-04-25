@@ -7,14 +7,16 @@ export class SegmentSearchIndexerService {
   private readonly elasticsearchNode?: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.elasticsearchNode = this.configService.get<string>('ELASTICSEARCH_NODE');
+    this.elasticsearchNode =
+     
+      this.configService.get<string>('ELASTICSEARCH_NODE');
   }
 
   async indexBatchRecomputeEvent(payload: {
     eventId: string;
     eventType: string;
     processedCustomers: number;
-    customerMongoIds: string[];
+    customerIds: string[];
     pendingCustomers: number;
     occurredAt: string;
   }): Promise<void> {

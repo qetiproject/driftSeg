@@ -9,32 +9,29 @@ interface PendingTrigger {
 export class SegmentEventBufferService implements OnModuleDestroy {
   private readonly pendingEventMap = new Map<string, PendingTrigger>();
 
-  async upsertPendingEvent(
-    customerMongoId: string,
-    trigger: PendingTrigger,
-  ): Promise<void> {
-    this.pendingEventMap.set(customerMongoId, trigger);
+  setPendingEvent(customerId: string, trigger: PendingTrigger): void {
+    this.pendingEventMap.set(customerId, trigger);
   }
 
-  async takePendingBatch(
+  takePendingBatch(
     limit: number,
-  ): Promise<Array<{ customerMongoId: string; trigger: PendingTrigger }>> {
+  ): Array<{ customerId: string; trigger: PendingTrigger }> {
     const entries = Array.from(this.pendingEventMap.entries()).slice(0, limit);
     if (entries.length === 0) {
       return [];
     }
 
-    for (const [customerMongoId] of entries) {
-      this.pendingEventMap.delete(customerMongoId);
+    for (const [customerId] of entries) {
+      this.pendingEventMap.delete(customerId);
     }
 
-    return entries.map(([customerMongoId, trigger]) => ({
-      customerMongoId,
+    return entries.map(([customerId, trigger]) => ({
+      customerId,
       trigger,
     }));
   }
 
-  async pendingSize(): Promise<number> {
+  pendingSize(): number {
     return this.pendingEventMap.size;
   }
 

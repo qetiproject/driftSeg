@@ -13,8 +13,8 @@ import {
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
 import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
-import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
+import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
 import { SegmentEventBufferService } from './segment-event-buffer.service';
 import { SegmentSearchIndexerService } from './segment-search-indexer.service';
 
@@ -32,43 +32,38 @@ export class SegmentMembershipService {
     private readonly notificationsClient: ClientProxy,
   ) {}
 
-  async processTransactionCreated(
-    event: TransactionCreatedEvent,
-  ): Promise<void> {
+  transactionCreated(event: TransactionCreatedEvent): void {
     if (event.eventType !== TRANSACTION_CREATED_EVENT) {
       return;
     }
 
-    await this.segmentEventBufferService.upsertPendingEvent(
-      event.data.customerMongoId,
-      {
-        eventId: event.eventId,
-        eventType: event.eventType,
-      },
-    );
+    this.segmentEventBufferService.setPendingEvent(event.data.customerId, {
+      eventId: event.eventId,
+      eventType: event.eventType,
+    });
   }
 
   async flushPendingTransactionEvents(): Promise<void> {
-    const entries = await this.segmentEventBufferService.takePendingBatch(
+    const entries = this.segmentEventBufferService.takePendingBatch(
       SEGMENT_EVENT_BATCH_SIZE,
     );
     if (entries.length === 0) {
       return;
     }
 
-    for (const { customerMongoId, trigger } of entries) {
+    for (const { customerId, trigger } of entries) {
       await this.segmentMembershipFacade.recomputeMembershipForCustomer(
-        new Types.ObjectId(customerMongoId),
+        new Types.ObjectId(customerId),
         trigger,
       );
     }
 
-    const pendingCustomers = await this.segmentEventBufferService.pendingSize();
+    const pendingCustomers = this.segmentEventBufferService.pendingSize();
     const payload = {
       eventId: `batch-${new Date().toISOString()}`,
       eventType: SEGMENT_BATCH_RECOMPUTE_EVENT,
       processedCustomers: entries.length,
-      customerMongoIds: entries.map(({ customerMongoId }) => customerMongoId),
+      customerIds: entries.map(({ customerId }) => customerId),
       pendingCustomers,
       occurredAt: new Date().toISOString(),
     };

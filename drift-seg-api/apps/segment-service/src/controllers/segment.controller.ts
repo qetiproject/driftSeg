@@ -1,5 +1,13 @@
 import * as dto from '@app/common/dto';
-import { Body, Controller, Delete, Get, Logger, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import {
   SEGMENT_CAMPAIGN_DELTA_EVENT,
@@ -57,10 +65,8 @@ export class SegmentController {
   }
 
   @EventPattern(dto.TRANSACTION_CREATED_EVENT)
-  async tansactionCreatedEvent(
-    @Payload() event: dto.TransactionCreatedEvent,
-  ): Promise<void> {
-    await this.segmentMembershipService.processTransactionCreated(event);
+  tansactionCreatedEvent(@Payload() event: dto.TransactionCreatedEvent): void {
+    return this.segmentMembershipService.transactionCreated(event);
   }
 
   @EventPattern(SEGMENT_UI_DELTA_EVENT)
@@ -70,6 +76,8 @@ export class SegmentController {
 
   @EventPattern(SEGMENT_CAMPAIGN_DELTA_EVENT)
   handleCampaignDeltaEvent(@Payload() event: unknown): void {
-    this.logger.debug(`Campaign delta event consumed: ${JSON.stringify(event)}`);
+    this.logger.debug(
+      `Campaign delta event consumed: ${JSON.stringify(event)}`,
+    );
   }
 }
