@@ -24,6 +24,12 @@ export const CAMPAIGN_DELTA_EVENT_CONSUMED_LOG = (event: string): string =>
   `Campaign delta event consumed: ${event}`;
 export const FAILED_TO_INDEX_BATCH_EVENT_LOG = (error: string): string =>
   `Failed to index batch event: ${error}`;
+export const ELASTICSEARCH_NODE_ENV_KEY = 'ELASTICSEARCH_NODE';
+export const SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH =
+  '/segment-membership-events/_doc';
+export const HTTP_POST_METHOD = 'POST';
+export const CONTENT_TYPE_HEADER_KEY = 'content-type';
+export const APPLICATION_JSON_CONTENT_TYPE = 'application/json';
 export const SCHEDULER_EVENT_TYPE = 'segment.recompute.scheduler';
 export const SEGMENT_BATCH_RECOMPUTE_EVENT =
   'segment.membership.batch.recomputed';

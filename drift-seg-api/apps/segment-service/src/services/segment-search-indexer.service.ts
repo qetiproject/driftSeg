@@ -1,6 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FAILED_TO_INDEX_BATCH_EVENT_LOG } from '../constants/constants';
+import {
+  APPLICATION_JSON_CONTENT_TYPE,
+  CONTENT_TYPE_HEADER_KEY,
+  ELASTICSEARCH_NODE_ENV_KEY,
+  FAILED_TO_INDEX_BATCH_EVENT_LOG,
+  HTTP_POST_METHOD,
+  SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH,
+} from '../constants/constants';
 
 @Injectable()
 export class SegmentSearchIndexerService {
@@ -8,8 +15,9 @@ export class SegmentSearchIndexerService {
   private readonly elasticsearchNode?: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.elasticsearchNode =
-      this.configService.get<string>('ELASTICSEARCH_NODE');
+    this.elasticsearchNode = this.configService.get<string>(
+      ELASTICSEARCH_NODE_ENV_KEY,
+    );
   }
 
   async indexBatchRecomputeEvent(payload: {
@@ -25,11 +33,14 @@ export class SegmentSearchIndexerService {
     }
 
     try {
-      await fetch(`${this.elasticsearchNode}/segment-membership-events/_doc`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      await fetch(
+        `${this.elasticsearchNode}${SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH}`,
+        {
+          method: HTTP_POST_METHOD,
+          headers: { [CONTENT_TYPE_HEADER_KEY]: APPLICATION_JSON_CONTENT_TYPE },
+          body: JSON.stringify(payload),
+        },
+      );
     } catch (error) {
       this.logger.warn(FAILED_TO_INDEX_BATCH_EVENT_LOG(String(error)));
     }
