@@ -67,7 +67,9 @@ export class SegmentController {
   }
 
   @EventPattern(dto.TRANSACTION_CREATED_EVENT)
-  tansactionCreatedEvent(@Payload() event: dto.TransactionCreatedEvent): void {
+  tansactionCreatedEvent(
+    @Payload() event: dto.TransactionCreatedEvent,
+  ): Promise<void> {
     return this.segmentMembershipService.transactionCreated(event);
   }
 

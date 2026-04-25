@@ -20,7 +20,7 @@ import {
 } from '../utils/helper/transaction-event.helper';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
 import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
-import { SegmentEventBufferService } from './segment-event-buffer.service';
+import { SegmentPendingEventQueueService } from './segment-penging-event.service';
 import { SegmentSearchIndexerService } from './segment-search-indexer.service';
 
 @Injectable()
@@ -30,28 +30,32 @@ export class SegmentMembershipService {
   constructor(
     private readonly customerActivityRepository: CustomerActivityRepository,
     private readonly segmentMembershipFacade: SegmentMembershipFacade,
-    private readonly segmentEventBufferService: SegmentEventBufferService,
+    private readonly segmentPendingEventQueueService: SegmentPendingEventQueueService,
     private readonly segmentDeltaNotifierService: SegmentDeltaNotifierService,
     private readonly segmentSearchIndexerService: SegmentSearchIndexerService,
     @Inject(SEGMENT_NOTIFICATIONS_CLIENT)
     private readonly notificationsClient: ClientProxy,
   ) {}
 
-  transactionCreated(event: TransactionCreatedEvent): void {
+  async transactionCreated(event: TransactionCreatedEvent): Promise<void> {
     if (event.eventType !== TRANSACTION_CREATED_EVENT) {
       return;
     }
 
-    this.segmentEventBufferService.setPendingEvent(event.data.customerId, {
-      eventId: event.eventId,
-      eventType: event.eventType,
-    });
+    await this.segmentPendingEventQueueService.addPendingEvent(
+      event.data.customerId,
+      {
+        eventId: event.eventId,
+        eventType: event.eventType,
+      },
+    );
   }
 
   async flushPendingTransactionEvents(): Promise<void> {
-    const pendingBatch = this.segmentEventBufferService.takePendingBatch(
-      SEGMENT_EVENT_BATCH_SIZE,
-    );
+    const pendingBatch =
+      await this.segmentPendingEventQueueService.pendingBatch(
+        SEGMENT_EVENT_BATCH_SIZE,
+      );
     if (pendingBatch.length === 0) {
       return;
     }
@@ -60,7 +64,8 @@ export class SegmentMembershipService {
       pendingBatch,
       this.segmentMembershipFacade,
     );
-    const pendingCustomers = this.segmentEventBufferService.pendingSize();
+    const pendingCustomers =
+      await this.segmentPendingEventQueueService.getPendingCount();
     const payload = buildBatchRecomputePayload(pendingBatch, pendingCustomers);
     await publishBatchSideEffects(pendingBatch, payload, {
       notificationsClient: this.notificationsClient,

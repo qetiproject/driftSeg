@@ -11,9 +11,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
+import Redis from 'ioredis';
 import Joi from 'joi';
 import { SEGMENT_NOTIFICATIONS_QUEUE } from './constants/constants';
-import { SEGMENT_NOTIFICATIONS_CLIENT } from './constants/tokens';
+import {
+  SEGMENT_NOTIFICATIONS_CLIENT,
+  SEGMENT_REDIS_CLIENT,
+} from './constants/tokens';
 import { SegmentController } from './controllers';
 import {
   SegmentDeltaDocument,
@@ -34,12 +38,12 @@ import {
 import {
   CreateSegmentFacade,
   SegmentDeltaNotifierService,
-  SegmentEventBufferService,
   SegmentMembershipFacade,
   SegmentMembershipSchedulerService,
   SegmentMembershipService,
-  SegmentSearchIndexerService,
+  SegmentPendingEventQueueService,
   SegmentRuleEvaluatorService,
+  SegmentSearchIndexerService,
   SegmentService,
 } from './services';
 
@@ -61,7 +65,7 @@ import {
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().optional(),
         RABBITMQ_URI: Joi.string().required(),
-        REDIS_URL: Joi.string().optional(),
+        REDIS_URL: Joi.string().required(),
         ELASTICSEARCH_NODE: Joi.string().optional(),
       }),
     }),
@@ -83,13 +87,24 @@ import {
   ],
   controllers: [SegmentController],
   providers: [
+    {
+      provide: SEGMENT_REDIS_CLIENT,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): Redis => {
+        const redisUrl = configService.getOrThrow<string>('REDIS_URL');
+        return new Redis(redisUrl, {
+          lazyConnect: true,
+          maxRetriesPerRequest: 3,
+          enableReadyCheck: true,
+        });
+      },
+    },
     SegmentService,
     CreateSegmentFacade,
     SegmentMembershipFacade,
     SegmentMembershipService,
     SegmentMembershipSchedulerService,
     SegmentDeltaNotifierService,
-    SegmentEventBufferService,
     SegmentSearchIndexerService,
     SegmentRuleEvaluatorService,
     SegmentRepository,
@@ -97,6 +112,7 @@ import {
     SegmentDeltaRepository,
     CustomerActivityRepository,
     CustomerRepository,
+    SegmentPendingEventQueueService,
   ],
 })
 export class SegmentServiceModule {}

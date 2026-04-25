@@ -24,6 +24,9 @@ export const CAMPAIGN_DELTA_EVENT_CONSUMED_LOG = (event: string): string =>
   `Campaign delta event consumed: ${event}`;
 export const FAILED_TO_INDEX_BATCH_EVENT_LOG = (error: string): string =>
   `Failed to index batch event: ${error}`;
+export const FAILED_TO_PARSE_PENDING_TRIGGER_LOG = (
+  customerId: string,
+): string => `Failed to parse pending trigger for customerId=${customerId}`;
 export const ELASTICSEARCH_NODE_ENV_KEY = 'ELASTICSEARCH_NODE';
 export const SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH =
   '/segment-membership-events/_doc';
@@ -41,3 +44,7 @@ export const SEGMENT_BATCH_EVENT_ID_PREFIX = 'batch';
 export const SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX = 'segment-static-refresh';
 export const SEGMENT_EVENTS_QUEUE = 'segment.events.queue';
 export const SEGMENT_NOTIFICATIONS_QUEUE = 'segment.notifications.queue';
+export const SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY =
+  'segment:pending-events:map';
+export const SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY =
+  'segment:pending-events:index';
