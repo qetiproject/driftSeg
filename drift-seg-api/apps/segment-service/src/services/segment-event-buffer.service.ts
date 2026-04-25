@@ -1,9 +1,5 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
-
-interface PendingTrigger {
-  eventId: string;
-  eventType: string;
-}
+import { PendingTrigger } from '../models/interfaces/segment.interface';
 
 @Injectable()
 export class SegmentEventBufferService implements OnModuleDestroy {
