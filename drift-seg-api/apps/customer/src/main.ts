@@ -1,10 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { CustomerServiceModule } from './customer-service.module';
+import { CustomerModule } from './customer.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CustomerServiceModule);
+  const app = await NestFactory.create(CustomerModule);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

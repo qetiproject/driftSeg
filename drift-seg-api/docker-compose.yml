@@ -1,13 +1,13 @@
 services:
-  customer-service:
+  customer:
     build:
       context: .
-      dockerfile: ./apps/customer-service/Dockerfile
+      dockerfile: ./apps/customer/Dockerfile
       target: development
-    container_name: drift-seg-customer-service
+    container_name: drift-seg-customer
     command: pnpm run start:customer:dev
     env_file:
-      - ./apps/customer-service/.env
+      - ./apps/customer/.env
     depends_on:
       - mongo
       - rabbitmq
@@ -17,15 +17,15 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
 
-  segment-service:
+  segment:
     build:
       context: .
-      dockerfile: ./apps/segment-service/Dockerfile
+      dockerfile: ./apps/segment/Dockerfile
       target: development
-    container_name: drift-seg-segment-service
+    container_name: drift-seg-segment
     command: pnpm run start:segment:dev
     env_file:
-      - ./apps/segment-service/.env
+      - ./apps/segment/.env
     depends_on:
       - mongo
       - rabbitmq

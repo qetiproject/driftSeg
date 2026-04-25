@@ -11,10 +11,10 @@ RUN npm install -g pnpm
 
 RUN pnpm install
 
-COPY apps/customer-service apps/customer-service
+COPY apps/customer apps/customer
 COPY libs libs
 
-RUN pnpm exec nest build customer-service
+RUN pnpm exec nest build customer
 
 FROM node:alpine AS production
 
@@ -32,4 +32,4 @@ RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/customer-service/main"]
+CMD ["node", "dist/apps/customer/main"]

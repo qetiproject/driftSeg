@@ -14,8 +14,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import Redis from 'ioredis';
 import Joi from 'joi';
 import {
+  SEGMENT_ENV_FILE_PATH,
   SEGMENT_NOTIFICATIONS_QUEUE,
-  SEGMENT_SERVICE_ENV_FILE_PATH,
 } from './constants/constants';
 import {
   SEGMENT_NOTIFICATIONS_CLIENT,
@@ -63,7 +63,7 @@ import {
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: SEGMENT_SERVICE_ENV_FILE_PATH,
+      envFilePath: SEGMENT_ENV_FILE_PATH,
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().optional(),
@@ -118,4 +118,4 @@ import {
     SegmentPendingEventQueueService,
   ],
 })
-export class SegmentServiceModule {}
+export class SegmentModule {}

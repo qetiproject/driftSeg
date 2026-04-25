@@ -6,10 +6,10 @@ import {
   SEGMENT_EVENTS_QUEUE,
   SEGMENT_NOTIFICATIONS_QUEUE,
 } from './constants/constants';
-import { SegmentServiceModule } from './segment.module';
+import { SegmentModule } from './segment.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(SegmentServiceModule);
+  const app = await NestFactory.create(SegmentModule);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

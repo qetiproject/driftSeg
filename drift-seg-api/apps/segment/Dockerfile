@@ -10,10 +10,10 @@ COPY nest-cli.json nest-cli.json
 RUN npm install -g pnpm
 RUN pnpm install
 
-COPY apps/segment-service apps/segment-service
+COPY apps/segment apps/segment
 COPY libs libs
 
-RUN pnpm exec nest build segment-service
+RUN pnpm exec nest build segment
 
 FROM node:alpine AS production
 
@@ -30,4 +30,4 @@ RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/segment-service/main"]
+CMD ["node", "dist/apps/segment/main"]

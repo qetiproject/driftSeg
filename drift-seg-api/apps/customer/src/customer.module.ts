@@ -62,4 +62,4 @@ import { TransactionService } from './services/transaction.service';
     TransactionRepository,
   ],
 })
-export class CustomerServiceModule {}
+export class CustomerModule {}
