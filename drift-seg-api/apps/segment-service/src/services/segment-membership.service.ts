@@ -4,11 +4,7 @@ import {
 } from '@app/common/dto';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Types } from 'mongoose';
 import {
-  PROCESSED_MEMBERSHIP_BATCH_LOG,
-  SEGMENT_BATCH_EVENT_ID_PREFIX,
-  SEGMENT_BATCH_RECOMPUTE_EVENT,
   SEGMENT_EVENT_BATCH_SIZE,
   SEGMENT_RECOMPUTE_CHUNK_SIZE,
   SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
@@ -18,6 +14,12 @@ import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
 import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
+import {
+  buildBatchRecomputePayload,
+  logProcessedBatch,
+  publishBatchSideEffects,
+  recomputeMembershipForPendingBatch,
+} from '../utils/helper/transaction-event.helper';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
 import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
 import { SegmentEventBufferService } from './segment-event-buffer.service';
@@ -56,60 +58,20 @@ export class SegmentMembershipService {
       return;
     }
 
-    await this.recomputeMembershipForPendingBatch(pendingBatch);
-    const pendingCustomers = this.segmentEventBufferService.pendingSize();
-    const payload = this.buildBatchRecomputePayload(
+    await recomputeMembershipForPendingBatch(
       pendingBatch,
-      pendingCustomers,
+      this.segmentMembershipFacade,
     );
-    await this.publishBatchSideEffects(pendingBatch, payload);
-    this.logProcessedBatch(pendingBatch.length, pendingCustomers);
-  }
-
-  private async recomputeMembershipForPendingBatch(
-    pendingBatch: PendingBatchEntry[],
-  ): Promise<void> {
-    for (const { customerId, trigger } of pendingBatch) {
-      await this.segmentMembershipFacade.recomputeMembershipForCustomer(
-        new Types.ObjectId(customerId),
-        trigger,
-      );
-    }
-  }
-
-  private buildBatchRecomputePayload(
-    pendingBatch: PendingBatchEntry[],
-    pendingCustomers: number,
-  ): BatchRecomputePayload {
-    const occurredAt = new Date().toISOString();
-    return {
-      eventId: `${SEGMENT_BATCH_EVENT_ID_PREFIX}-${occurredAt}`,
-      eventType: SEGMENT_BATCH_RECOMPUTE_EVENT,
-      processedCustomers: pendingBatch.length,
-      customerIds: pendingBatch.map(({ customerId }) => customerId),
-      pendingCustomers,
-      occurredAt,
-    };
-  }
-
-  private async publishBatchSideEffects(
-    pendingBatch: PendingBatchEntry[],
-    payload: BatchRecomputePayload,
-  ): Promise<void> {
-    this.notificationsClient.emit(SEGMENT_BATCH_RECOMPUTE_EVENT, payload);
-    await this.segmentSearchIndexerService.indexBatchRecomputeEvent(payload);
-    await this.segmentDeltaNotifierService.publishAggregatedDeltaChangesByTriggerEventIds(
-      pendingBatch.map(({ trigger }) => trigger.eventId),
+    const pendingCustomers = this.segmentEventBufferService.pendingSize();
+    const payload = buildBatchRecomputePayload(pendingBatch, pendingCustomers);
+    await publishBatchSideEffects(
+      pendingBatch,
+      payload,
+      this.notificationsClient,
+      this.segmentSearchIndexerService,
+      this.segmentDeltaNotifierService,
     );
-  }
-
-  private logProcessedBatch(
-    processedCustomers: number,
-    pendingCustomers: number,
-  ): void {
-    this.logger.log(
-      PROCESSED_MEMBERSHIP_BATCH_LOG(processedCustomers, pendingCustomers),
-    );
+    logProcessedBatch(this.logger, pendingBatch.length, pendingCustomers);
   }
 
   async recomputeAllDynamicMemberships(): Promise<void> {
@@ -142,17 +104,4 @@ export class SegmentMembershipService {
       },
     );
   }
-}
-
-type PendingBatchEntry = ReturnType<
-  SegmentEventBufferService['takePendingBatch']
->[number];
-
-interface BatchRecomputePayload {
-  eventId: string;
-  eventType: string;
-  processedCustomers: number;
-  customerIds: string[];
-  pendingCustomers: number;
-  occurredAt: string;
 }
