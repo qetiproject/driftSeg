@@ -20,3 +20,16 @@ export interface PendingTrigger {
   eventType: string;
 }
 
+export interface PendingBatchEntry {
+  customerId: string;
+  trigger: PendingTrigger;
+}
+
+export interface BatchRecomputePayload {
+  eventId: string;
+  eventType: string;
+  processedCustomers: number;
+  customerIds: string[];
+  pendingCustomers: number;
+  occurredAt: string;
+}

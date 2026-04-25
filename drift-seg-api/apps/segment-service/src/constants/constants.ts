@@ -26,7 +26,6 @@ export const FAILED_TO_INDEX_BATCH_EVENT_LOG = (error: string): string =>
   `Failed to index batch event: ${error}`;
 export const SCHEDULER_EVENT_TYPE = 'segment.recompute.scheduler';
 export const SEGMENT_BATCH_RECOMPUTE_EVENT =
- 
   'segment.membership.batch.recomputed';
 export const SEGMENT_UI_DELTA_EVENT = 'segment.ui.delta.changed';
 export const SEGMENT_CAMPAIGN_DELTA_EVENT = 'segment.campaign.delta.changed';

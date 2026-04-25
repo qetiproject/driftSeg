@@ -1,5 +1,9 @@
 import { Types } from 'mongoose';
-import { SCHEDULER_EVENT_TYPE } from '../../constants/constants';
+import {
+  SCHEDULER_EVENT_TYPE,
+  SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
+  SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX,
+} from '../../constants/constants';
 import { SegmentRuleInput, SegmentRuleKind } from '../../dto';
 import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
 
@@ -23,5 +27,15 @@ export function buildSchedulerTrigger(
   return {
     eventId: `scheduler-${now.toISOString()}-${customerId.toString()}`,
     eventType: SCHEDULER_EVENT_TYPE,
+  };
+}
+
+export function buildStaticRefreshTrigger(
+  segmentId: string,
+  now: Date = new Date(),
+): SegmentMembershipTrigger {
+  return {
+    eventId: `${SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX}-${segmentId}-${now.toISOString()}`,
+    eventType: SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
   };
 }

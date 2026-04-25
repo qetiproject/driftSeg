@@ -6,24 +6,13 @@ import {
   SEGMENT_BATCH_EVENT_ID_PREFIX,
   SEGMENT_BATCH_RECOMPUTE_EVENT,
 } from '../../constants/constants';
-import { PendingTrigger } from '../../models/interfaces/segment.interface';
+import {
+  BatchRecomputePayload,
+  PendingBatchEntry,
+} from '../../models/interfaces/segment.interface';
 import { SegmentMembershipFacade } from '../../services/facades/segment-membership.facade';
 import { SegmentDeltaNotifierService } from '../../services/segment-delta-notifier.service';
 import { SegmentSearchIndexerService } from '../../services/segment-search-indexer.service';
-
-export interface PendingBatchEntry {
-  customerId: string;
-  trigger: PendingTrigger;
-}
-
-export interface BatchRecomputePayload {
-  eventId: string;
-  eventType: string;
-  processedCustomers: number;
-  customerIds: string[];
-  pendingCustomers: number;
-  occurredAt: string;
-}
 
 export async function recomputeMembershipForPendingBatch(
   pendingBatch: PendingBatchEntry[],
@@ -55,13 +44,15 @@ export function buildBatchRecomputePayload(
 export async function publishBatchSideEffects(
   pendingBatch: PendingBatchEntry[],
   payload: BatchRecomputePayload,
-  notificationsClient: ClientProxy,
-  segmentSearchIndexerService: SegmentSearchIndexerService,
-  segmentDeltaNotifierService: SegmentDeltaNotifierService,
+  deps: {
+    notificationsClient: ClientProxy;
+    segmentSearchIndexerService: SegmentSearchIndexerService;
+    segmentDeltaNotifierService: SegmentDeltaNotifierService;
+  },
 ): Promise<void> {
-  notificationsClient.emit(SEGMENT_BATCH_RECOMPUTE_EVENT, payload);
-  await segmentSearchIndexerService.indexBatchRecomputeEvent(payload);
-  await segmentDeltaNotifierService.publishAggregatedDeltaChangesByTriggerEventIds(
+  deps.notificationsClient.emit(SEGMENT_BATCH_RECOMPUTE_EVENT, payload);
+  await deps.segmentSearchIndexerService.indexBatchRecomputeEvent(payload);
+  await deps.segmentDeltaNotifierService.publishAggregatedDeltaChangesByTriggerEventIds(
     pendingBatch.map(({ trigger }) => trigger.eventId),
   );
 }

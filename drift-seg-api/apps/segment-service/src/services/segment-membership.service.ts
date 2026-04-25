@@ -4,16 +4,14 @@ import {
 } from '@app/common/dto';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  SEGMENT_EVENT_BATCH_SIZE,
-  SEGMENT_RECOMPUTE_CHUNK_SIZE,
-  SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
-  SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX,
-} from '../constants/constants';
+import { SEGMENT_EVENT_BATCH_SIZE } from '../constants/constants';
 import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
-import { buildSchedulerTrigger } from '../utils/helper/segment-membership.helper';
+import {
+  buildSchedulerTrigger,
+  buildStaticRefreshTrigger,
+} from '../utils/helper/segment-membership.helper';
 import {
   buildBatchRecomputePayload,
   logProcessedBatch,
@@ -64,13 +62,11 @@ export class SegmentMembershipService {
     );
     const pendingCustomers = this.segmentEventBufferService.pendingSize();
     const payload = buildBatchRecomputePayload(pendingBatch, pendingCustomers);
-    await publishBatchSideEffects(
-      pendingBatch,
-      payload,
-      this.notificationsClient,
-      this.segmentSearchIndexerService,
-      this.segmentDeltaNotifierService,
-    );
+    await publishBatchSideEffects(pendingBatch, payload, {
+      notificationsClient: this.notificationsClient,
+      segmentSearchIndexerService: this.segmentSearchIndexerService,
+      segmentDeltaNotifierService: this.segmentDeltaNotifierService,
+    });
     logProcessedBatch(this.logger, pendingBatch.length, pendingCustomers);
   }
 
@@ -78,14 +74,11 @@ export class SegmentMembershipService {
     const customerIds =
       await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
 
-    for (let i = 0; i < customerIds.length; i += SEGMENT_RECOMPUTE_CHUNK_SIZE) {
-      const chunk = customerIds.slice(i, i + SEGMENT_RECOMPUTE_CHUNK_SIZE);
-      for (const customerId of chunk) {
-        await this.segmentMembershipFacade.recomputeMembershipForCustomer(
-          customerId,
-          buildSchedulerTrigger(customerId),
-        );
-      }
+    for (const customerId of customerIds) {
+      await this.segmentMembershipFacade.recomputeMembershipForCustomer(
+        customerId,
+        buildSchedulerTrigger(customerId),
+      );
     }
   }
 
@@ -98,10 +91,7 @@ export class SegmentMembershipService {
     await this.segmentMembershipFacade.refreshStaticSegmentMemberships(
       segment,
       customerIds,
-      {
-        eventId: `${SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX}-${segment._id.toString()}-${new Date().toISOString()}`,
-        eventType: SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
-      },
+      buildStaticRefreshTrigger(String(segment._id)),
     );
   }
 }
