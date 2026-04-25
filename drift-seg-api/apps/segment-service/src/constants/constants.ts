@@ -27,6 +27,8 @@ export const FAILED_TO_INDEX_BATCH_EVENT_LOG = (error: string): string =>
 export const FAILED_TO_PARSE_PENDING_TRIGGER_LOG = (
   customerId: string,
 ): string => `Failed to parse pending trigger for customerId=${customerId}`;
+export const REDIS_CLIENT_ERROR_LOG = (errorMessage: string): string =>
+  `Redis client error: ${errorMessage}`;
 export const ELASTICSEARCH_NODE_ENV_KEY = 'ELASTICSEARCH_NODE';
 export const SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH =
   '/segment-membership-events/_doc';
@@ -48,3 +50,12 @@ export const SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY =
   'segment:pending-events:map';
 export const SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY =
   'segment:pending-events:index';
+
+export const REDIS_CLIENT_STATUS = {
+  WAIT: 'wait',
+  END: 'end',
+} as const;
+
+export const REDIS_CLIENT_EVENT = {
+  ERROR: 'error',
+} as const;

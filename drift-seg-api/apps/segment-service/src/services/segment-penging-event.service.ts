@@ -2,6 +2,9 @@ import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
 import {
   FAILED_TO_PARSE_PENDING_TRIGGER_LOG,
+  REDIS_CLIENT_ERROR_LOG,
+  REDIS_CLIENT_EVENT,
+  REDIS_CLIENT_STATUS,
   SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY,
   SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY,
 } from '../constants/constants';
@@ -18,10 +21,14 @@ export class SegmentPendingEventQueueService implements OnModuleDestroy {
   constructor(
     @Inject(SEGMENT_REDIS_CLIENT)
     private readonly redisClient: Redis,
-  ) {}
+  ) {
+    this.redisClient.on(REDIS_CLIENT_EVENT.ERROR, (error: Error) => {
+      this.logger.error(REDIS_CLIENT_ERROR_LOG(error.message));
+    });
+  }
 
   private async ensureRedisConnected(): Promise<void> {
-    if (this.redisClient.status !== 'ready') {
+    if (this.redisClient.status === REDIS_CLIENT_STATUS.WAIT) {
       await this.redisClient.connect();
     }
   }
@@ -93,14 +100,13 @@ export class SegmentPendingEventQueueService implements OnModuleDestroy {
         { customerId, trigger: JSON.parse(rawTrigger) as PendingTrigger },
       ];
     } catch {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this.logger.warn(FAILED_TO_PARSE_PENDING_TRIGGER_LOG(customerId));
       return [];
     }
   }
 
   async onModuleDestroy(): Promise<void> {
-    if (this.redisClient.status !== 'end') {
+    if (this.redisClient.status !== REDIS_CLIENT_STATUS.END) {
       await this.redisClient.quit().catch(() => undefined);
     }
   }
