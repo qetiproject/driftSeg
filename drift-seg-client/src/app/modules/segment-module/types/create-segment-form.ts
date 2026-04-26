@@ -1,9 +1,12 @@
-import { SegmentRules, SegmentTypeEnum } from '.';
+import { SegmentTypeEnum, SegmentkindEnum } from '.';
 
 export interface CreateSegmentForm {
   name: string;
   type: SegmentTypeEnum;
-  rules: SegmentRules;
-  dependsOnSegmentIds?: string[];
+  ruleKind: SegmentkindEnum;
+  days: string;
+  minSpend: string;
+  inActiveDays: string;
+  dependsOnSegmentIds: string;
   staticSegmentKind?: string;
 }

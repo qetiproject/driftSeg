@@ -10,10 +10,10 @@ export class SegmentService {
 
   readonly segments = this.#segments.asReadonly();
 
-  createsegment(payload: CreateSegmentRequest): Observable<SegmentResponse> {
+  createSegment(payload: CreateSegmentRequest): Observable<SegmentResponse> {
     return this.#segmentApi.createSegment(payload).pipe(
-      tap((createdsegment) => {
-        this.#segments.update((segments) => [createdsegment, ...segments]);
+      tap((createdSegment) => {
+        this.#segments.update((segments) => [createdSegment, ...segments]);
       }),
     );
   }
