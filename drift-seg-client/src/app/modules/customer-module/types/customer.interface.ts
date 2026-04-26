@@ -11,3 +11,8 @@ export enum CustomerStatus {
   Inactive = 'inactive',
   Active = 'active',
 }
+
+export interface CustomerDetailsResponse extends CustomerResponse {
+   createdAt: Date,
+  updatedAt: Date
+}

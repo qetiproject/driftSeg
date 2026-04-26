@@ -16,4 +16,18 @@ export class CustomerApi {
       Endpoints.customer.getCustomers,
     );
   }
+
+  getCustomerDetails(id: string): Observable<CustomerResponse> {
+    return this.#api.get<CustomerResponse>(
+      this.#baseUrl,
+      Endpoints.customer.getCustomerId(id),
+    );
+  }
+
+  deleteCustomer(id: string): Observable<CustomerResponse> {
+    return this.#api.delete<CustomerResponse>(
+      this.#baseUrl,
+      Endpoints.customer.deleteCustomer(id),
+    );
+  }
 }
