@@ -1,6 +1,5 @@
-import { Component, inject, input } from '@angular/core';
-import { SegmentService } from '../../services/segment.service';
-import { SegmentResponse } from '../../types';
+import { Component, computed, input } from '@angular/core';
+import { SegmentkindEnum, SegmentResponse, SegmentTypeEnum } from '../../types';
 
 @Component({
   selector: 'app-segment-item',
@@ -10,10 +9,20 @@ import { SegmentResponse } from '../../types';
 })
 export class SegmentItem {
   segment = input.required<SegmentResponse>();
-  readonly #segmentService = inject(SegmentService);
+  protected readonly isDynamic = computed(() => this.segment().type === SegmentTypeEnum.Dynamic);
+  protected readonly dependencyCount = computed(() => this.segment().dependsOnSegmentIds.length);
+  protected readonly ruleDescription = computed(() => {
+    const { rules } = this.segment();
 
-  async onOpenModal(): Promise<void> {
-    // const { _id } = this.segment();
-    // this.#segmentService.deleteSegment(_id);
-  }
+    switch (rules.kind) {
+      case SegmentkindEnum.ACTIVE_BUYERS:
+        return `Had at least one transaction in last ${rules.days ?? '-'} days`;
+      case SegmentkindEnum.VIP:
+        return `Spent at least ${rules.minSpend ?? '-'} in last ${rules.days ?? '-'} days`;
+      case SegmentkindEnum.RISK:
+        return `No activity for ${rules.inActiveDays ?? '-'} days`;
+      default:
+        return 'Custom rule';
+    }
+  });
 }

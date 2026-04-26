@@ -1,11 +1,12 @@
 export interface SegmentResponse {
+  _id: string;
   name: string;
   type: SegmentTypeEnum;
   rules: SegmentRules;
   dependsOnSegmentIds: string[];
   staticSegmentKind?: string;
 }
-export interface CreateSegmentRequest extends SegmentResponse {}
+export type CreateSegmentRequest = Omit<SegmentResponse, '_id'>;
 
 export enum SegmentTypeEnum {
   Dynamic = 'dynamic',
