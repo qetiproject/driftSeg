@@ -1,3 +1,7 @@
+# Drift Seg API
+
+````
+
 ## Requirements
 
 - Node.js 20+
@@ -10,7 +14,7 @@ From project root (`drift-seg-api`):
 
 ```bash
 docker compose up -d
-```
+````
 
 - `docker compose up -d` - starts existing images in background.
 
@@ -105,8 +109,6 @@ Or separately:
 pnpm run compodoc:generate
 pnpm run compodoc:serve
 ```
-
-# Drift Seg API
 
 NestJS monorepo with two apps:
 
@@ -242,110 +244,3 @@ Trade-off:
 
 - Compared to `PostgreSQL`, we accept weaker relational constraints and less SQL-native analytical querying.
 - If the system later requires strict cross-entity transactional guarantees or heavy relational reporting, `PostgreSQL` would be a strong alternative.
-
-## Architecture Diagrams
-
-The diagrams below document component boundaries, event flow, and batch/debounce behavior used in this project.
-
-### 1) Components and Connections
-
-```mermaid
-flowchart LR
-  Client[Client / Admin UI]
-
-  subgraph CustomerService["Customer Service (API)"]
-    CAPI[REST Controllers]
-    CDB[(MongoDB)]
-    CAPI --> CDB
-  end
-
-  subgraph Infra["Messaging and Infra"]
-    RMQ[[RabbitMQ]]
-    REDIS[(Redis Pending Buffer)]
-    ES[(Elasticsearch)]
-  end
-
-  subgraph SegmentService["Segment Service"]
-    SCON[Event Consumer]
-    SSCH[Batch Scheduler]
-    SEVAL[Segment Evaluator]
-    SDELTA[Delta Notifier / Publisher]
-    SDB[(MongoDB)]
-  end
-
-  subgraph Subscribers["Downstream Subscribers"]
-    UI[UI Delta Consumer]
-    CAMP[Campaign Delta Consumer]
-  end
-
-  Client --> CAPI
-  CAPI -- emit customer.transaction.created --> RMQ
-  RMQ --> SCON
-  SCON --> REDIS
-  SSCH --> REDIS
-  SSCH --> SEVAL
-  SEVAL --> SDB
-  SEVAL --> SDELTA
-  SDELTA --> RMQ
-  SDELTA --> ES
-  RMQ --> UI
-  RMQ --> CAMP
-```
-
-### 2) End-to-End Signal Path
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant U as Client
-  participant C as Customer API
-  participant DB as MongoDB (customer)
-  participant Q as RabbitMQ
-  participant S as Segment Consumer
-  participant R as Redis Pending
-  participant CRON as Batch Scheduler
-  participant E as Segment Evaluator
-  participant SDB as MongoDB (segment)
-  participant D as Delta Publisher
-  participant ES as Elasticsearch
-  participant UI as UI Subscriber
-  participant CAM as Campaign Subscriber
-
-  U->>C: POST /transactions
-  C->>DB: Save transaction and update customer totals
-  C->>Q: Emit customer.transaction.created
-  Q->>S: Deliver event
-  S->>R: Upsert pending trigger by customerId
-
-  CRON->>R: Read pending batch
-  CRON->>E: Recompute memberships for batch
-  E->>SDB: Update memberships and deltas
-  E->>D: Build and publish aggregated delta payload
-  D->>Q: Emit segment.ui.delta.changed / segment.campaign.delta.changed
-  D->>ES: Index delta event
-
-  Q->>UI: Consume UI delta
-  Q->>CAM: Consume Campaign delta
-```
-
-### 3) Batch and Debounce Logic
-
-```mermaid
-flowchart TD
-  A[Transaction event arrives] --> B[Store pending trigger in Redis by customerId]
-  B --> C{Same customer gets more events before flush?}
-  C -- Yes --> D[Overwrite trigger in Redis hash\nsingle pending key per customer]
-  C -- No --> E[Keep pending entry]
-
-  D --> F[Scheduler tick]
-  E --> F
-
-  F --> G[Fetch up to batch size N]
-  G --> H[Recompute memberships for fetched customers]
-  H --> I{Processing successful?}
-  I -- Yes --> J[ACK after success:\nremove processed entries from Redis]
-  I -- No --> K[Do not remove entries\nretry on next tick]
-
-  J --> L[Publish deltas and index in Elasticsearch]
-  K --> F
-```
