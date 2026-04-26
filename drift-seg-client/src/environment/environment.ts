@@ -2,5 +2,5 @@ import { Environment } from "./environment.model";
 
 export const environment = {
   production: false,
-  customer: '/customer',
+  customer: '/api/customer',
 } satisfies Environment;
