@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EditSVG } from '../../../../../assets/icons/edit';
 import { RemoveSVG } from '../../../../../assets/icons/remove';
+import { CustomerService } from '../../services';
 import { CustomerResponse } from '../../types/customer.interface';
 
 @Component({
@@ -13,6 +14,11 @@ import { CustomerResponse } from '../../types/customer.interface';
 })
 export class CustomerItem {
   customer = input.required<CustomerResponse>();
+  readonly #customerService = inject(CustomerService);
 
-  onOpenModal(): void {}
+  async onOpenModal(): Promise<void> {
+    const { _id } = this.customer();
+
+    this.#customerService.deleteCustomer(_id);
+  }
 }

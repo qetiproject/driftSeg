@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { BackButtonDirective } from '../../app/features/back-button.directive';
-import { BackButtonSVG } from '../../assets/icons';
+import { BackButtonSVG } from '../../../assets/icons';
+import { BackButtonDirective } from '../../features/directives/back-button.directive';
 
 @Component({
   selector: 'app-back-button',
@@ -21,7 +21,7 @@ export class BackButtonComponent {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
 
-  readonly fallbackUrl = input<string | string[]>('/product/list');
+  readonly fallbackUrl = input<string | string[]>('/customers');
 
   goBack(): void {
     if (typeof window !== 'undefined' && window.history.length > 1) {
