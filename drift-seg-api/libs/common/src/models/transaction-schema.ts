@@ -14,7 +14,7 @@ export class TransactionDocument extends AbstractDocument {
   amount!: number;
 
   @Prop({ required: true, default: () => new Date() })
-  occurredAt!: Date;
+  occurredAt?: Date;
 
   @Prop({ trim: true, maxlength: 1024 })
   description?: string;

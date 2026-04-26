@@ -24,20 +24,6 @@ export class CustomerDocument extends AbstractDocument {
   @Prop({ default: 0 })
   totalSpent!: number;
 
-  // @Prop({ default: () => new Date() })
-  // lastTransactionDate!: Date;
-
-  // @Prop({
-  //   type: [
-  //     {
-  //       amount: { type: Number, required: true },
-  //       at: { type: Date, required: true },
-  //     },
-  //   ],
-  //   default: [],
-  // })
-  // transactions?: TransactionEntry[];
-
   @Prop({
     type: String,
     enum: CustomerStatusEnum,
