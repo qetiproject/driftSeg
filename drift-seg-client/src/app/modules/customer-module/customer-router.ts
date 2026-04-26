@@ -6,7 +6,7 @@ export const customerRoutes: Routes = [
     loadComponent: () => import('./pages').then((p) => p.Customers),
     children: [
       {
-        path: 'add-customer',
+        path: 'add',
         outlet: 'modal',
         loadComponent: () => import('./components').then((c) => c.AddCustomerModal),
       },

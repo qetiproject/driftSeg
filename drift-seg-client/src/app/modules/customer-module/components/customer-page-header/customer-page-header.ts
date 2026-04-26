@@ -8,10 +8,10 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './customer-page-header.html',
 })
 export class CustomerPageHeader {
-  router = inject(Router);
-  route = inject(ActivatedRoute);
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
 
   onAddCustomer(): void {
-    this.router.navigate([{ outlets: { modal: ['add-customer'] } }], { relativeTo: this.route });
+    this.router.navigate([{ outlets: { modal: ['add'] } }], { relativeTo: this.route });
   }
 }

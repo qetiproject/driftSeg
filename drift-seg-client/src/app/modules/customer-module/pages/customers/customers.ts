@@ -6,7 +6,7 @@ import { CustomerList, CustomerPageHeader } from '../../components';
 @Component({
   selector: 'app-customers',
   standalone: true,
-  imports: [CommonModule, CustomerPageHeader, CustomerList, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, CustomerPageHeader, CustomerList],
   templateUrl: './customers.html',
 })
 export class Customers {}
