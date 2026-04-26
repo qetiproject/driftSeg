@@ -1,1 +1,37 @@
-<p>customer-details works!</p>
+@let c = customer();
+
+<app-back-button />
+<section class="min-h-screen py-10">
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    
+    @if (c) {
+      <article class="mt-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h1 class="text-xl font-semibold text-gray-900">
+          {{ c.firstName }} {{ c.lastName }}
+        </h1>
+        <p class="mt-1 text-sm text-gray-500">{{ c.email }}</p>
+
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <p class="text-xs uppercase tracking-wide text-gray-400">Status</p>
+            <span
+              class="mt-1 inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold"
+              [class.bg-emerald-100]="c.status === 'active'"
+              [class.text-emerald-700]="c.status === 'active'"
+              [class.bg-red-100]="c.status === 'inactive'"
+              [class.text-red-700]="c.status === 'inactive'"
+            >
+              {{ c.status | titlecase }}
+            </span>
+          </div>
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <p class="text-xs uppercase tracking-wide text-gray-400">Total spent</p>
+            <p class="mt-1 text-sm font-semibold text-gray-900">{{ c.totalSpent | number:'1.0-2' }} GEL</p>
+          </div>
+        </div>
+      </article>
+    } @else {
+      <p class="mt-4 text-sm text-gray-500">Customer not found.</p>
+    }
+  </div>
+</section>

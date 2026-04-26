@@ -1,10 +1,7 @@
-
-
-  <div class="grid gap-4 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
-    @for (customer of customers(); track customer._id) {
-      <div class="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-        <app-customer-item [customer]="customer" />
-      </div>
-    }
-  </div>
-
+<div class="grid gap-4 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+  @for (customer of customers(); track customer._id) {
+    <div class="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+      <app-customer-item [customer]="customer" />
+    </div>
+  }
+</div>
