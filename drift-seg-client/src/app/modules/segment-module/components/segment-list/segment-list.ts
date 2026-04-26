@@ -12,7 +12,7 @@ import { SegmentItem } from '../segment-item/segment-item';
 export class SegmentList {
   readonly #segmentService = inject(SegmentService);
 
-  readonly customers = this.#segmentService.segments;
+  readonly segments = this.#segmentService.segments;
 
   constructor() {
     this.#segmentService.getSegments();
