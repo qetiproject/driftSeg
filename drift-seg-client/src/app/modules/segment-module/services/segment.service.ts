@@ -4,7 +4,7 @@ import { CreateSegmentRequest, SegmentResponse } from '../types';
 import { SegmentApi } from './segment.api';
 
 @Injectable({ providedIn: 'root' })
-export class segmentService {
+export class SegmentService {
   readonly #segmentApi = inject(SegmentApi);
   readonly #segments = signal<SegmentResponse[]>([]);
 
@@ -18,7 +18,7 @@ export class segmentService {
     );
   }
 
-  getsegments(): void {
+  getSegments(): void {
     this.#segmentApi
       .getAllSegments()
       .pipe(catchError(() => of([])))

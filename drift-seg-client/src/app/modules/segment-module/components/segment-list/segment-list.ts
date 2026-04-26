@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { SegmentService } from '../../services/segment.service';
 import { SegmentItem } from '../segment-item/segment-item';
 
 @Component({
