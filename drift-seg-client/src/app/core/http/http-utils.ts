@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
-import { ErrorMessages } from '../../types';
+import { ErrorMessages } from '@types';
 
 export function toErrorMessage(error: unknown): string {
   if (typeof error === 'string' && error.trim()) return error.trim();

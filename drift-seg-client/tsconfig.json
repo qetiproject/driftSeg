@@ -13,7 +13,18 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": "./src",
+    "paths": {
+      "@api": ["app/api/index.ts"],
+      "@api/*": ["app/api/*"],
+      "@components": ["app/components/index.ts"],
+      "@components/*": ["app/components/*"],
+      "@pages": ["app/pages"],
+      "@pages/*": ["app/pages/*"],
+      "@types": ["app/types/index.ts"],
+      "@types/*": ["app/types/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

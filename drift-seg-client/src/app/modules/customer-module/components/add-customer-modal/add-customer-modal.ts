@@ -4,7 +4,7 @@ import { FormField } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessagesService } from '../../../../core/services';
 import { FieldInput } from '../../../../features/custom-signal-form';
-import { INPUT_TYPES, MessageSeverity } from '../../../../types';
+import { INPUT_TYPES, MessageSeverity } from '@types';
 import { CustomerService } from '../../services';
 import { createCustomerForm, createCustomerModel } from '../../utils';
 

@@ -11,5 +11,5 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./modules/customer-module/customer-router').then((r) => r.customerRoutes),
   },
-  { path: '**', loadComponent: () => import('./pages/not-found').then((m) => m.NotFoundComponent) },
+  { path: '**', loadComponent: () => import('@pages/not-found').then((m) => m.NotFoundComponent) },
 ];
