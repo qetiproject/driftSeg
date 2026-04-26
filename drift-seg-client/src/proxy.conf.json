@@ -1,7 +1,8 @@
 {
   "/customer": {
-    "target": "http://localhost:3000/api/customer",
+    "target": "http://localhost:3000/api",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }

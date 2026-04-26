@@ -5,7 +5,7 @@
 export const Endpoints = {
   customer: {
     createCustomer: '/create',
-    getCustomers: '/',
+    getCustomers: '/all',
     getCustomerId: (id: string) => `/${id}`,
     updateCustomer: (id: string) => `/${id}`,
     deleteCustomer: (id: string) => `/${id}`
