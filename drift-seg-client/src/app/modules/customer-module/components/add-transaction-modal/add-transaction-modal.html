@@ -27,21 +27,22 @@
 
       <app-field-input
         label="Amount"
-        [formField]="transactionForm.amount"
+        [formField]="$any(transactionForm.amount)"
         [type]="INPUT_TYPES.NUMBER"
         class="w-full"
       />
 
       <app-field-input
         label="Date"
-        [formField]="transactionForm.occurredAt"
+        [formField]="$any(transactionForm.occurredAt)"
         [type]="INPUT_TYPES.TEXT"
+        [placeholder]="'yyyy-mm-dd'"
         class="w-full"
       />
 
       <app-field-input
         label="Description"
-        [formField]="transactionForm.description"
+        [formField]="$any(transactionForm.description)"
         [type]="INPUT_TYPES.TEXT"
         class="w-full"
       />

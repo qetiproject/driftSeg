@@ -1,4 +1,4 @@
-import { min, minLength, pattern, required, Schema, schema } from '@angular/forms/signals';
+import { minLength, pattern, required, Schema, schema } from '@angular/forms/signals';
 
 export const createNameSchema = (label: string): Schema<string> =>
   schema((path) => {
@@ -22,5 +22,4 @@ export const createEmailSchema = (): Schema<string> =>
 export const createAmountSchema = (): Schema<number> =>
   schema((path) => {
     required(path, { message: 'Amount is required' });
-    min(path, 1, { message: 'Amount must be at least 1' });
   });

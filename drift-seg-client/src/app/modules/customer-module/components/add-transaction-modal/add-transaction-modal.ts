@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormField } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,9 +36,9 @@ export class AddTransactionModal {
 
     const obj = {
       customerId: value.customerId,
-      amount: value.amount,
-      occurredAt: value.occurredAt,
-      description: value.description,
+      amount: Number(value.amount),
+      occurredAt: value.occurredAt || undefined,
+      description: value.description || undefined,
     };
     this.#transactionService.createTransaction(obj).subscribe({
       next: () => {
@@ -46,6 +47,25 @@ export class AddTransactionModal {
           severity: MessageSeverity.Success,
         });
         this.onCloseModal();
+      },
+      error: (error: unknown) => {
+        if (error instanceof HttpErrorResponse && Array.isArray(error.error?.message)) {
+          for (const message of error.error.message) {
+            this.#messages.showMessage({
+              text: String(message),
+              severity: MessageSeverity.Error,
+            });
+          }
+          return;
+        }
+
+        this.#messages.showMessage({
+          text:
+            error instanceof HttpErrorResponse
+              ? error.message
+              : 'Failed to create transaction. Please try again.',
+          severity: MessageSeverity.Error,
+        });
       },
     });
   }
