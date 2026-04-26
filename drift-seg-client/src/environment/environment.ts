@@ -5,4 +5,5 @@ export const environment = {
   customer: '/api/customer',
   transactions: '/api/transaction',
   segments: '/api/segments',
+  segmentSocketUrl: 'http://localhost:3001',
 } satisfies Environment;

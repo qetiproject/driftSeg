@@ -3,4 +3,5 @@ export interface Environment {
   customer: string;
   transactions: string;
   segments: string;
+  segmentSocketUrl: string;
 }

@@ -51,3 +51,13 @@ export interface SegmentDeltaResponse {
   triggerEventType: string;
   computedAt: string;
 }
+
+export interface SegmentDeltaLiveEvent {
+  eventId: string;
+  eventType: string;
+  segmentId: string;
+  segmentkind: SegmentkindEnum;
+  addedCustomerIds: string[];
+  removedCustomerIds: string[];
+  occurredAt: string;
+}
