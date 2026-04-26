@@ -6,7 +6,9 @@ export interface SegmentResponse {
   dependsOnSegmentIds: string[];
   staticSegmentKind?: string;
 }
-export type CreateSegmentRequest = Omit<SegmentResponse, '_id'>;
+export type CreateSegmentRequest = Omit<SegmentResponse, '_id' | 'dependsOnSegmentIds'> & {
+  dependsOnSegmentIds?: string[];
+};
 
 export enum SegmentTypeEnum {
   Dynamic = 'dynamic',
@@ -16,8 +18,8 @@ export enum SegmentTypeEnum {
 export interface SegmentRules {
   kind: SegmentkindEnum;
   days?: number;
-  minSpend: number;
-  inActiveDays: number;
+  minSpend?: number;
+  inActiveDays?: number;
 }
 
 export enum SegmentkindEnum {
