@@ -26,6 +26,13 @@ export class SegmentApi {
     return this.#api.get<SegmentResponse[]>(this.#baseUrl, Endpoints.segments.getSegments);
   }
 
+  deleteSegment(segmentId: string): Observable<{ deleted: true }> {
+    return this.#api.delete<{ deleted: true }>(
+      this.#baseUrl,
+      Endpoints.segments.deleteSegment(segmentId),
+    );
+  }
+
   getSegmentMembers(segmentId: string): Observable<SegmentMembersResponse> {
     return this.#api.get<SegmentMembersResponse>(
       this.#baseUrl,

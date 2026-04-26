@@ -1,0 +1,6 @@
+@let t = transaction();
+
+<td class="px-4 py-3 text-sm text-gray-700">{{ t.customerId }}</td>
+<td class="px-4 py-3 text-sm font-medium text-gray-900">{{ t.amount | number:'1.0-2' }} GEL</td>
+<td class="px-4 py-3 text-sm text-gray-700">{{ t.occurredAt | date:'medium' }}</td>
+<td class="px-4 py-3 text-sm text-gray-700">{{ t.description || '-' }}</td>

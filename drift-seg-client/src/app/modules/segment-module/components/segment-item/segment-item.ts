@@ -74,4 +74,23 @@ export class SegmentItem {
     });
     this.closeMenu();
   }
+
+  protected onDeleteSegment(): void {
+    const { _id, name } = this.segment();
+    const isConfirmed = window.confirm(
+      `Delete segment "${name}"? Dependent relations and memberships may be affected.`,
+    );
+
+    if (!isConfirmed) {
+      this.closeMenu();
+      return;
+    }
+
+    this.#segmentService.deleteSegment(_id);
+    this.#messages.showMessage({
+      text: `${name} deleted successfully.`,
+      severity: MessageSeverity.Success,
+    });
+    this.closeMenu();
+  }
 }

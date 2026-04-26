@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { debounceTime, filter, merge, switchMap, timer } from 'rxjs';
 import { SegmentDeltaLiveEvent, SegmentMembersResponse } from '../../types';
 import { SegmentLiveUpdatesService } from '../../services/segment-live-updates.service';
 import { SegmentService } from '../../services/segment.service';
@@ -12,6 +13,7 @@ import { SegmentService } from '../../services/segment.service';
   templateUrl: './segment-members.html',
 })
 export class SegmentMembers {
+  static readonly POLL_INTERVAL_MS = 4000;
   readonly #route = inject(ActivatedRoute);
   readonly #destroyRef = inject(DestroyRef);
   readonly #segmentService = inject(SegmentService);
@@ -24,14 +26,15 @@ export class SegmentMembers {
     const segmentId = this.#segmentId;
     if (!segmentId) return;
 
-    this.#segmentService.getSegmentMembers(segmentId).subscribe((response) => this.membersResponse.set(response));
-
-    this.#liveUpdates
-      .onDeltaChanged()
+    merge(
+      timer(0, SegmentMembers.POLL_INTERVAL_MS),
+      this.#liveUpdates.onDeltaChanged().pipe(
+        filter((event: SegmentDeltaLiveEvent) => event.segmentId === segmentId),
+        debounceTime(250),
+      ),
+    )
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((event: SegmentDeltaLiveEvent) => {
-        if (event.segmentId !== segmentId) return;
-        this.#segmentService.getSegmentMembers(segmentId).subscribe((response) => this.membersResponse.set(response));
-      });
+      .pipe(switchMap(() => this.#segmentService.getSegmentMembers(segmentId)))
+      .subscribe((response) => this.membersResponse.set(response));
   }
 }

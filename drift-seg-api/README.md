@@ -95,6 +95,16 @@ pnpm run lint
 pnpm run test
 ```
 
+### Unit Testing (Customer Service)
+
+Unit tests were added for `CustomerService`, including success/failure flows and helper-driven behavior (validation, mapping defaults, and cascade delete expectations).
+
+Run only the CustomerService unit tests:
+
+```bash
+pnpm test -- apps/customer/src/services/customer.service.spec.ts --runInBand
+```
+
 ## Compodoc (Architecture Docs)
 
 Generate + serve architecture docs:

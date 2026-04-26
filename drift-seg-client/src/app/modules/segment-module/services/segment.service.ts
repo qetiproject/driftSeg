@@ -30,6 +30,16 @@ export class SegmentService {
       .subscribe((segments) => this.#segments.set(segments));
   }
 
+  deleteSegment(segmentId: string): void {
+    this.#segmentApi
+      .deleteSegment(segmentId)
+      .pipe(catchError(() => of(null)))
+      .subscribe((removedSegment) => {
+        if (!removedSegment) return;
+        this.#segments.update((segments) => segments.filter((segment) => segment._id !== segmentId));
+      });
+  }
+
   getSegmentMembers(segmentId: string): Observable<SegmentMembersResponse> {
     return this.#segmentApi.getSegmentMembers(segmentId);
   }

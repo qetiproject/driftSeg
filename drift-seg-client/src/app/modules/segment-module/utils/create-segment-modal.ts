@@ -20,24 +20,30 @@ export const createSegmentModel = () =>
     staticSegmentKind: '',
   });
 
-export function toCreateSegmentRequest(value: CreateSegmentForm): CreateSegmentRequest {
-  const dependsOnSegmentIds = value.dependsOnSegmentIds
+function parseDependsOnSegmentIds(dependsOnSegmentIdsRaw: string): string[] {
+  return dependsOnSegmentIdsRaw
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean);
+}
 
-  if (value.type === SegmentTypeEnum.Static) {
-    return {
-      name: value.name.trim(),
-      type: value.type,
-      staticSegmentKind: value.staticSegmentKind?.trim() || 'manual_refresh',
-      rules: {
-        kind: value.ruleKind,
-      },
-      ...(dependsOnSegmentIds.length > 0 ? { dependsOnSegmentIds } : {}),
-    };
-  }
+function withDependsOnSegmentIds(dependsOnSegmentIds: string[]): Pick<CreateSegmentRequest, 'dependsOnSegmentIds'> | {} {
+  return dependsOnSegmentIds.length > 0 ? { dependsOnSegmentIds } : {};
+}
 
+function toStaticSegmentRequest(value: CreateSegmentForm, dependsOnSegmentIds: string[]): CreateSegmentRequest {
+  return {
+    name: value.name.trim(),
+    type: value.type,
+    staticSegmentKind: value.staticSegmentKind?.trim() || 'manual_refresh',
+    rules: {
+      kind: value.ruleKind,
+    },
+    ...withDependsOnSegmentIds(dependsOnSegmentIds),
+  };
+}
+
+function toDynamicSegmentRequest(value: CreateSegmentForm, dependsOnSegmentIds: string[]): CreateSegmentRequest {
   if (value.ruleKind === SegmentkindEnum.ACTIVE_BUYERS) {
     return {
       name: value.name.trim(),
@@ -46,7 +52,7 @@ export function toCreateSegmentRequest(value: CreateSegmentForm): CreateSegmentR
         kind: value.ruleKind,
         days: Number(value.days),
       },
-      ...(dependsOnSegmentIds.length > 0 ? { dependsOnSegmentIds } : {}),
+      ...withDependsOnSegmentIds(dependsOnSegmentIds),
     };
   }
 
@@ -59,7 +65,7 @@ export function toCreateSegmentRequest(value: CreateSegmentForm): CreateSegmentR
         days: Number(value.days),
         minSpend: Number(value.minSpend),
       },
-      ...(dependsOnSegmentIds.length > 0 ? { dependsOnSegmentIds } : {}),
+      ...withDependsOnSegmentIds(dependsOnSegmentIds),
     };
   }
 
@@ -70,6 +76,16 @@ export function toCreateSegmentRequest(value: CreateSegmentForm): CreateSegmentR
       kind: value.ruleKind,
       inActiveDays: Number(value.inActiveDays),
     },
-    ...(dependsOnSegmentIds.length > 0 ? { dependsOnSegmentIds } : {}),
+    ...withDependsOnSegmentIds(dependsOnSegmentIds),
   };
+}
+
+export function toCreateSegmentRequest(value: CreateSegmentForm): CreateSegmentRequest {
+  const dependsOnSegmentIds = parseDependsOnSegmentIds(value.dependsOnSegmentIds);
+
+  if (value.type === SegmentTypeEnum.Static) {
+    return toStaticSegmentRequest(value, dependsOnSegmentIds);
+  }
+
+  return toDynamicSegmentRequest(value, dependsOnSegmentIds);
 }

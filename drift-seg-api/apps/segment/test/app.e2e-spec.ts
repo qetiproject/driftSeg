@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
+import request from 'supertest';
 import { SegmentModule } from '../src/segment.module';
 
 describe('SegmentServiceController (e2e)', () => {
