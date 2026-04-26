@@ -1,1 +1,20 @@
-<p>segment-page-header works!</p>
+<div class="flex flex-col lg:flex-row justify-between w-full mb-5">
+  <div class="flex flex-wrap lg:flex-nowrap gap-4">
+    <div class="w-full sm:w-auto">
+      <div class="mb-6">
+        <h1 class="text-xl font-semibold text-gray-900">Segments</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 lg:mt-0">
+    <button
+      type="button"
+      (click)="onAddSegment()"
+      aria-label="Add segment"
+      class="flex items-center justify-center px-4 py-2 bg-blue-400 text-white rounded-lg shadow hover:bg-blue-300 transition w-full sm:w-auto flex-shrink-0"
+    >
+      Add Segment
+    </button>
+  </div>
+</div>

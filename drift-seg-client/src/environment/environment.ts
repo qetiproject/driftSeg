@@ -4,4 +4,5 @@ export const environment = {
   production: false,
   customer: '/api/customer',
   transactions: '/api/transaction',
+  segments: '/api/segments',
 } satisfies Environment;

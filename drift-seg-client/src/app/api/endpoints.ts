@@ -14,4 +14,8 @@ export const Endpoints = {
     createTransaction: '/create',
     getTransactions: '/all',
   },
+  segments: {
+    createSegment: '/create',
+    getSegments: '/all',
+  },
 } as const;

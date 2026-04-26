@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 
 @Component({
   selector: 'app-segment-item',
@@ -6,4 +6,13 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './segment-item.html',
 })
-export class SegmentItem {}
+export class SegmentItem {
+  segment = input.required<SegmentResponse>();
+  readonly #segmentService = inject(segmentService);
+
+  async onOpenModal(): Promise<void> {
+    const { _id } = this.segment();
+
+    this.#segmentService.deleteSegment(_id);
+  }
+}
