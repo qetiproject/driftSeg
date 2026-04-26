@@ -1,0 +1,148 @@
+<div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="onCloseModal()"></div>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+    <div class="mb-6 flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-900">Add Segment</h2>
+        <p class="mt-1 text-sm text-slate-500">Define segment type and business rule.</p>
+      </div>
+      <button
+        type="button"
+        (click)="onCloseModal()"
+        aria-label="Close add segment modal"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form (submit)="onAddSegmentEvent($event)" class="flex flex-col gap-4">
+      <app-field-input
+        label="Segment Name"
+        [value]="form().name"
+        (valueChange)="updateTextField('name', $event)"
+        [type]="INPUT_TYPES.TEXT"
+        class="w-full"
+      />
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <label class="text-sm font-medium text-slate-700">
+          Type
+          <select
+            class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+            [value]="form().type"
+            (change)="onTypeChange($any($event.target).value)"
+          >
+            <option [value]="SegmentTypeEnum.Dynamic">dynamic</option>
+            <option [value]="SegmentTypeEnum.Static">static</option>
+          </select>
+        </label>
+
+        <label class="text-sm font-medium text-slate-700">
+          Rule kind
+          <select
+            class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+            [value]="form().ruleKind"
+            (change)="onRuleKindChange($any($event.target).value)"
+            [disabled]="isStatic()"
+          >
+            <option [value]="SegmentkindEnum.ACTIVE_BUYERS">active_buyers</option>
+            <option [value]="SegmentkindEnum.VIP">vip</option>
+            <option [value]="SegmentkindEnum.RISK">risk</option>
+          </select>
+        </label>
+      </div>
+
+      @if (isDynamic()) {
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm">
+          @if (isActiveRule()) {
+            <app-field-input
+              label="Days"
+              [value]="form().days"
+              (valueChange)="updateNumberField('days', $event)"
+              [type]="INPUT_TYPES.NUMBER"
+              class="w-full"
+            />
+            <p class="mt-1 text-xs text-slate-500">Expected value: {{ defaults.activeDays }}</p>
+          }
+
+          @if (isVipRule()) {
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <app-field-input
+                  label="Days"
+                  [value]="form().days"
+                  (valueChange)="updateNumberField('days', $event)"
+                  [type]="INPUT_TYPES.NUMBER"
+                  class="w-full"
+                />
+                <p class="mt-1 text-xs text-slate-500">Expected value: {{ defaults.vipDays }}</p>
+              </div>
+              <div>
+                <app-field-input
+                  label="Min Spend"
+                  [value]="form().minSpend"
+                  (valueChange)="updateNumberField('minSpend', $event)"
+                  [type]="INPUT_TYPES.NUMBER"
+                  class="w-full"
+                />
+                <p class="mt-1 text-xs text-slate-500">Minimum: {{ defaults.vipMinSpend }}</p>
+              </div>
+            </div>
+          }
+
+          @if (isRiskRule()) {
+            <app-field-input
+              label="Inactive Days"
+              [value]="form().inActiveDays"
+              (valueChange)="updateNumberField('inActiveDays', $event)"
+              [type]="INPUT_TYPES.NUMBER"
+              class="w-full"
+            />
+            <p class="mt-1 text-xs text-slate-500">Expected value: {{ defaults.riskInactiveDays }}</p>
+          }
+        </div>
+      }
+
+      @if (isStatic()) {
+        <app-field-input
+          label="Static Segment Kind"
+          [value]="form().staticSegmentKind ?? ''"
+          (valueChange)="updateTextField('staticSegmentKind', $event)"
+          [type]="INPUT_TYPES.TEXT"
+          class="w-full"
+        />
+      }
+
+      <app-field-input
+        label="Depends On Segment IDs"
+        [value]="form().dependsOnSegmentIds"
+        (valueChange)="updateTextField('dependsOnSegmentIds', $event)"
+        [type]="INPUT_TYPES.TEXT"
+        [placeholder]="'id1,id2,id3'"
+        class="w-full"
+      />
+      <p class="-mt-2 text-xs text-slate-500">Optional. Use comma-separated Mongo IDs.</p>
+
+      <div class="mt-3 flex flex-col justify-end gap-3 border-t border-slate-100 pt-5 md:flex-row">
+        <button
+          type="button"
+          (click)="onCloseModal()"
+          aria-label="Cancel adding segment"
+          class="flex-1 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 md:flex-none"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          aria-label="Add segment"
+          class="flex-1 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300 md:flex-none"
+        >
+          Save Segment
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

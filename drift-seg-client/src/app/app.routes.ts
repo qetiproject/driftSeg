@@ -23,5 +23,10 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'segments',
+    loadChildren: () =>
+      import('./modules/segment-module/segment-router').then((r) => r.segmentRoutes),
+  },
   { path: '**', loadComponent: () => import('@pages/not-found').then((m) => m.NotFoundComponent) },
 ];

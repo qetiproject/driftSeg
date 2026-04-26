@@ -8,18 +8,18 @@ import {
 import { CreateTransactionDto, TransactionResponseDto } from '../dto';
 import { TransactionService } from '../services/transaction.service';
 
-@Controller('transactions')
-@ApiTags('transactions')
+@Controller('transaction')
+@ApiTags('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Get()
+  @Get('all')
   @ApiOkResponse({ type: TransactionResponseDto, isArray: true })
   getTransactions(): Promise<TransactionResponseDto[]> {
     return this.transactionService.getTransactions();
   }
 
-  @Post()
+  @Post('create')
   @ApiBody({ type: CreateTransactionDto })
   @ApiCreatedResponse({ type: TransactionResponseDto })
   createTransaction(

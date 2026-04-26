@@ -1,0 +1,11 @@
+@if (segments().length === 0) {
+  <p class="text-sm text-gray-500">No segments.</p>
+} @else {
+  <div class="grid gap-4 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+    @for (segment of segments(); track segment.name) {
+      <div class="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+        <app-segment-item [segment]="segment" />
+      </div>
+    }
+  </div>
+}

@@ -41,7 +41,7 @@ export class SegmentController {
     private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
 
-  @Get()
+  @Get('all')
   @ApiOkResponse({ type: SegmentResponseDto, isArray: true })
   getAll(): Promise<SegmentResponseDto[]> {
     return this.segmentService.getAllSegments();
@@ -59,7 +59,7 @@ export class SegmentController {
     return this.segmentService.getSegmentDeltas(id);
   }
 
-  @Post()
+  @Post('create')
   @ApiBody({ type: CreateSegmentDto })
   @ApiCreatedResponse({ type: SegmentResponseDto })
   create(@Body() payload: CreateSegmentDto): Promise<SegmentResponseDto> {
