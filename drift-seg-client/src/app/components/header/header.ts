@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 const HEADER_NAV_LINKS = [
   { path: '/customers', label: 'Customers' },
+  { path: '/transactions', label: 'Transactions' },
   { path: '/segments', label: 'Segments' },
 ] as const;
 

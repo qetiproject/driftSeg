@@ -10,4 +10,7 @@ export const Endpoints = {
     updateCustomer: (id: string) => `/${id}`,
     deleteCustomer: (id: string) => `/${id}`,
   },
+  transactions: {
+    getTransactions: '/',
+  },
 } as const;

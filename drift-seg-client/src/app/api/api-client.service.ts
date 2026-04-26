@@ -39,9 +39,11 @@ export class ApiClient {
 
   get baseUrls(): Readonly<{
     customer: string;
+    transactions: string;
   }> {
     return {
       customer: environment.customer,
+      transactions: environment.transactions,
     };
   }
 

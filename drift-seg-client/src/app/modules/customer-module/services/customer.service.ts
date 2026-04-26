@@ -25,7 +25,7 @@ export class CustomerService {
       .subscribe((customers) => this.#customers.set(customers));
   }
 
-  getCustomerDetails(id: string) {
+  getCustomerDetails(id: string): Observable<CustomerResponse | null> {
     return this.#customerApi.getCustomerDetails(id).pipe(catchError(() => of(null)));
   }
 
