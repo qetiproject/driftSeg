@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MessagesService } from '@core/services/messages.service';
+import { MessagesService } from '../../core/services/messages.service';
 import { MessageDirective } from '../../features/directives/message.directive';
 
 @Component({
@@ -10,13 +10,25 @@ import { MessageDirective } from '../../features/directives/message.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     @keyframes slide-in {
-      0% { transform: translateX(100%); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
+      0% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
     @keyframes slide-out {
-      0% { transform: translateX(0); opacity: 1; }
-      100% { transform: translateX(100%); opacity: 0; }
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
     }
 
     .animate-slide-in {

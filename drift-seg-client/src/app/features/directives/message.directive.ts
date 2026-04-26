@@ -18,7 +18,7 @@ export class MessageDirective {
     const message = this.#messagesService.message();
     if (!message) return '';
 
-    const position = message.position ?? MessagePosition.TopRight;
+    const position = message.position ?? MessagePosition.BottomRight;
     const severity = message.severity;
 
     const positionClassMap: Record<MessagePosition, string> = {
