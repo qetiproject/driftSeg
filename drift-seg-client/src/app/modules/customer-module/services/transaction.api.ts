@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient, Endpoints } from '@api';
-import { TransactionResponse } from '../types';
+import { CreateTransactionRequest, TransactionResponse } from '../types';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +9,14 @@ import { TransactionResponse } from '../types';
 export class TransactionApi {
   readonly #api = inject(ApiClient);
   readonly #baseUrl = this.#api.baseUrls.transactions;
+
+  createTransaction(payload: CreateTransactionRequest): Observable<TransactionResponse> {
+    return this.#api.post<TransactionResponse>(
+      this.#baseUrl,
+      Endpoints.transactions.createTransaction,
+      payload,
+    );
+  }
 
   getAllTransactions(): Observable<TransactionResponse[]> {
     return this.#api.get<TransactionResponse[]>(

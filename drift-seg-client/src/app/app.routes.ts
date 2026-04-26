@@ -14,6 +14,14 @@ export const routes: Routes = [
   {
     path: 'transactions',
     loadComponent: () => import('./modules/customer-module/pages').then((p) => p.Transactions),
+    children: [
+      {
+        path: 'add',
+        outlet: 'modal',
+        loadComponent: () =>
+          import('./modules/customer-module/components').then((c) => c.AddTransactionModal),
+      },
+    ],
   },
   { path: '**', loadComponent: () => import('@pages/not-found').then((m) => m.NotFoundComponent) },
 ];

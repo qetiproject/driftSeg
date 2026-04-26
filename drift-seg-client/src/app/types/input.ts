@@ -1,6 +1,5 @@
 export const INPUT_TYPES = {
   TEXT: 'text',
-  PASSWORD: 'password',
   EMAIL: 'email',
   NUMBER: 'number',
 } as const;

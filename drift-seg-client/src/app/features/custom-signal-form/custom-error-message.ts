@@ -1,4 +1,4 @@
-import { minLength, pattern, required, Schema, schema } from '@angular/forms/signals';
+import { min, minLength, pattern, required, Schema, schema } from '@angular/forms/signals';
 
 export const createNameSchema = (label: string): Schema<string> =>
   schema((path) => {
@@ -17,4 +17,10 @@ export const createEmailSchema = (): Schema<string> =>
   schema((path) => {
     required(path, { message: 'Email is required' });
     pattern(path, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: 'Email format is invalid' });
+  });
+
+export const createAmountSchema = (): Schema<number> =>
+  schema((path) => {
+    required(path, { message: 'Amount is required' });
+    min(path, 1, { message: 'Amount must be at least 1' });
   });
