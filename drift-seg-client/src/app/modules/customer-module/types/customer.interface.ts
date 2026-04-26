@@ -4,5 +4,10 @@ export interface CustomerResponse {
   lastName: string;
   email: string;
   totalSpent: number;
-  status: string;
+  status: CustomerStatus;
+}
+
+export enum CustomerStatus {
+  Inactive = 'inactive',
+  Active = 'active',
 }
