@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, of, tap } from 'rxjs';
-import { CreateCustomerRequest, CustomerResponse } from '../types/customer.interface';
+import { CreateCustomerRequest, CustomerResponse } from '../types';
 import { CustomerApi } from './customer.api';
 
 @Injectable({ providedIn: 'root' })

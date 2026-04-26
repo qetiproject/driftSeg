@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CustomerService } from '../../services';
-import { CustomerItem } from '../customer-item/customer-item';
+import { CustomerItem } from '..';
 
 @Component({
   selector: 'app-customer-list',

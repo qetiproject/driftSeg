@@ -2,7 +2,7 @@
 import { signal } from '@angular/core';
 import { apply, form } from '@angular/forms/signals';
 import { createEmailSchema, createNameSchema } from '../../../features/custom-signal-form';
-import { CreateCustomerForm } from '../types/create-customer-form';
+import { CreateCustomerForm } from '../types';
 
 export const createCustomerModel = () =>
   signal<CreateCustomerForm>({

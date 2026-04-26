@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LoadingService } from '../../core/services/loading.service';
+import { LoadingService } from '../../core/services';
 
 @Component({
   selector: 'app-loading',

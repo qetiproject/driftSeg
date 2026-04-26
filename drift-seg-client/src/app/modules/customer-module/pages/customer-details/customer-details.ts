@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
-import { BackButtonComponent } from '../../../../components/back-button/back-button.component';
+import { BackButtonComponent } from '../../../../components';
 import { CustomerService } from '../../services';
 
 @Component({

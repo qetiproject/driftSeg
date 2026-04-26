@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackButtonSVG } from '../../../assets/icons';
-import { BackButtonDirective } from '../../features/directives/back-button.directive';
+import { BackButtonDirective } from '../../features/directives';
 
 @Component({
   selector: 'app-back-button',

@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { EditSVG } from '../../../../../assets/icons/edit';
-import { RemoveSVG } from '../../../../../assets/icons/remove';
+import { EditSVG, RemoveSVG } from '../../../../../assets/icons';
 import { CustomerService } from '../../services';
-import { CustomerResponse } from '../../types/customer.interface';
+import { CustomerResponse } from '../../types';
 
 @Component({
   selector: 'app-customer-item',

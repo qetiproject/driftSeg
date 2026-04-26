@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient, Endpoints } from '../../../api';
-import { CreateCustomerRequest, CustomerResponse } from '../types/customer.interface';
+import { CreateCustomerRequest, CustomerResponse } from '../types';
 
 @Injectable({
   providedIn: 'root',

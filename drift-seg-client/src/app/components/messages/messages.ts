@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MessagesService } from '../../core/services/messages.service';
-import { MessageDirective } from '../../features/directives/message.directive';
+import { MessagesService } from '../../core/services';
+import { MessageDirective } from '../../features/directives';
 
 @Component({
   selector: 'app-messages',

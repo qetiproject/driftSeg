@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CustomerList } from '../../components/customer-list/customer-list';
-import { CustomerPageHeader } from '../../components/customer-page-header/customer-page-header';
+import { CustomerList, CustomerPageHeader } from '../../components';
 
 @Component({
   selector: 'app-customers',
