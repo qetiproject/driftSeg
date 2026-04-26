@@ -1,0 +1,1 @@
+export const SEGMENT_EVENTS_CLIENT = 'SEGMENT_EVENTS_CLIENT' as const;

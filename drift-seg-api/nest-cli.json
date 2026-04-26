@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/customer-service/src",
+  "sourceRoot": "apps/customer/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/customer-service/tsconfig.app.json"
+    "tsConfigPath": "apps/customer/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/customer-service",
+  "root": "apps/customer",
   "projects": {
     "common": {
       "type": "library",
@@ -19,22 +19,22 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "customer-service": {
+    "customer": {
       "type": "application",
-      "root": "apps/customer-service",
+      "root": "apps/customer",
       "entryFile": "main",
-      "sourceRoot": "apps/customer-service/src",
+      "sourceRoot": "apps/customer/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/customer-service/tsconfig.app.json"
+        "tsConfigPath": "apps/customer/tsconfig.app.json"
       }
     },
-    "segment-service": {
+    "segment": {
       "type": "application",
-      "root": "apps/segment-service",
+      "root": "apps/segment",
       "entryFile": "main",
-      "sourceRoot": "apps/segment-service/src",
+      "sourceRoot": "apps/segment/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/segment-service/tsconfig.app.json"
+        "tsConfigPath": "apps/segment/tsconfig.app.json"
       }
     }
   }
