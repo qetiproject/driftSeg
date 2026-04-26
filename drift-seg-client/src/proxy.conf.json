@@ -1,0 +1,10 @@
+{
+  "/customer": {
+    "target": "http://localhost:3000/api",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/customer": "/customer"
+    }
+  }
+}

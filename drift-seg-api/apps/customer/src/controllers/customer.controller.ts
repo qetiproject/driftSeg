@@ -20,12 +20,12 @@ import {
 } from '../dto';
 import { CustomerService } from '../services/customer.service';
 
-@Controller('customers')
-@ApiTags('customers')
+@Controller('customer')
+@ApiTags('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @Post()
+  @Post('create')
   @ApiBody({ type: CreateCustomerDto })
   @ApiCreatedResponse({ type: CustomerResponseDto })
   create(
@@ -34,7 +34,7 @@ export class CustomerController {
     return this.customerService.createCustomer(createCustomerDto);
   }
 
-  @Get()
+  @Get('all')
   @ApiOkResponse({ type: CustomerResponseDto, isArray: true })
   findAll(): Promise<CustomerResponseDto[]> {
     return this.customerService.getCustomers();
