@@ -1,0 +1,29 @@
+@if (transactions().length === 0) {
+  <p class="text-sm text-gray-500">No transactions.</p>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Customer ID
+          </th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Amount
+          </th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Occurred At
+          </th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        @for (transaction of transactions(); track transaction._id) {
+          <tr app-transaction-item [transaction]="transaction"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

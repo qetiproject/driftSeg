@@ -45,6 +45,7 @@ export class TransactionService {
       this.customerRepository,
       createTransactionDto,
     );
+    const transactionOccurredAt = (created.occurredAt ?? new Date()).toISOString();
 
     const eventPayload: TransactionCreatedEvent = {
       eventId: randomUUID(),
@@ -55,7 +56,7 @@ export class TransactionService {
         transactionId: created._id.toString(),
         customerId: createTransactionDto.customerId,
         amount: createTransactionDto.amount,
-        transactionOccurredAt: created.occurredAt.toISOString(),
+        transactionOccurredAt,
         totalSpent: updatedCustomer.totalSpent,
       },
     };

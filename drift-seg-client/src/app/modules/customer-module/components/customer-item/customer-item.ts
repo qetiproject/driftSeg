@@ -16,7 +16,12 @@ export class CustomerItem {
   readonly #customerService = inject(CustomerService);
 
   async onOpenModal(): Promise<void> {
-    const { _id } = this.customer();
+    const { _id, firstName, lastName, email } = this.customer();
+    const isConfirmed = window.confirm(
+      `Delete customer "${firstName} ${lastName}" (${email})? This action cannot be undone.`,
+    );
+
+    if (!isConfirmed) return;
 
     this.#customerService.deleteCustomer(_id);
   }

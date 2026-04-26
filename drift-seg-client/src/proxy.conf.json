@@ -1,6 +1,18 @@
 {
-  "/api": {
+  "/api/customer": {
     "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/transaction": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/segments": {
+    "target": "http://localhost:3001",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

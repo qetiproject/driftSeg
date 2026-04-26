@@ -1,0 +1,103 @@
+@let s = segment();
+
+<article class="rounded-xl border border-slate-200 bg-white p-4">
+  <div class="mb-3 flex items-start justify-between gap-3">
+    <h3
+      class="text-sm font-semibold md:text-base"
+      [style.color]="
+        s.rules.kind === 'active_buyers'
+          ? '#047857'
+          : s.rules.kind === 'vip'
+            ? '#6d28d9'
+            : s.rules.kind === 'risk'
+              ? '#be123c'
+              : '#0f172a'
+      "
+    >
+      {{ s.name }}
+    </h3>
+
+    <div class="relative flex items-center gap-2">
+      <span
+        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+        [class.bg-emerald-100]="isDynamic()"
+        [class.text-emerald-700]="isDynamic()"
+        [class.bg-slate-100]="!isDynamic()"
+        [class.text-slate-700]="!isDynamic()"
+      >
+        {{ s.type }}
+      </span>
+
+      <button
+        type="button"
+        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-100"
+        (click)="toggleMenu()"
+        aria-label="Open segment actions"
+      >
+        ⋮
+      </button>
+
+      @if (menuOpen()) {
+        <div
+          class="absolute right-0 top-9 z-20 min-w-44 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+        >
+          <button
+            type="button"
+            class="w-full rounded-md px-3 py-2 text-left text-xs text-slate-700 hover:bg-slate-100"
+            (click)="onViewMembers()"
+          >
+            Segment members
+          </button>
+          <button
+            type="button"
+            class="w-full rounded-md px-3 py-2 text-left text-xs text-slate-700 hover:bg-slate-100"
+            (click)="onViewDeltas()"
+          >
+            Segment deltas
+          </button>
+          <button
+            type="button"
+            class="w-full rounded-md px-3 py-2 text-left text-xs hover:bg-slate-100"
+            [class.text-slate-700]="isRisk()"
+            [class.text-slate-400]="!isRisk()"
+            (click)="onRiskRefresh()"
+          >
+            Risk segment refresh
+          </button>
+          <button
+            type="button"
+            class="w-full rounded-md px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50"
+            (click)="onDeleteSegment()"
+          >
+            Delete segment
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <p class="text-sm text-slate-700">{{ ruleDescription() }}</p>
+
+  <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs">
+    <div class="mb-1 flex items-center justify-between">
+      <span class="font-medium text-slate-600">Depends on</span>
+      <span class="rounded bg-white px-1.5 py-0.5 text-[11px] text-slate-500">
+        {{ dependencyCount() }}
+      </span>
+    </div>
+
+    <div class="min-h-6 flex flex-wrap gap-1">
+      @if (s.dependsOnSegmentIds.length > 0) {
+        @for (dependsOnSegmentId of s.dependsOnSegmentIds; track dependsOnSegmentId) {
+          <span class="rounded bg-white px-2 py-0.5 text-[11px] text-slate-700 ring-1 ring-slate-200">
+            {{ dependsOnSegmentId }}
+          </span>
+        }
+      } @else {
+        <span class="rounded bg-white px-2 py-0.5 text-[11px] text-slate-500 ring-1 ring-slate-200">
+          No dependencies
+        </span>
+      }
+    </div>
+  </div>
+</article>

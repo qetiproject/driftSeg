@@ -54,9 +54,7 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "proxyConfig": "src/proxy.conf.json"
-          },
+          "options": {},
           "configurations": {
             "production": {
               "buildTarget": "drift-seg-client:build:production"

@@ -6,11 +6,12 @@ import { CustomerRepository } from '../../repositories';
 export function toTransactionResponse(
   transaction: TransactionDocument,
 ): TransactionResponseDto {
+  const occurredAt = (transaction.occurredAt ?? new Date()).toISOString();
   return {
     _id: transaction._id.toString(),
     customerId: transaction.customerId.toString(),
     amount: transaction.amount,
-    occurredAt: transaction.occurredAt.toISOString(),
+    occurredAt,
     description: transaction.description,
   };
 }
