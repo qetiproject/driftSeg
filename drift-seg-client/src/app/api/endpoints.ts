@@ -17,5 +17,8 @@ export const Endpoints = {
   segments: {
     createSegment: '/create',
     getSegments: '/all',
+    getSegmentMembers: (id: string) => `/${id}/members`,
+    getSegmentDeltas: (id: string) => `/${id}/deltas`,
+    refreshSegment: (id: string) => `/${id}/refresh`,
   },
 } as const;

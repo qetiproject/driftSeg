@@ -12,4 +12,13 @@ export const segmentRoutes: Routes = [
       },
     ],
   },
+  {
+    path: ':id/members',
+    loadComponent: () =>
+      import('./pages/segment-members/segment-members').then((c) => c.SegmentMembers),
+  },
+  {
+    path: ':id/deltas',
+    loadComponent: () => import('./pages/segment-deltas/segment-deltas').then((c) => c.SegmentDeltas),
+  },
 ];

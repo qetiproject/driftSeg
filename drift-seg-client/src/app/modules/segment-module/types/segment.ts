@@ -27,3 +27,27 @@ export enum SegmentkindEnum {
   VIP = 'vip',
   RISK = 'risk',
 }
+
+export interface SegmentMember {
+  customerId: string;
+  customerEmail: string;
+}
+
+export interface SegmentMembersResponse {
+  segmentId: string;
+  segmentkind?: SegmentkindEnum;
+  staticSegmentKind?: string;
+  totalMembers: number;
+  members: SegmentMember[];
+}
+
+export interface SegmentDeltaResponse {
+  _id: string;
+  segmentId: string;
+  segmentkind: SegmentkindEnum;
+  addedCustomerIds: string[];
+  removedCustomerIds: string[];
+  triggerEventId: string;
+  triggerEventType: string;
+  computedAt: string;
+}
