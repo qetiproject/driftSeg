@@ -11,8 +11,8 @@ export const Endpoints = {
     deleteCustomer: (id: string) => `/${id}`,
   },
   transactions: {
-    createTransaction: '/create',
-    getTransactions: '/all',
+    createTransaction: '/',
+    getTransactions: '/',
   },
   segments: {
     createSegment: '/create',
