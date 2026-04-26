@@ -9,6 +9,7 @@ import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateCustomerDto } from '../dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerRepository } from '../repositories/customer.repository';
+import { TransactionRepository } from '../repositories/transaction.repository';
 import { CustomerService } from './customer.service';
 
 describe('CustomerService', () => {
@@ -21,6 +22,9 @@ describe('CustomerService', () => {
     findOneAndUpdate: jest.fn(),
     findOneAndDelete: jest.fn(),
   };
+  const transactionRepositoryMock = {
+    deleteManyByCustomerId: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -31,6 +35,10 @@ describe('CustomerService', () => {
         {
           provide: CustomerRepository,
           useValue: repositoryMock,
+        },
+        {
+          provide: TransactionRepository,
+          useValue: transactionRepositoryMock,
         },
       ],
     }).compile();
@@ -197,6 +205,7 @@ describe('CustomerService', () => {
       expect(repositoryMock.findOneAndDelete).toHaveBeenCalledWith({
         _id: 'c-30',
       });
+      expect(transactionRepositoryMock.deleteManyByCustomerId).toHaveBeenCalledWith('c-30');
       expect(result).toBe(deletedCustomer);
     });
 
@@ -209,6 +218,7 @@ describe('CustomerService', () => {
       await expect(resultPromise).rejects.toThrow(
         CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND,
       );
+      expect(transactionRepositoryMock.deleteManyByCustomerId).not.toHaveBeenCalled();
     });
   });
 });

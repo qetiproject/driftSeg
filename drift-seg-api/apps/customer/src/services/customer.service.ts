@@ -9,10 +9,14 @@ import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateCustomerDto, CustomerResponseDto } from '../dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerRepository } from '../repositories/customer.repository';
+import { TransactionRepository } from '../repositories/transaction.repository';
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(
+    private readonly customerRepository: CustomerRepository,
+    private readonly transactionRepository: TransactionRepository,
+  ) {}
 
   async createCustomer(
     createCustomerDto: CreateCustomerDto,
@@ -63,6 +67,7 @@ export class CustomerService {
     if (!deletedCustomer) {
       throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
     }
+    await this.transactionRepository.deleteManyByCustomerId(_id);
     return deletedCustomer;
   }
 
