@@ -1,4 +1,4 @@
-<section>
+<!-- <section>
   <h2>Customers</h2>
     <ng-container *ngIf="customers$ | async as customers">
     <p *ngIf="customers.length === 0">No customers found.</p>
@@ -10,4 +10,11 @@
     </ul>
   </ng-container>
   <app-customer-item></app-customer-item>
-</section>
+</section> -->
+
+<div class="min-h-screen py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <app-customer-page-header />
+    <app-customer-list />
+  </div>
+</div>

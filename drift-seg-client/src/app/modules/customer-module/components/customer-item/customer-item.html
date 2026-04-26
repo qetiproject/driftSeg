@@ -1,10 +1,9 @@
-  <!-- <ng-container *ngIf="customers$ | async as customers">
-    <p *ngIf="customers.length === 0">No customers found.</p>
 
-    <ul *ngIf="customers.length > 0">
-      <li *ngFor="let customer of customers">
-        {{ customer.firstName }} {{ customer.lastName }} ({{ customer.email }}) - {{ customer.status }}
-      </li>
-    </ul>
-  </ng-container> -->
-  <p>customer item</p>
+<div class="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+    <h3 class="truncate text-base font-semibold text-gray-900 sm:text-lg">
+      {{ customer.firstName }}
+    </h3>
+    <p class="mt-2 line-clamp-2 text-sm leading-6 text-gray-600 sm:line-clamp-3">
+      {{ customer.lastName }}
+    </p>
+  </div>

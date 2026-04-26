@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CustomerResponse } from '../../types/customer.interface';
 
 @Component({
   selector: 'app-customer-item',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './customer-item.html',
 })
-export class CustomerItem {}
+export class CustomerItem {
+  @Input({ required: true }) customer!: CustomerResponse;
+}

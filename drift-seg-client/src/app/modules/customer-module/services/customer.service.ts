@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { CustomerResponse } from '../types/customer.interface';
 import { CustomerApi } from './customer.api';
 
@@ -8,8 +8,17 @@ import { CustomerApi } from './customer.api';
 })
 export class CustomerService {
   readonly #customerApi = inject(CustomerApi);
+  readonly #customers = signal<CustomerResponse[]>([]);
 
-  getAllCustomers(): Observable<CustomerResponse[]> {
-    return this.#customerApi.getAllCustomers();
+  readonly customers = this.#customers.asReadonly();
+
+  loadAllCustomers(): void {
+    this.#customerApi
+      .getAllCustomers()
+      .pipe(take(1))
+      .subscribe({
+        next: (customers) => this.#customers.set(customers),
+        error: () => this.#customers.set([]),
+      });
   }
 }
