@@ -1,0 +1,9 @@
+export const STORAGE_KEYS = {
+  USER: 'USER_STORAGE_KEY',
+  ACCESS_TOKEN: 'ACCESS_TOKEN_KEY',
+  CART: 'CART_STORAGE_KEY',
+  ORDER: 'ORDER_STORAGE_KEY',
+  BILLING: 'BILLING_STORAGE_KEY',
+} as const;
+
+export const PROTECTED_ENDPOINTS = ['/auth/me'] as const;
