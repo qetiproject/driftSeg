@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { CustomerDetailResolve } from './pages';
 
 export const customerRoutes: Routes = [
   {
@@ -15,5 +16,8 @@ export const customerRoutes: Routes = [
   {
     path: ':id',
     loadComponent: () => import('./pages').then((p) => p.CustomerDetails),
+    resolve: {
+      customer: CustomerDetailResolve,
+    },
   },
 ];

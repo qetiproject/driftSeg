@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './components';
-import { MessagesComponent } from './components/messages/messages';
+import { HeaderComponent, MessagesComponent } from './components';
 import { LoadingComponent } from './features/loading/loading.component';
 
 @Component({

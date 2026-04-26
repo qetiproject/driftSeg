@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
-import { BackButtonComponent } from '@components';
-import { CustomerService } from '../../services';
+import { map } from 'rxjs/operators';
+import { BackButtonComponent } from '../../../../components/index';
+import { CustomerResponse } from '../../types/customer.interface';
 
 @Component({
   selector: 'app-customer-details',
@@ -14,13 +14,11 @@ import { CustomerService } from '../../services';
 })
 export class CustomerDetails {
   readonly #route = inject(ActivatedRoute);
-  readonly #customerService = inject(CustomerService);
 
-  readonly customer = toSignal(
-    this.#route.paramMap.pipe(
-      map((params) => params.get('id') ?? ''),
-      switchMap((id) => this.#customerService.getCustomerDetails(id)),
-    ),
-    { initialValue: null },
+  customerDetails = toSignal<CustomerResponse | null>(
+    this.#route.data.pipe(map((d: { customer?: CustomerResponse | null }) => d.customer ?? null)),
+    {
+      initialValue: null,
+    },
   );
 }

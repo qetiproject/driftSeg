@@ -18,8 +18,6 @@
     "paths": {
       "@api": ["app/api/index.ts"],
       "@api/*": ["app/api/*"],
-      "@components": ["app/components/index.ts"],
-      "@components/*": ["app/components/*"],
       "@pages": ["app/pages"],
       "@pages/*": ["app/pages/*"],
       "@types": ["app/types/index.ts"],
