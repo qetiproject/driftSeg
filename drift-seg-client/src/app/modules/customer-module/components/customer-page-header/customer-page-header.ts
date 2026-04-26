@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-customer-page-header',
@@ -7,6 +8,10 @@ import { Component } from '@angular/core';
   templateUrl: './customer-page-header.html',
 })
 export class CustomerPageHeader {
+  router = inject(Router);
+  route = inject(ActivatedRoute);
 
-  onAddCustomer(): void {}
+  onAddCustomer(): void {
+    this.router.navigate([{ outlets: { modal: ['add-customer'] } }], { relativeTo: this.route });
+  }
 }
