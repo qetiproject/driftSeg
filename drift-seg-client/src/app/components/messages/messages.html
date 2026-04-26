@@ -1,0 +1,17 @@
+@if (message()) {
+  <div appMessageClass>
+    <div
+      class="flex items-center justify-between px-4 py-2 rounded-lg shadow-lg max-w-xs w-full text-white text-sm font-medium animate-slide-in"
+    >
+      <span>{{ message()!.text }}</span>
+      <button
+        type="button"
+        (click)="onClose()"
+        aria-label="Close message"
+        class="ml-2 text-white font-bold hover:opacity-80 transition"
+      >
+        ✖
+      </button>
+    </div>
+  </div>
+}

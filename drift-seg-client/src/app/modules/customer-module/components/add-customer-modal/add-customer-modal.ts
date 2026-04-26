@@ -1,5 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
+import { MessageSeverity } from '@app-types/message';
+import { MessagesService } from '@core/services/messages.service';
 import { FormField } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FieldInput } from '../../../../features/custom-signal-form';
@@ -16,6 +18,7 @@ import { createCustomerForm, createCustomerModel } from '../../utils/create-cust
 export class AddCustomerModal {
   readonly INPUT_TYPES = INPUT_TYPES;
   readonly #customerService = inject(CustomerService);
+  readonly #messages = inject(MessagesService);
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
 
@@ -34,7 +37,13 @@ export class AddCustomerModal {
     this.submitError.set(null);
     const payload = this.customerForm().value();
     this.#customerService.createCustomer(payload).subscribe({
-      next: () => this.onCloseModal(),
+      next: () => {
+        this.#messages.showMessage({
+          text: 'Customer created successfully.',
+          severity: MessageSeverity.Success,
+        });
+        this.onCloseModal();
+      },
       error: (error: unknown) => {
         this.submitError.set(this.resolveCreateErrorMessage(error));
       },
