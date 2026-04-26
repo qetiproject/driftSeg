@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CustomerResponse } from '../../types/customer.interface';
 
 @Component({
@@ -9,5 +9,5 @@ import { CustomerResponse } from '../../types/customer.interface';
   templateUrl: './customer-item.html',
 })
 export class CustomerItem {
-  @Input({ required: true }) customer!: CustomerResponse;
+  customer = input.required<CustomerResponse>()
 }

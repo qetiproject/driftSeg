@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CustomerService } from '../../services';
 import { CustomerItem } from '../customer-item/customer-item';
 
@@ -9,12 +9,12 @@ import { CustomerItem } from '../customer-item/customer-item';
   templateUrl: './customer-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomerList implements OnInit{
-  customerService = inject(CustomerService);
+export class CustomerList {
+  readonly #customerService = inject(CustomerService);
 
-  customers = this.customerService.customers;
+  readonly customers = this.#customerService.customers;
 
-  ngOnInit(): void {
-    this.customerService.loadAllCustomers();
+  constructor() {
+    this.#customerService.getCustomers();
   }
 }
