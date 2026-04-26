@@ -1,14 +1,18 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { catchError, of } from 'rxjs';
-import { CustomerResponse } from '../types/customer.interface';
+import { inject, Injectable, signal } from '@angular/core';
+import { catchError, Observable, of } from 'rxjs';
+import { CreateCustomerRequest, CustomerResponse } from '../types/customer.interface';
 import { CustomerApi } from './customer.api';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
-readonly #customerApi = inject(CustomerApi);
+  readonly #customerApi = inject(CustomerApi);
   readonly #customers = signal<CustomerResponse[]>([]);
 
   readonly customers = this.#customers.asReadonly();
+
+  createCustomer(payload: CreateCustomerRequest): Observable<CustomerResponse> {
+    return this.#customerApi.createCustomer(payload);
+  }
 
   getCustomers(): void {
     this.#customerApi

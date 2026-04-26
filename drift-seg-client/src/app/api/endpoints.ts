@@ -8,6 +8,6 @@ export const Endpoints = {
     getCustomers: '/all',
     getCustomerId: (id: string) => `/${id}`,
     updateCustomer: (id: string) => `/${id}`,
-    deleteCustomer: (id: string) => `/${id}`
+    deleteCustomer: (id: string) => `/${id}`,
   },
 } as const;

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient, Endpoints } from '../../../api';
-import { CustomerResponse } from '../types/customer.interface';
+import { CreateCustomerRequest, CustomerResponse } from '../types/customer.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,24 +10,22 @@ export class CustomerApi {
   readonly #api = inject(ApiClient);
   readonly #baseUrl = this.#api.baseUrls.customer;
 
-  getAllCustomers(): Observable<CustomerResponse[]> {
-    return this.#api.get<CustomerResponse[]>(
+  createCustomer(payload: CreateCustomerRequest): Observable<CustomerResponse> {
+    return this.#api.post<CreateCustomerRequest>(
       this.#baseUrl,
-      Endpoints.customer.getCustomers,
+      Endpoints.customer.createCustomer,
+      payload,
     );
+  }
+  getAllCustomers(): Observable<CustomerResponse[]> {
+    return this.#api.get<CustomerResponse[]>(this.#baseUrl, Endpoints.customer.getCustomers);
   }
 
   getCustomerDetails(id: string): Observable<CustomerResponse> {
-    return this.#api.get<CustomerResponse>(
-      this.#baseUrl,
-      Endpoints.customer.getCustomerId(id),
-    );
+    return this.#api.get<CustomerResponse>(this.#baseUrl, Endpoints.customer.getCustomerId(id));
   }
 
   deleteCustomer(id: string): Observable<CustomerResponse> {
-    return this.#api.delete<CustomerResponse>(
-      this.#baseUrl,
-      Endpoints.customer.deleteCustomer(id),
-    );
+    return this.#api.delete<CustomerResponse>(this.#baseUrl, Endpoints.customer.deleteCustomer(id));
   }
 }

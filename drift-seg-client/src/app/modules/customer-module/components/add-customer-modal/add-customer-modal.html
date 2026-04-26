@@ -3,46 +3,54 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto">
   <div class="bg-white p-6 rounded-xl w-full max-w-4xl">
     <h2 class="text-xl font-semibold mb-6 text-center md:text-left">Add Customer</h2>
-
-    <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="flex flex-col gap-4">
-        <app-input label="Title" formControlName="title" [type]="INPUT_TYPES.TEXT" class="w-full" />
-        <app-input
-          label="Description"
-          formControlName="description"
+    o
+    <form (submit)="onAddCustomerEvent($event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="flex flex-col gap-5">
+        <app-field-input
+          label="First Name"
+          [formField]="customerForm.firstName"
           [type]="INPUT_TYPES.TEXT"
           class="w-full"
         />
-        <app-input
-          label="Price"
-          formControlName="price"
-          [type]="INPUT_TYPES.NUMBER"
+
+        <app-field-input
+          label="Last Name"
+          [formField]="customerForm.lastName"
+          [type]="INPUT_TYPES.TEXT"
+          class="w-full"
+        />
+
+        <app-field-input
+          label="Email"
+          [formField]="customerForm.email"
+          [type]="INPUT_TYPES.TEXT"
           class="w-full"
         />
       </div>
 
-      <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-3 mt-6 justify-end">
+      <!-- <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-4 mt-10 justify-end">
         <button
+          [routerLink]="['/product/list']"
           type="button"
-          (click)="onCancel()"
-          aria-label="Cancel adding product"
-          class="flex-1 md:flex-none bg-gray-200 text-gray-700 px-4 py-2 text-sm font-medium rounded-lg transition shadow hover:bg-gray-300"
+          aria-label="Cancel and return to product list"
+          class="flex-1 md:flex-none px-6 py-3 text-sm font-medium rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition duration-200"
         >
           Cancel
         </button>
 
         <button
           type="submit"
-          aria-label="Save product"
+          [disabled]="billingForm().invalid()"
+          aria-label="Save billing details and continue"
+          class="flex-1 md:flex-none px-6 py-3 text-sm font-semibold rounded-xl transition duration-200 shadow-md"
           [class]="{
-            'bg-blue-600 hover:bg-blue-700 text-white': form.valid,
-            'bg-gray-200 text-gray-500 cursor-not-allowed opacity-70': form.invalid,
+            'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200': billingForm().valid(),
+            'bg-gray-200 text-gray-400 cursor-not-allowed': billingForm().invalid(),
           }"
-          class="flex-1 md:flex-none px-4 py-2 text-sm font-medium rounded-lg transition shadow"
         >
           Save
         </button>
-      </div>
-    </form> -->
+      </div> -->
+    </form>
   </div>
 </div>

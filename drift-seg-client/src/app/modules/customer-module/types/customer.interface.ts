@@ -13,6 +13,8 @@ export enum CustomerStatus {
 }
 
 export interface CustomerDetailsResponse extends CustomerResponse {
-   createdAt: Date,
-  updatedAt: Date
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+export interface CreateCustomerRequest extends CustomerResponse {}
