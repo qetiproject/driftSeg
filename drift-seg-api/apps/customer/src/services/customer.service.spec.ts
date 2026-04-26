@@ -1,8 +1,13 @@
+/// <reference types="jest" />
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateCustomerDto } from '../dto';
+import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerRepository } from '../repositories/customer.repository';
 import { CustomerService } from './customer.service';
 
@@ -116,17 +121,91 @@ describe('CustomerService', () => {
         },
       ]);
     });
+
+    it('applies fallback values when totalSpent/status are missing', async () => {
+      repositoryMock.find.mockResolvedValueOnce([
+        {
+          _id: 'c-2',
+          firstName: 'Fallback',
+          lastName: 'User',
+          email: 'fallback@user.com',
+        },
+      ]);
+
+      const result = await service.getCustomers();
+
+      expect(result).toEqual([
+        {
+          _id: 'c-2',
+          firstName: 'Fallback',
+          lastName: 'User',
+          email: 'fallback@user.com',
+          totalSpent: 0,
+          status: CustomerStatusEnum.INACTIVE,
+        },
+      ]);
+    });
+  });
+
+  describe('getCustomerById', () => {
+    it('delegates to repository.findOne with id filter', async () => {
+      const customer = { _id: 'c-10', email: 'id@test.com' };
+      repositoryMock.findOne.mockResolvedValueOnce(customer);
+
+      const result = await service.getCustomerById('c-10');
+
+      expect(repositoryMock.findOne).toHaveBeenCalledWith({ _id: 'c-10' });
+      expect(result).toBe(customer);
+    });
+  });
+
+  describe('updateCustomer', () => {
+    it('delegates to repository.findOneAndUpdate with $set payload', async () => {
+      const updatePayload: UpdateCustomerDto = {
+        firstName: 'Updated',
+      };
+      const updated = {
+        _id: 'c-20',
+        firstName: 'Updated',
+        lastName: 'Doe',
+        email: 'update@test.com',
+      };
+      repositoryMock.findOneAndUpdate.mockResolvedValueOnce(updated);
+
+      const result = await service.updateCustomer('c-20', updatePayload);
+
+      expect(repositoryMock.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: 'c-20' },
+        { $set: updatePayload },
+      );
+      expect(result).toBe(updated);
+    });
   });
 
   describe('removeCustomer', () => {
+    it('returns deleted customer when found', async () => {
+      const deletedCustomer = {
+        _id: 'c-30',
+        firstName: 'Delete',
+        lastName: 'Me',
+        email: 'delete@me.com',
+      };
+      repositoryMock.findOneAndDelete.mockResolvedValueOnce(deletedCustomer);
+
+      const result = await service.removeCustomer('c-30');
+
+      expect(repositoryMock.findOneAndDelete).toHaveBeenCalledWith({
+        _id: 'c-30',
+      });
+      expect(result).toBe(deletedCustomer);
+    });
+
     it('throws NotFoundException when customer does not exist', async () => {
       repositoryMock.findOneAndDelete.mockResolvedValueOnce(null);
 
       const resultPromise = service.removeCustomer('missing-id');
 
-      await expect(resultPromise).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
+      await expect(resultPromise).rejects.toBeInstanceOf(NotFoundException);
       await expect(resultPromise).rejects.toThrow(
         CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND,
       );
