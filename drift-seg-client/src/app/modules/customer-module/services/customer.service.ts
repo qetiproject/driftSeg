@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { CreateCustomerRequest, CustomerResponse } from '../types/customer.interface';
 import { CustomerApi } from './customer.api';
 
@@ -11,7 +11,11 @@ export class CustomerService {
   readonly customers = this.#customers.asReadonly();
 
   createCustomer(payload: CreateCustomerRequest): Observable<CustomerResponse> {
-    return this.#customerApi.createCustomer(payload);
+    return this.#customerApi.createCustomer(payload).pipe(
+      tap((createdCustomer) => {
+        this.#customers.update((customers) => [createdCustomer, ...customers]);
+      }),
+    );
   }
 
   getCustomers(): void {

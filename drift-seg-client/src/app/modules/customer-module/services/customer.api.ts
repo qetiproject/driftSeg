@@ -11,7 +11,7 @@ export class CustomerApi {
   readonly #baseUrl = this.#api.baseUrls.customer;
 
   createCustomer(payload: CreateCustomerRequest): Observable<CustomerResponse> {
-    return this.#api.post<CreateCustomerRequest>(
+    return this.#api.post<CustomerResponse>(
       this.#baseUrl,
       Endpoints.customer.createCustomer,
       payload,

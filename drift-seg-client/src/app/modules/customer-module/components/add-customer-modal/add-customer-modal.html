@@ -3,7 +3,7 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto">
   <div class="bg-white p-6 rounded-xl w-full max-w-4xl">
     <h2 class="text-xl font-semibold mb-6 text-center md:text-left">Add Customer</h2>
-    o
+
     <form (submit)="onAddCustomerEvent($event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="flex flex-col gap-5">
         <app-field-input
@@ -23,16 +23,22 @@
         <app-field-input
           label="Email"
           [formField]="customerForm.email"
-          [type]="INPUT_TYPES.TEXT"
+          [type]="INPUT_TYPES.EMAIL"
           class="w-full"
         />
       </div>
 
-      <!-- <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-4 mt-10 justify-end">
+      @if (submitError(); as errorMessage) {
+        <div class="col-span-1 md:col-span-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-4 mt-10 justify-end">
         <button
-          [routerLink]="['/product/list']"
           type="button"
-          aria-label="Cancel and return to product list"
+          (click)="onCloseModal()"
+          aria-label="Cancel adding customer"
           class="flex-1 md:flex-none px-6 py-3 text-sm font-medium rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition duration-200"
         >
           Cancel
@@ -40,17 +46,13 @@
 
         <button
           type="submit"
-          [disabled]="billingForm().invalid()"
-          aria-label="Save billing details and continue"
-          class="flex-1 md:flex-none px-6 py-3 text-sm font-semibold rounded-xl transition duration-200 shadow-md"
-          [class]="{
-            'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200': billingForm().valid(),
-            'bg-gray-200 text-gray-400 cursor-not-allowed': billingForm().invalid(),
-          }"
+          [disabled]="customerForm().invalid()"
+          aria-label="Add customer"
+          class="flex-1 md:flex-none px-6 py-3 text-sm font-semibold rounded-xl transition duration-200 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
         >
-          Save
+          Save Customer
         </button>
-      </div> -->
+      </div>
     </form>
   </div>
 </div>

@@ -17,4 +17,8 @@ export interface CustomerDetailsResponse extends CustomerResponse {
   updatedAt: Date;
 }
 
-export interface CreateCustomerRequest extends CustomerResponse {}
+export interface CreateCustomerRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+}

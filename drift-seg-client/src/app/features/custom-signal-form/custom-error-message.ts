@@ -12,3 +12,9 @@ export const createZipSchema = (): Schema<string> =>
     minLength(path, 3, { message: 'Zip Code must be at least 3 digits' });
     pattern(path, /^\d+$/, { message: 'Zip Code must contain only digits' });
   });
+
+export const createEmailSchema = (): Schema<string> =>
+  schema((path) => {
+    required(path, { message: 'Email is required' });
+    pattern(path, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: 'Email format is invalid' });
+  });
