@@ -1,0 +1,1636 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Drift Seg API</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">Drift Seg API</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content miscellaneous-variables">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Miscellaneous</li>
+  <li class="breadcrumb-item">Variables</li>
+</ol>
+
+<section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                        <li>
+                            <a href="#ADD_CUSTOMER_TO_SEGMENT" title="apps/segment/src/constants/constants.ts" ><b>ADD_CUSTOMER_TO_SEGMENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#APPLICATION_JSON_CONTENT_TYPE" title="apps/segment/src/constants/constants.ts" ><b>APPLICATION_JSON_CONTENT_TYPE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CAMPAIGN_DELTA_EVENT_CONSUMED_LOG" title="apps/segment/src/constants/constants.ts" ><b>CAMPAIGN_DELTA_EVENT_CONSUMED_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CONTENT_TYPE_HEADER_KEY" title="apps/segment/src/constants/constants.ts" ><b>CONTENT_TYPE_HEADER_KEY</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CUSTOMER_ERROR_MESSAGES" title="apps/customer/src/constants/error-messages.ts" ><b>CUSTOMER_ERROR_MESSAGES</b>&nbsp;&nbsp;&nbsp;(apps/.../error-messages.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CUSTOMER_SERVICE_ENV_FILE_PATH" title="apps/customer/src/constants/constants.ts" ><b>CUSTOMER_SERVICE_ENV_FILE_PATH</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CustomerSchema" title="libs/common/src/models/customer-schema.ts" ><b>CustomerSchema</b>&nbsp;&nbsp;&nbsp;(libs/.../customer-schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DAY_IN_MS" title="apps/segment/src/constants/constants.ts" ><b>DAY_IN_MS</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#ELASTICSEARCH_NODE_ENV_KEY" title="apps/segment/src/constants/constants.ts" ><b>ELASTICSEARCH_NODE_ENV_KEY</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FAILED_TO_INDEX_BATCH_EVENT_LOG" title="apps/segment/src/constants/constants.ts" ><b>FAILED_TO_INDEX_BATCH_EVENT_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FAILED_TO_PARSE_PENDING_TRIGGER_LOG" title="apps/segment/src/constants/constants.ts" ><b>FAILED_TO_PARSE_PENDING_TRIGGER_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#HTTP_POST_METHOD" title="apps/segment/src/constants/constants.ts" ><b>HTTP_POST_METHOD</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#PROCESSED_MEMBERSHIP_BATCH_LOG" title="apps/segment/src/constants/constants.ts" ><b>PROCESSED_MEMBERSHIP_BATCH_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REDIS_CLIENT_ERROR_LOG" title="apps/segment/src/constants/constants.ts" ><b>REDIS_CLIENT_ERROR_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REDIS_CLIENT_EVENT" title="apps/segment/src/constants/constants.ts" ><b>REDIS_CLIENT_EVENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REDIS_CLIENT_STATUS" title="apps/segment/src/constants/constants.ts" ><b>REDIS_CLIENT_STATUS</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REMOVE_CUSTOMER_FROM_SEGMENT" title="apps/segment/src/constants/constants.ts" ><b>REMOVE_CUSTOMER_FROM_SEGMENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SCHEDULER_EVENT_TYPE" title="apps/segment/src/constants/constants.ts" ><b>SCHEDULER_EVENT_TYPE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_BATCH_EVENT_ID_PREFIX" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_BATCH_EVENT_ID_PREFIX</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_BATCH_RECOMPUTE_EVENT" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_BATCH_RECOMPUTE_EVENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_CAMPAIGN_DELTA_EVENT" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_CAMPAIGN_DELTA_EVENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_ENV_FILE_PATH" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_ENV_FILE_PATH</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_ERROR_MESSAGES" title="apps/segment/src/constants/error-messages.ts" ><b>SEGMENT_ERROR_MESSAGES</b>&nbsp;&nbsp;&nbsp;(apps/.../error-messages.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_EVENT_BATCH_SIZE" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_EVENT_BATCH_SIZE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_EVENT_FLUSH_CRON" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_EVENT_FLUSH_CRON</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_EVENTS_CLIENT" title="apps/customer/src/constants/tokens.ts" ><b>SEGMENT_EVENTS_CLIENT</b>&nbsp;&nbsp;&nbsp;(apps/.../tokens.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_EVENTS_QUEUE" title="apps/customer/src/constants/constants.ts" ><b>SEGMENT_EVENTS_QUEUE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_EVENTS_QUEUE" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_EVENTS_QUEUE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_NOTIFICATIONS_CLIENT" title="apps/segment/src/constants/tokens.ts" ><b>SEGMENT_NOTIFICATIONS_CLIENT</b>&nbsp;&nbsp;&nbsp;(apps/.../tokens.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_NOTIFICATIONS_QUEUE" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_NOTIFICATIONS_QUEUE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_RECOMPUTE_CHUNK_SIZE" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_RECOMPUTE_CHUNK_SIZE</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_RECOMPUTE_CRON" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_RECOMPUTE_CRON</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_REDIS_CLIENT" title="apps/segment/src/constants/tokens.ts" ><b>SEGMENT_REDIS_CLIENT</b>&nbsp;&nbsp;&nbsp;(apps/.../tokens.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_RULE" title="apps/segment/src/constants/segment-rule.ts" ><b>SEGMENT_RULE</b>&nbsp;&nbsp;&nbsp;(apps/.../segment-rule.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_STATIC_MANUAL_REFRESH_EVENT" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_STATIC_MANUAL_REFRESH_EVENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SEGMENT_UI_DELTA_EVENT" title="apps/segment/src/constants/constants.ts" ><b>SEGMENT_UI_DELTA_EVENT</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SegmentDeltaSchema" title="apps/segment/src/models/segment-delta.schema.ts" ><b>SegmentDeltaSchema</b>&nbsp;&nbsp;&nbsp;(apps/.../segment-delta.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SegmentMembershipSchema" title="apps/segment/src/models/segment-membership.schema.ts" ><b>SegmentMembershipSchema</b>&nbsp;&nbsp;&nbsp;(apps/.../segment-membership.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SegmentSchema" title="apps/segment/src/models/segment.schema.ts" ><b>SegmentSchema</b>&nbsp;&nbsp;&nbsp;(apps/.../segment.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#TRANSACTION_CREATED_EVENT" title="libs/common/src/dto/transaction-created.event.ts" ><b>TRANSACTION_CREATED_EVENT</b>&nbsp;&nbsp;&nbsp;(libs/.../transaction-created.event.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#TransactionSchema" title="libs/common/src/models/transaction-schema.ts" ><b>TransactionSchema</b>&nbsp;&nbsp;&nbsp;(libs/.../transaction-schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UI_DELTA_EVENT_CONSUMED_LOG" title="apps/segment/src/constants/constants.ts" ><b>UI_DELTA_EVENT_CONSUMED_LOG</b>&nbsp;&nbsp;&nbsp;(apps/.../constants.ts)</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <h3>apps/segment/src/constants/constants.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ADD_CUSTOMER_TO_SEGMENT"></a>
+                    <span class="name">
+                        <span ><b>ADD_CUSTOMER_TO_SEGMENT</b></span>
+                        <a href="#ADD_CUSTOMER_TO_SEGMENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(
+  customerId: string,
+  segmentId: string,
+): string &#x3D;&gt;
+  &#x60;customer customerId&#x3D;${customerId} added to segment segmentId&#x3D;${segmentId}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="APPLICATION_JSON_CONTENT_TYPE"></a>
+                    <span class="name">
+                        <span ><b>APPLICATION_JSON_CONTENT_TYPE</b></span>
+                        <a href="#APPLICATION_JSON_CONTENT_TYPE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;application/json&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CAMPAIGN_DELTA_EVENT_CONSUMED_LOG"></a>
+                    <span class="name">
+                        <span ><b>CAMPAIGN_DELTA_EVENT_CONSUMED_LOG</b></span>
+                        <a href="#CAMPAIGN_DELTA_EVENT_CONSUMED_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(event: string): string &#x3D;&gt;
+  &#x60;Campaign delta event consumed: ${event}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CONTENT_TYPE_HEADER_KEY"></a>
+                    <span class="name">
+                        <span ><b>CONTENT_TYPE_HEADER_KEY</b></span>
+                        <a href="#CONTENT_TYPE_HEADER_KEY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;content-type&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DAY_IN_MS"></a>
+                    <span class="name">
+                        <span ><b>DAY_IN_MS</b></span>
+                        <a href="#DAY_IN_MS"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>24 * 60 * 60 * 1000</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ELASTICSEARCH_NODE_ENV_KEY"></a>
+                    <span class="name">
+                        <span ><b>ELASTICSEARCH_NODE_ENV_KEY</b></span>
+                        <a href="#ELASTICSEARCH_NODE_ENV_KEY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;ELASTICSEARCH_NODE&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FAILED_TO_INDEX_BATCH_EVENT_LOG"></a>
+                    <span class="name">
+                        <span ><b>FAILED_TO_INDEX_BATCH_EVENT_LOG</b></span>
+                        <a href="#FAILED_TO_INDEX_BATCH_EVENT_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(error: string): string &#x3D;&gt;
+  &#x60;Failed to index batch event: ${error}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FAILED_TO_PARSE_PENDING_TRIGGER_LOG"></a>
+                    <span class="name">
+                        <span ><b>FAILED_TO_PARSE_PENDING_TRIGGER_LOG</b></span>
+                        <a href="#FAILED_TO_PARSE_PENDING_TRIGGER_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(
+  customerId: string,
+): string &#x3D;&gt; &#x60;Failed to parse pending trigger for customerId&#x3D;${customerId}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="HTTP_POST_METHOD"></a>
+                    <span class="name">
+                        <span ><b>HTTP_POST_METHOD</b></span>
+                        <a href="#HTTP_POST_METHOD"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;POST&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="PROCESSED_MEMBERSHIP_BATCH_LOG"></a>
+                    <span class="name">
+                        <span ><b>PROCESSED_MEMBERSHIP_BATCH_LOG</b></span>
+                        <a href="#PROCESSED_MEMBERSHIP_BATCH_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(
+  processedCustomers: number,
+  pendingCustomers: number,
+): string &#x3D;&gt;
+  &#x60;Processed membership batch size&#x3D;${processedCustomers}, pending&#x3D;${pendingCustomers}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REDIS_CLIENT_ERROR_LOG"></a>
+                    <span class="name">
+                        <span ><b>REDIS_CLIENT_ERROR_LOG</b></span>
+                        <a href="#REDIS_CLIENT_ERROR_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(errorMessage: string): string &#x3D;&gt;
+  &#x60;Redis client error: ${errorMessage}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REDIS_CLIENT_EVENT"></a>
+                    <span class="name">
+                        <span ><b>REDIS_CLIENT_EVENT</b></span>
+                        <a href="#REDIS_CLIENT_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  ERROR: &#x27;error&#x27;,
+} as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REDIS_CLIENT_STATUS"></a>
+                    <span class="name">
+                        <span ><b>REDIS_CLIENT_STATUS</b></span>
+                        <a href="#REDIS_CLIENT_STATUS"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  WAIT: &#x27;wait&#x27;,
+  END: &#x27;end&#x27;,
+} as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REMOVE_CUSTOMER_FROM_SEGMENT"></a>
+                    <span class="name">
+                        <span ><b>REMOVE_CUSTOMER_FROM_SEGMENT</b></span>
+                        <a href="#REMOVE_CUSTOMER_FROM_SEGMENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(
+  customerId: string,
+  segmentId: string,
+): string &#x3D;&gt;
+  &#x60;customer customerId&#x3D;${customerId} removed from segment segmentId&#x3D;${segmentId}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SCHEDULER_EVENT_TYPE"></a>
+                    <span class="name">
+                        <span ><b>SCHEDULER_EVENT_TYPE</b></span>
+                        <a href="#SCHEDULER_EVENT_TYPE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.recompute.scheduler&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_BATCH_EVENT_ID_PREFIX"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_BATCH_EVENT_ID_PREFIX</b></span>
+                        <a href="#SEGMENT_BATCH_EVENT_ID_PREFIX"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;batch&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_BATCH_RECOMPUTE_EVENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_BATCH_RECOMPUTE_EVENT</b></span>
+                        <a href="#SEGMENT_BATCH_RECOMPUTE_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.membership.batch.recomputed&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_CAMPAIGN_DELTA_EVENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_CAMPAIGN_DELTA_EVENT</b></span>
+                        <a href="#SEGMENT_CAMPAIGN_DELTA_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.campaign.delta.changed&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_ENV_FILE_PATH"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_ENV_FILE_PATH</b></span>
+                        <a href="#SEGMENT_ENV_FILE_PATH"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;apps/segment/.env&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_EVENT_BATCH_SIZE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_EVENT_BATCH_SIZE</b></span>
+                        <a href="#SEGMENT_EVENT_BATCH_SIZE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>200</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_EVENT_FLUSH_CRON"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_EVENT_FLUSH_CRON</b></span>
+                        <a href="#SEGMENT_EVENT_FLUSH_CRON"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;*/15 * * * * *&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_EVENTS_QUEUE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_EVENTS_QUEUE</b></span>
+                        <a href="#SEGMENT_EVENTS_QUEUE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.events.queue&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH</b></span>
+                        <a href="#SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;/segment-membership-events/_doc&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_NOTIFICATIONS_QUEUE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_NOTIFICATIONS_QUEUE</b></span>
+                        <a href="#SEGMENT_NOTIFICATIONS_QUEUE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.notifications.queue&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY</b></span>
+                        <a href="#SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment:pending-events:map&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY</b></span>
+                        <a href="#SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment:pending-events:index&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_RECOMPUTE_CHUNK_SIZE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_RECOMPUTE_CHUNK_SIZE</b></span>
+                        <a href="#SEGMENT_RECOMPUTE_CHUNK_SIZE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>1000</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_RECOMPUTE_CRON"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_RECOMPUTE_CRON</b></span>
+                        <a href="#SEGMENT_RECOMPUTE_CRON"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;*/5 * * * *&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_STATIC_MANUAL_REFRESH_EVENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_STATIC_MANUAL_REFRESH_EVENT</b></span>
+                        <a href="#SEGMENT_STATIC_MANUAL_REFRESH_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.static.manual_refresh&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX</b></span>
+                        <a href="#SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment-static-refresh&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_UI_DELTA_EVENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_UI_DELTA_EVENT</b></span>
+                        <a href="#SEGMENT_UI_DELTA_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.ui.delta.changed&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UI_DELTA_EVENT_CONSUMED_LOG"></a>
+                    <span class="name">
+                        <span ><b>UI_DELTA_EVENT_CONSUMED_LOG</b></span>
+                        <a href="#UI_DELTA_EVENT_CONSUMED_LOG"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(event: string): string &#x3D;&gt;
+  &#x60;UI delta event consumed: ${event}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/customer/src/constants/error-messages.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CUSTOMER_ERROR_MESSAGES"></a>
+                    <span class="name">
+                        <span ><b>CUSTOMER_ERROR_MESSAGES</b></span>
+                        <a href="#CUSTOMER_ERROR_MESSAGES"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  CUSTOMER_NOT_FOUND: &#x27;Customer was not found&#x27;,
+  EMAIL_ALREADY_EXISTS: &#x27;Email already exists.&#x27;,
+} as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/customer/src/constants/constants.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CUSTOMER_SERVICE_ENV_FILE_PATH"></a>
+                    <span class="name">
+                        <span ><b>CUSTOMER_SERVICE_ENV_FILE_PATH</b></span>
+                        <a href="#CUSTOMER_SERVICE_ENV_FILE_PATH"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;apps/customer-service/.env&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_EVENTS_QUEUE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_EVENTS_QUEUE</b></span>
+                        <a href="#SEGMENT_EVENTS_QUEUE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;segment.events.queue&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/common/src/models/customer-schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CustomerSchema"></a>
+                    <span class="name">
+                        <span ><b>CustomerSchema</b></span>
+                        <a href="#CustomerSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(CustomerDocument)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/constants/error-messages.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_ERROR_MESSAGES"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_ERROR_MESSAGES</b></span>
+                        <a href="#SEGMENT_ERROR_MESSAGES"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED:
+    &#x27;Only active_buyers, vip and risk rules are supported.&#x27;,
+  ACTIVE_BUYERS_REQUIRES_DAYS: (days: number) &#x3D;&gt;
+    &#x60;active_buyers segment requires days&#x3D;${days}.&#x60;,
+  VIP_REQUIRES_DAYS: (days: number) &#x3D;&gt; &#x60;vip segment requires days&#x3D;${days}.&#x60;,
+  VIP_REQUIRES_MIN_SPEND: (minSpend: number) &#x3D;&gt;
+    &#x60;vip segment requires minSpend &gt;&#x3D; ${minSpend}.&#x60;,
+  RISK_REQUIRES_INACTIVE_DAYS: (inActiveDays: number) &#x3D;&gt;
+    &#x60;risk segment requires inActiveDays&#x3D;${inActiveDays}.&#x60;,
+  ACTIVE_BUYERS_NO_DEPENDENCIES:
+    &#x27;active_buyers must not depend on other segments.&#x27;,
+  VIP_SEGMENT_NO_DEPENDENCIES: &#x27;vip segment must not depend on other segments.&#x27;,
+  RISK_SEGMENT_NO_DEPENDENCIES:
+    &#x27;risk segment must not depend on other segments.&#x27;,
+  DUPLICATE_NAME: &#x27;Segment with this name already exists.&#x27;,
+  INVALID_SEGMENT_RULES_WARNING: (segmentId: string) &#x3D;&gt;
+    &#x60;Skipping segment segmentId&#x3D;${segmentId} because rules are invalid&#x60;,
+} as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/customer/src/constants/tokens.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_EVENTS_CLIENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_EVENTS_CLIENT</b></span>
+                        <a href="#SEGMENT_EVENTS_CLIENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;SEGMENT_EVENTS_CLIENT&#x27; as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/constants/tokens.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_NOTIFICATIONS_CLIENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_NOTIFICATIONS_CLIENT</b></span>
+                        <a href="#SEGMENT_NOTIFICATIONS_CLIENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;SEGMENT_NOTIFICATIONS_CLIENT&#x27; as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_REDIS_CLIENT"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_REDIS_CLIENT</b></span>
+                        <a href="#SEGMENT_REDIS_CLIENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;SEGMENT_REDIS_CLIENT&#x27; as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/constants/segment-rule.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SEGMENT_RULE"></a>
+                    <span class="name">
+                        <span ><b>SEGMENT_RULE</b></span>
+                        <a href="#SEGMENT_RULE"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  ACTIVE_DAYS: 30,
+  VIP_DAYS: 60,
+  RISK_INACTIVE_DAYS: 90,
+  VIP_MIN_SPEND: 5000,
+} as const</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/models/segment-delta.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SegmentDeltaSchema"></a>
+                    <span class="name">
+                        <span ><b>SegmentDeltaSchema</b></span>
+                        <a href="#SegmentDeltaSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(SegmentDeltaDocument)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/models/segment-membership.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SegmentMembershipSchema"></a>
+                    <span class="name">
+                        <span ><b>SegmentMembershipSchema</b></span>
+                        <a href="#SegmentMembershipSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(
+  SegmentMembershipDocument,
+)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>apps/segment/src/models/segment.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SegmentSchema"></a>
+                    <span class="name">
+                        <span ><b>SegmentSchema</b></span>
+                        <a href="#SegmentSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(SegmentDocument)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/common/src/dto/transaction-created.event.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="TRANSACTION_CREATED_EVENT"></a>
+                    <span class="name">
+                        <span ><b>TRANSACTION_CREATED_EVENT</b></span>
+                        <a href="#TRANSACTION_CREATED_EVENT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;customer.transaction.created&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>libs/common/src/models/transaction-schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="TransactionSchema"></a>
+                    <span class="name">
+                        <span ><b>TransactionSchema</b></span>
+                        <a href="#TransactionSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(TransactionDocument)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-variables';
+            var COMPODOC_CURRENT_PAGE_URL = 'variables.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

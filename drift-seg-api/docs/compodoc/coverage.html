@@ -1,0 +1,1886 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Drift Seg API</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">Drift Seg API</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content coverage">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Documentation coverage</li>
+</ol>
+
+<div>
+    <img src="./images/coverage-badge-documentation.svg">
+</div>
+
+<table class="table table-bordered coverage" id="coverage-table">
+    <thead class="coverage-header">
+        <tr>
+            <th>File</th>
+            <th>Type</th>
+            <th>Identifier</th>
+            <th style="text-align:right" class="statements" data-sort-default>Statements</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#CUSTOMER_SERVICE_ENV_FILE_PATH">apps/customer/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>CUSTOMER_SERVICE_ENV_FILE_PATH</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_EVENTS_QUEUE">apps/customer/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_EVENTS_QUEUE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#CUSTOMER_ERROR_MESSAGES">apps/customer/src/constants/error-messages.ts</a>
+            </td>
+            <td>variable</td>
+            <td>CUSTOMER_ERROR_MESSAGES</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_EVENTS_CLIENT">apps/customer/src/constants/tokens.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_EVENTS_CLIENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./controllers/CustomerController.html">apps/customer/src/controllers/customer.controller.ts</a>
+            </td>
+            <td>controller</td>
+            <td>CustomerController</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./controllers/TransactionController.html">apps/customer/src/controllers/transaction.controller.ts</a>
+            </td>
+            <td>controller</td>
+            <td>TransactionController</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/CreateCustomerDto.html">apps/customer/src/dto/create-customer.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>CreateCustomerDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/4)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/CustomerResponseDto.html">apps/customer/src/dto/customer.response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>CustomerResponseDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/7)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/CreateTransactionDto.html">apps/customer/src/dto/transition/create-transaction.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>CreateTransactionDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/TransactionResponseDto.html">apps/customer/src/dto/transition/transaction.response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>TransactionResponseDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/UpdateCustomerDto.html">apps/customer/src/dto/update-customer.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>UpdateCustomerDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#bootstrap">apps/customer/src/main.ts</a>
+            </td>
+            <td>function</td>
+            <td>bootstrap</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/CustomerRepository.html">apps/customer/src/repositories/customer.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>CustomerRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/TransactionRepository.html">apps/customer/src/repositories/transaction.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>TransactionRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/CustomerService.html">apps/customer/src/services/customer.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>CustomerService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/9)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/TransactionService.html">apps/customer/src/services/transaction.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>TransactionService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/4)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#existCustomerById">apps/customer/src/utils/transaction/transacton.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>existCustomerById</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#toTransactionResponse">apps/customer/src/utils/transaction/transacton.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>toTransactionResponse</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#updateCustomerAfterTransaction">apps/customer/src/utils/transaction/transacton.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>updateCustomerAfterTransaction</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#ADD_CUSTOMER_TO_SEGMENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>ADD_CUSTOMER_TO_SEGMENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#APPLICATION_JSON_CONTENT_TYPE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>APPLICATION_JSON_CONTENT_TYPE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#CAMPAIGN_DELTA_EVENT_CONSUMED_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>CAMPAIGN_DELTA_EVENT_CONSUMED_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#CONTENT_TYPE_HEADER_KEY">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>CONTENT_TYPE_HEADER_KEY</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#DAY_IN_MS">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>DAY_IN_MS</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#ELASTICSEARCH_NODE_ENV_KEY">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>ELASTICSEARCH_NODE_ENV_KEY</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#FAILED_TO_INDEX_BATCH_EVENT_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>FAILED_TO_INDEX_BATCH_EVENT_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#FAILED_TO_PARSE_PENDING_TRIGGER_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>FAILED_TO_PARSE_PENDING_TRIGGER_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#HTTP_POST_METHOD">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>HTTP_POST_METHOD</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#PROCESSED_MEMBERSHIP_BATCH_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>PROCESSED_MEMBERSHIP_BATCH_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#REDIS_CLIENT_ERROR_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>REDIS_CLIENT_ERROR_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#REDIS_CLIENT_EVENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>REDIS_CLIENT_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#REDIS_CLIENT_STATUS">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>REDIS_CLIENT_STATUS</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#REMOVE_CUSTOMER_FROM_SEGMENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>REMOVE_CUSTOMER_FROM_SEGMENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SCHEDULER_EVENT_TYPE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SCHEDULER_EVENT_TYPE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_BATCH_EVENT_ID_PREFIX">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_BATCH_EVENT_ID_PREFIX</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_BATCH_RECOMPUTE_EVENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_BATCH_RECOMPUTE_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_CAMPAIGN_DELTA_EVENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_CAMPAIGN_DELTA_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_ENV_FILE_PATH">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_ENV_FILE_PATH</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_EVENT_BATCH_SIZE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_EVENT_BATCH_SIZE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_EVENT_FLUSH_CRON">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_EVENT_FLUSH_CRON</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_EVENTS_QUEUE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_EVENTS_QUEUE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_MEMBERSHIP_EVENTS_INDEX_PATH</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_NOTIFICATIONS_QUEUE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_NOTIFICATIONS_QUEUE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_RECOMPUTE_CHUNK_SIZE">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_RECOMPUTE_CHUNK_SIZE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_RECOMPUTE_CRON">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_RECOMPUTE_CRON</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_STATIC_MANUAL_REFRESH_EVENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_STATIC_MANUAL_REFRESH_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_UI_DELTA_EVENT">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_UI_DELTA_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#UI_DELTA_EVENT_CONSUMED_LOG">apps/segment/src/constants/constants.ts</a>
+            </td>
+            <td>variable</td>
+            <td>UI_DELTA_EVENT_CONSUMED_LOG</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_ERROR_MESSAGES">apps/segment/src/constants/error-messages.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_ERROR_MESSAGES</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_RULE">apps/segment/src/constants/segment-rule.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_RULE</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_NOTIFICATIONS_CLIENT">apps/segment/src/constants/tokens.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_NOTIFICATIONS_CLIENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SEGMENT_REDIS_CLIENT">apps/segment/src/constants/tokens.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SEGMENT_REDIS_CLIENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./controllers/SegmentController.html">apps/segment/src/controllers/segment.controller.ts</a>
+            </td>
+            <td>controller</td>
+            <td>SegmentController</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/11)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/CreateSegmentDto.html">apps/segment/src/dto/request/create-segment.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>CreateSegmentDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentRulesDto.html">apps/segment/src/dto/request/create-segment.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentRulesDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/UpdateSegmentDto.html">apps/segment/src/dto/request/update-segment.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>UpdateSegmentDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentDeltaResponseDto.html">apps/segment/src/dto/responses/segment-delta-response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentDeltaResponseDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/9)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentMemberDto.html">apps/segment/src/dto/responses/segment-members-response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentMemberDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentMembersResponseDto.html">apps/segment/src/dto/responses/segment-members-response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentMembersResponseDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentResponseDto.html">apps/segment/src/dto/responses/segment-response.dto.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentResponseDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/10)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/ActiveBuyersRuleInput.html">apps/segment/src/dto/segment-rule.ts</a>
+            </td>
+            <td>interface</td>
+            <td>ActiveBuyersRuleInput</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/RiskRuleInput.html">apps/segment/src/dto/segment-rule.ts</a>
+            </td>
+            <td>interface</td>
+            <td>RiskRuleInput</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/VipBuyersRuleInput.html">apps/segment/src/dto/segment-rule.ts</a>
+            </td>
+            <td>interface</td>
+            <td>VipBuyersRuleInput</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/4)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/typealiases.html#SegmentRuleInput">apps/segment/src/dto/segment-rule.ts</a>
+            </td>
+            <td>type alias</td>
+            <td>SegmentRuleInput</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#bootstrap">apps/segment/src/main.ts</a>
+            </td>
+            <td>function</td>
+            <td>bootstrap</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/AggregatedSegmentDelta.html">apps/segment/src/models/interfaces/segment.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>AggregatedSegmentDelta</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/BatchRecomputePayload.html">apps/segment/src/models/interfaces/segment.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>BatchRecomputePayload</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/7)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/PendingBatchEntry.html">apps/segment/src/models/interfaces/segment.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>PendingBatchEntry</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/PendingTrigger.html">apps/segment/src/models/interfaces/segment.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>PendingTrigger</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/SegmentDeltaPayload.html">apps/segment/src/models/interfaces/segment.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>SegmentDeltaPayload</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentDeltaDocument.html">apps/segment/src/models/segment-delta.schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentDeltaDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SegmentDeltaSchema">apps/segment/src/models/segment-delta.schema.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SegmentDeltaSchema</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentMembershipDocument.html">apps/segment/src/models/segment-membership.schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentMembershipDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/4)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SegmentMembershipSchema">apps/segment/src/models/segment-membership.schema.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SegmentMembershipSchema</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/SegmentMembershipTrigger.html">apps/segment/src/models/segment-trigger.interface.ts</a>
+            </td>
+            <td>interface</td>
+            <td>SegmentMembershipTrigger</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/SegmentDocument.html">apps/segment/src/models/segment.schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>SegmentDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#SegmentSchema">apps/segment/src/models/segment.schema.ts</a>
+            </td>
+            <td>variable</td>
+            <td>SegmentSchema</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/CustomerActivityRepository.html">apps/segment/src/repositories/customer-activity.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>CustomerActivityRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/CustomerRepository.html">apps/segment/src/repositories/customer.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>CustomerRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentDeltaRepository.html">apps/segment/src/repositories/segment-delta.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentDeltaRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/11)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentMembershipRepository.html">apps/segment/src/repositories/segment-membership.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentMembershipRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/12)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentRepository.html">apps/segment/src/repositories/segment.repository.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/10)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/CreateSegmentFacade.html">apps/segment/src/services/facades/create-segment.facade.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>CreateSegmentFacade</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/typealiases.html#PayloadWithRules">apps/segment/src/services/facades/create-segment.facade.ts</a>
+            </td>
+            <td>type alias</td>
+            <td>PayloadWithRules</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentMembershipFacade.html">apps/segment/src/services/facades/segment-membership.facade.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentMembershipFacade</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentDeltaNotifierService.html">apps/segment/src/services/segment-delta-notifier.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentDeltaNotifierService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/10)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentMembershipSchedulerService.html">apps/segment/src/services/segment-membership-scheduler.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentMembershipSchedulerService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/4)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentMembershipService.html">apps/segment/src/services/segment-membership.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentMembershipService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/7)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentPendingEventQueueService.html">apps/segment/src/services/segment-penging-event.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentPendingEventQueueService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/11)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentRuleEvaluatorService.html">apps/segment/src/services/segment-rule-evaluator.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentRuleEvaluatorService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentSearchIndexerService.html">apps/segment/src/services/segment-search-indexer.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentSearchIndexerService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./injectables/SegmentService.html">apps/segment/src/services/segment.service.ts</a>
+            </td>
+            <td>injectable</td>
+            <td>SegmentService</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/9)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#validateActiveRules">apps/segment/src/utils/helper/create-segment-validate.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>validateActiveRules</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#validateRiskRules">apps/segment/src/utils/helper/create-segment-validate.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>validateRiskRules</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#validateVipRules">apps/segment/src/utils/helper/create-segment-validate.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>validateVipRules</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/typealiases.html#DynamicCreatePayload">apps/segment/src/utils/helper/create-segment-validate.helper.ts</a>
+            </td>
+            <td>type alias</td>
+            <td>DynamicCreatePayload</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#baseSegmentCreatePayload">apps/segment/src/utils/helper/create-segment.helpers.ts</a>
+            </td>
+            <td>function</td>
+            <td>baseSegmentCreatePayload</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#noDependenciesSegment">apps/segment/src/utils/helper/create-segment.helpers.ts</a>
+            </td>
+            <td>function</td>
+            <td>noDependenciesSegment</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#segmentNameIsUnique">apps/segment/src/utils/helper/create-segment.helpers.ts</a>
+            </td>
+            <td>function</td>
+            <td>segmentNameIsUnique</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/ActiveMembershipRecord.html">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>interface</td>
+            <td>ActiveMembershipRecord</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/3)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/SegmentMembershipFacadeDeps.html">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>interface</td>
+            <td>SegmentMembershipFacadeDeps</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#addCustomerToSegment">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>addCustomerToSegment</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#addMissingStaticMembers">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>addMissingStaticMembers</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#buildDependentSegmentMap">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>buildDependentSegmentMap</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#buildSegmentByIdMap">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>buildSegmentByIdMap</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#collectEligibleCustomerIds">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>collectEligibleCustomerIds</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#enqueueDependentDynamicSegments">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>enqueueDependentDynamicSegments</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#getDynamicSegments">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>getDynamicSegments</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#processDynamicSegmentQueue">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>processDynamicSegmentQueue</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#reconcileSegmentMembershipForCustomer">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>reconcileSegmentMembershipForCustomer</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#removeCustomerFromSegment">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>removeCustomerFromSegment</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#removeOutdatedStaticMembers">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>removeOutdatedStaticMembers</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#satisfiesDependencies">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>satisfiesDependencies</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#syncStaticMembershipChanges">apps/segment/src/utils/helper/segment-membership.facade.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>syncStaticMembershipChanges</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#buildSchedulerTrigger">apps/segment/src/utils/helper/segment-membership.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>buildSchedulerTrigger</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#buildStaticRefreshTrigger">apps/segment/src/utils/helper/segment-membership.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>buildStaticRefreshTrigger</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#isSegmentRuleInput">apps/segment/src/utils/helper/segment-membership.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>isSegmentRuleInput</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#getSegmentById">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>getSegmentById</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#getSegmentDeltas">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>getSegmentDeltas</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#getSegmentMembers">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>getSegmentMembers</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#getSinceDateByDays">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>getSinceDateByDays</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#segmentMembersInfo">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>segmentMembersInfo</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#toSegmentResponse">apps/segment/src/utils/helper/segment.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>toSegmentResponse</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#buildBatchRecomputePayload">apps/segment/src/utils/helper/transaction-event.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>buildBatchRecomputePayload</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#logProcessedBatch">apps/segment/src/utils/helper/transaction-event.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>logProcessedBatch</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#publishBatchSideEffects">apps/segment/src/utils/helper/transaction-event.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>publishBatchSideEffects</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/functions.html#recomputeMembershipForPendingBatch">apps/segment/src/utils/helper/transaction-event.helper.ts</a>
+            </td>
+            <td>function</td>
+            <td>recomputeMembershipForPendingBatch</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/AbstractRepository.html">libs/common/src/database/abstract.repository.ts</a>
+            </td>
+            <td>class</td>
+            <td>AbstractRepository</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/8)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/AbstractDocument.html">libs/common/src/database/abstract.schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>AbstractDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/2)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/CustomerDto.html">libs/common/src/dto/customer.dto.ts</a>
+            </td>
+            <td>interface</td>
+            <td>CustomerDto</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/2)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./interfaces/TransactionCreatedEvent.html">libs/common/src/dto/transaction-created.event.ts</a>
+            </td>
+            <td>interface</td>
+            <td>TransactionCreatedEvent</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#TRANSACTION_CREATED_EVENT">libs/common/src/dto/transaction-created.event.ts</a>
+            </td>
+            <td>variable</td>
+            <td>TRANSACTION_CREATED_EVENT</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/CustomerDocument.html">libs/common/src/models/customer-schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>CustomerDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/6)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#CustomerSchema">libs/common/src/models/customer-schema.ts</a>
+            </td>
+            <td>variable</td>
+            <td>CustomerSchema</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./classes/TransactionDocument.html">libs/common/src/models/transaction-schema.ts</a>
+            </td>
+            <td>class</td>
+            <td>TransactionDocument</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/5)</span>
+            </td>
+        </tr>
+        <tr class="low">
+            <td>
+                <!-- miscellaneous -->
+                        <a href="./miscellaneous/variables.html#TransactionSchema">libs/common/src/models/transaction-schema.ts</a>
+            </td>
+            <td>variable</td>
+            <td>TransactionSchema</td>
+            <td align="right" data-sort="0">
+                <span class="coverage-percent">0 %</span>
+                <span class="coverage-count">(0/1)</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script src="js/libs/tablesort.min.js"></script>
+<script src="js/libs/tablesort.number.min.js"></script>
+<script>
+    new Tablesort(document.getElementById('coverage-table'));
+</script>
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'coverage';
+            var COMPODOC_CURRENT_PAGE_URL = 'coverage.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+       <script nomodule src="./js/menu-wc_es5.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
