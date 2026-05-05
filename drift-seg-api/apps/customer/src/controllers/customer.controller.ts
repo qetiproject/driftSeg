@@ -1,3 +1,4 @@
+import { CustomerDocument } from '@app/common/models';
 import {
   Body,
   Controller,
@@ -18,12 +19,16 @@ import {
   CustomerResponseDto,
   UpdateCustomerDto,
 } from '../dto';
+import { CustomerQueryService } from '../services';
 import { CustomerService } from '../services/customer.service';
 
 @Controller('customer')
 @ApiTags('customer')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    private readonly customerService: CustomerService,
+    private readonly customerQueryService: CustomerQueryService,
+  ) {}
 
   @Post('create')
   @ApiBody({ type: CreateCustomerDto })
@@ -34,15 +39,15 @@ export class CustomerController {
     return this.customerService.createCustomer(createCustomerDto);
   }
 
-  @Get('all')
+  @Get()
   @ApiOkResponse({ type: CustomerResponseDto, isArray: true })
-  findAll(): Promise<CustomerResponseDto[]> {
-    return this.customerService.getCustomers();
+  getCustomers(): Promise<CustomerResponseDto[]> {
+    return this.customerQueryService.getCustomers();
   }
 
   @Get(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<CustomerDocument> {
     return this.customerService.getCustomerById(id);
   }
 
@@ -52,13 +57,13 @@ export class CustomerController {
   update(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
-  ) {
+  ): Promise<CustomerDocument> {
     return this.customerService.updateCustomer(id, updateCustomerDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<CustomerDocument> {
     return this.customerService.removeCustomer(id);
   }
 }

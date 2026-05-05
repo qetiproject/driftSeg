@@ -1,5 +1,4 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
-import { CustomerDocument } from '@app/common/models';
 import {
   Injectable,
   NotFoundException,
@@ -12,12 +11,15 @@ import {
   UpdateCustomerDto,
 } from '../dto';
 import { CustomerRepository, TransactionRepository } from '../repositories';
+import { toCustomerResponse } from '../utils/customer/to-customer-response';
+import { CustomerQueryService } from './query/customer-query.service';
 
 @Injectable()
 export class CustomerService {
   constructor(
     private readonly customerRepository: CustomerRepository,
     private readonly transactionRepository: TransactionRepository,
+    private readonly customerQueryService: CustomerQueryService,
   ) {}
 
   async createCustomer(
@@ -29,7 +31,7 @@ export class CustomerService {
       totalSpent: 0,
       status: CustomerStatusEnum.INACTIVE,
     });
-    return this.toCustomerResponse(created);
+    return toCustomerResponse(created);
   }
 
   private async validateCreateCustomerDto(
@@ -46,10 +48,9 @@ export class CustomerService {
     );
   }
 
-  async getCustomers(): Promise<CustomerResponseDto[]> {
-    const customers = await this.customerRepository.find({});
-    return customers.map((customer) => this.toCustomerResponse(customer));
-  }
+  // async getCustomers(): Promise<CustomerResponseDto[]> {
+  //   return this.customerQueryService.getCustomers();
+  // }
 
   async getCustomerById(_id: string) {
     return await this.customerRepository.findOne({ _id });
@@ -71,16 +72,5 @@ export class CustomerService {
     }
     await this.transactionRepository.deleteManyByCustomerId(_id);
     return deletedCustomer;
-  }
-
-  private toCustomerResponse(customer: CustomerDocument): CustomerResponseDto {
-    return {
-      _id: customer._id.toString(),
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
-      totalSpent: customer.totalSpent ?? 0,
-      status: customer.status ?? CustomerStatusEnum.INACTIVE,
-    };
   }
 }

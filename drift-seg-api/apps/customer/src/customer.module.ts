@@ -19,6 +19,7 @@ import { TransactionController } from './controllers/transaction.controller';
 import { TransactionRepository } from './repositories';
 import { CustomerRepository } from './repositories/customer.repository';
 import { CustomerService } from './services/customer.service';
+import { CustomerQueryService } from './services/query/customer-query.service';
 import { TransactionService } from './services/transaction.service';
 
 @Module({
@@ -57,6 +58,7 @@ import { TransactionService } from './services/transaction.service';
   controllers: [CustomerController, TransactionController],
   providers: [
     CustomerService,
+    CustomerQueryService,
     CustomerRepository,
     TransactionService,
     TransactionRepository,
