@@ -22,12 +22,12 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/common": [
-        "libs/common/src"
-      ],
-      "@app/common/*": [
-        "libs/common/src/*"
-      ]
+      "@app/common": ["libs/common/src"],
+      "@app/common/*": ["libs/common/src/*"],
+      "@apps/customer/src/constants": ["apps/customer/src/constants"],
+      "@apps/customer/src/constants/*": ["apps/customer/src/constants/*"],
+      "@apps/customer/src/repositories": ["apps/customer/src/repositories"],
+      "@apps/customer/src/repositories/*": ["apps/customer/src/repositories/*"]
     }
   },
   "exclude": ["node_modules", "dist", "docs"]

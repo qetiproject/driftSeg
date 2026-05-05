@@ -1,13 +1,13 @@
 /// <reference types="jest" />
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import {
-  NotFoundException,
-  UnprocessableEntityException,
+    NotFoundException,
+    UnprocessableEntityException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
 import { CreateCustomerDto } from '../dto';
-import { UpdateCustomerDto } from '../dto/update-customer.dto';
+import { UpdateCustomerDto } from '../dto/customer/update-customer.dto';
 import { CustomerRepository } from '../repositories/customer.repository';
 import { TransactionRepository } from '../repositories/transaction.repository';
 import { CustomerService } from './customer.service';
@@ -205,7 +205,9 @@ describe('CustomerService', () => {
       expect(repositoryMock.findOneAndDelete).toHaveBeenCalledWith({
         _id: 'c-30',
       });
-      expect(transactionRepositoryMock.deleteManyByCustomerId).toHaveBeenCalledWith('c-30');
+      expect(
+        transactionRepositoryMock.deleteManyByCustomerId,
+      ).toHaveBeenCalledWith('c-30');
       expect(result).toBe(deletedCustomer);
     });
 
@@ -218,7 +220,9 @@ describe('CustomerService', () => {
       await expect(resultPromise).rejects.toThrow(
         CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND,
       );
-      expect(transactionRepositoryMock.deleteManyByCustomerId).not.toHaveBeenCalled();
+      expect(
+        transactionRepositoryMock.deleteManyByCustomerId,
+      ).not.toHaveBeenCalled();
     });
   });
 });

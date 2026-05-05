@@ -45,7 +45,9 @@ export class TransactionService {
       this.customerRepository,
       createTransactionDto,
     );
-    const transactionOccurredAt = (created.occurredAt ?? new Date()).toISOString();
+    const transactionOccurredAt = (
+      created.occurredAt ?? new Date()
+    ).toISOString();
 
     const eventPayload: TransactionCreatedEvent = {
       eventId: randomUUID(),

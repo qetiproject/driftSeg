@@ -6,10 +6,12 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
-import { CreateCustomerDto, CustomerResponseDto } from '../dto';
-import { UpdateCustomerDto } from '../dto/update-customer.dto';
-import { CustomerRepository } from '../repositories/customer.repository';
-import { TransactionRepository } from '../repositories/transaction.repository';
+import {
+  CreateCustomerDto,
+  CustomerResponseDto,
+  UpdateCustomerDto,
+} from '../dto';
+import { CustomerRepository, TransactionRepository } from '../repositories';
 
 @Injectable()
 export class CustomerService {
