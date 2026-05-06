@@ -1,4 +1,4 @@
-import { Model, QueryFilter, Types, UpdateQuery } from 'mongoose';
+import { Model, QueryFilter, SortOrder, Types, UpdateQuery } from 'mongoose';
 
 export abstract class AbstractRepository<TDocument> {
   constructor(protected readonly model: Model<TDocument>) {}
@@ -32,8 +32,22 @@ export abstract class AbstractRepository<TDocument> {
     return document;
   }
 
-  async find(filter: QueryFilter<TDocument>): Promise<TDocument[]> {
-    return this.model.find(filter).lean<TDocument[]>(true);
+  async find(
+    filter: QueryFilter<TDocument>,
+    options?: {
+      skip?: number;
+      limit?: number;
+      sort?: Record<string, SortOrder>;
+      projection?: any;
+    },
+  ): Promise<TDocument[]> {
+    return this.model
+      .find(filter, options?.projection)
+      .sort(options?.sort ?? { createdAt: -1 })
+      .skip(options?.skip ?? 0)
+      .limit(options?.limit ?? 10)
+      .lean<TDocument[]>()
+      .exec();
   }
 
   async findOneAndDelete(

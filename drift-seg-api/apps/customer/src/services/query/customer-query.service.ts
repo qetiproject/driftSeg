@@ -12,17 +12,12 @@ export class CustomerQueryService {
     const safeLimit = Math.max(limit, 1);
     const skip = (safePage - 1) * safeLimit;
 
-    const customers = await this.customerRepository.findMany(
+    const customers = await this.customerRepository.find(
       {},
       {
-        _id: 1,
-        firstName: 1,
-        lastName: 1,
-        email: 1,
-        totalSpent: 1,
-        status: 1,
+        skip,
+        limit: safeLimit,
       },
-      { skip, limit: safeLimit, sort: { createdAt: -1 } },
     );
 
     return customers.map(toCustomerResponse);
