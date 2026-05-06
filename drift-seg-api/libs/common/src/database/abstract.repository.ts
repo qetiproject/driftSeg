@@ -1,8 +1,7 @@
 import { Logger, NotFoundException } from '@nestjs/common';
 import { Model, QueryFilter, Types, UpdateQuery } from 'mongoose';
-import { AbstractDocument } from './abstract.schema';
 
-export abstract class AbstractRepository<TDocument extends AbstractDocument> {
+export abstract class AbstractRepository<TDocument> {
   protected abstract readonly logger: Logger;
 
   constructor(protected readonly model: Model<TDocument>) {}
@@ -46,8 +45,8 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     return document;
   }
 
-  async find(filterQuery: QueryFilter<TDocument>): Promise<TDocument[]> {
-    return this.model.find(filterQuery).lean<TDocument[]>(true);
+  async find(filter: QueryFilter<TDocument>): Promise<TDocument[]> {
+    return this.model.find(filter).lean<TDocument[]>(true);
   }
 
   async findOneAndDelete(

@@ -1,17 +1,12 @@
-import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 import { CustomerStatusEnum } from '../enum/status.enum';
-
-// export class TransactionEntry {
-//   amount!: number;
-//   at!: Date;
-// }
 
 @Schema({
   versionKey: false,
   timestamps: true,
 })
-export class CustomerDocument extends AbstractDocument {
+export class Customer {
   @Prop({ required: true })
   firstName!: string;
 
@@ -32,4 +27,6 @@ export class CustomerDocument extends AbstractDocument {
   status!: CustomerStatusEnum;
 }
 
-export const CustomerSchema = SchemaFactory.createForClass(CustomerDocument);
+export type CustomerDocument = HydratedDocument<Customer>;
+
+export const CustomerSchema = SchemaFactory.createForClass(Customer);

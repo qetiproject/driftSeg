@@ -2,9 +2,6 @@ import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CustomerResponseDto {
-  @ApiProperty({ example: '680baf22a9d7a5946a2d06c1' })
-  _id!: string;
-
   @ApiProperty({ example: 'John' })
   firstName!: string;
 

@@ -1,7 +1,7 @@
+import { CustomerResponseDto } from '@apps/customer/src/dto/customer/customer.response.dto';
+import { CustomerRepository } from '@apps/customer/src/repositories/customer.repository';
+import { toCustomerResponse } from '@apps/customer/src/utils/customer/to-customer-response';
 import { Injectable } from '@nestjs/common';
-import { CustomerResponseDto } from '../../dto';
-import { CustomerRepository } from '../../repositories';
-import { toCustomerResponse } from '../../utils/customer/to-customer-response';
 
 @Injectable()
 export class CustomerQueryService {
