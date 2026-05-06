@@ -1,5 +1,4 @@
 import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
-import { UpdateCustomerDto } from '@customer/dto/customer/update-customer.dto';
 import {
   CustomerRepository,
   TransactionRepository,
@@ -12,13 +11,6 @@ export class CustomerService {
     private readonly customerRepository: CustomerRepository,
     private readonly transactionRepository: TransactionRepository,
   ) {}
-
-  async updateCustomer(_id: string, updateCustomerDto: UpdateCustomerDto) {
-    return await this.customerRepository.findOneAndUpdate(
-      { _id },
-      { $set: updateCustomerDto },
-    );
-  }
 
   async removeCustomer(_id: string) {
     const deletedCustomer = await this.customerRepository.findOneAndDelete({

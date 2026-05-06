@@ -1,9 +1,20 @@
-import { CustomerDocument } from '@app/common/models';
-import { CreateCustomerDto, CustomerResponseDto } from '@customer/dto';
+import {
+  CreateCustomerDto,
+  CustomerResponseDto,
+  UpdateCustomerDto,
+} from '@customer/dto';
 import { CustomerCommandService } from '@customer/services/customer-command.service';
 import { CustomerQueryService } from '@customer/services/customer-query.service';
 import { CustomerService } from '@customer/services/customer.service';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -37,23 +48,23 @@ export class CustomerController {
 
   @Get(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
-  findOne(@Param('id') id: string): Promise<CustomerResponseDto> {
+  getCustomerById(@Param('id') id: string): Promise<CustomerResponseDto> {
     return this.customerQueryService.getCustomerById(id);
   }
 
-  // @Patch(':id')
-  // @ApiBody({ type: UpdateCustomerDto })
-  // @ApiOkResponse({ type: CustomerResponseDto })
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateCustomerDto: UpdateCustomerDto,
-  // ): Promise<CustomerDocument> {
-  //   return this.customerService.updateCustomer(id, updateCustomerDto);
-  // }
+  @Patch(':id')
+  @ApiBody({ type: UpdateCustomerDto })
+  @ApiOkResponse({ type: CustomerResponseDto })
+  updateCustomerById(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ): Promise<CustomerResponseDto | null> {
+    return this.customerCommandService.updateCustomer(id, updateCustomerDto);
+  }
 
   @Delete(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
-  remove(@Param('id') id: string): Promise<CustomerDocument> {
+  removeCustomer(@Param('id') id: string): Promise<CustomerResponseDto | null> {
     return this.customerService.removeCustomer(id);
   }
 }

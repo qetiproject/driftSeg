@@ -1,6 +1,10 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
-import { CreateCustomerDto } from '@customer/dto';
+import {
+  CreateCustomerDto,
+  CustomerResponseDto,
+  UpdateCustomerDto,
+} from '@customer/dto';
 import { CustomerRepository } from '@customer/repositories/customer.repository';
 import { toCustomerResponse } from '@customer/utils';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
@@ -29,5 +33,12 @@ export class CustomerCommandService {
         CUSTOMER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS,
       );
     }
+  }
+
+  async updateCustomer(
+    id: string,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<CustomerResponseDto | null> {
+    return await this.customerRepository.updateById(id, updateCustomerDto);
   }
 }
