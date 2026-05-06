@@ -13,11 +13,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -39,9 +41,26 @@ export class CustomerController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    example: 1,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    example: 10,
+    description: 'Limit items',
+  })
   @ApiOkResponse({ type: CustomerResponseDto, isArray: true })
-  getCustomers(): Promise<CustomerResponseDto[]> {
-    return this.customerQueryService.getCustomers();
+  getCustomers(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ): Promise<CustomerResponseDto[]> {
+    return this.customerQueryService.getCustomers(page, limit);
   }
 
   @Get(':id')

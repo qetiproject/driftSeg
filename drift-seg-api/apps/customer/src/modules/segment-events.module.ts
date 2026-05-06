@@ -1,8 +1,8 @@
+import { SEGMENT_EVENTS_QUEUE } from '@customer/constants/constants';
+import { SEGMENT_EVENTS_CLIENT } from '@customer/constants/tokens';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SEGMENT_EVENTS_QUEUE } from '../constants/constants';
-import { SEGMENT_EVENTS_CLIENT } from '../constants/tokens';
 
 @Module({
   imports: [

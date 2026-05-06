@@ -1,7 +1,7 @@
+import { CUSTOMER_SERVICE_ENV_FILE_PATH } from '@customer/constants/constants';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { CUSTOMER_SERVICE_ENV_FILE_PATH } from '../constants/constants';
 
 @Module({
   imports: [
