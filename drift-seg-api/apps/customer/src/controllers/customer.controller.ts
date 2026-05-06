@@ -5,19 +5,16 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
-  Post,
+  Patch
 } from '@nestjs/common';
 import {
   ApiBody,
-  ApiCreatedResponse,
   ApiOkResponse,
-  ApiTags,
+  ApiTags
 } from '@nestjs/swagger';
 import {
-  CreateCustomerDto,
   CustomerResponseDto,
-  UpdateCustomerDto,
+  UpdateCustomerDto
 } from '../dto';
 import { CustomerQueryService } from '../services';
 import { CustomerService } from '../services/customer.service';
@@ -30,14 +27,14 @@ export class CustomerController {
     private readonly customerQueryService: CustomerQueryService,
   ) {}
 
-  @Post('create')
-  @ApiBody({ type: CreateCustomerDto })
-  @ApiCreatedResponse({ type: CustomerResponseDto })
-  create(
-    @Body() createCustomerDto: CreateCustomerDto,
-  ): Promise<CustomerResponseDto> {
-    return this.customerService.createCustomer(createCustomerDto);
-  }
+  // @Post('create')
+  // @ApiBody({ type: CreateCustomerDto })
+  // @ApiCreatedResponse({ type: CustomerResponseDto })
+  // create(
+  //   @Body() createCustomerDto: CreateCustomerDto,
+  // ): Promise<CustomerResponseDto> {
+  //   return this.customerService.createCustomer(createCustomerDto);
+  // }
 
   @Get()
   @ApiOkResponse({ type: CustomerResponseDto, isArray: true })

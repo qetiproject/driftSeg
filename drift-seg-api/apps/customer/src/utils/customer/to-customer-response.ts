@@ -1,12 +1,11 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import { CustomerDocument } from '@app/common/models';
-import { CustomerResponseDto } from '../../dto';
+import { CustomerResponseDto } from '@customer/dto/customer/customer.response.dto';
 
 export function toCustomerResponse(
   customer: CustomerDocument,
 ): CustomerResponseDto {
   return {
-    _id: customer._id.toString(),
     firstName: customer.firstName,
     lastName: customer.lastName,
     email: customer.email,

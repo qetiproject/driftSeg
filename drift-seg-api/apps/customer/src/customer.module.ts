@@ -1,6 +1,6 @@
 import { DatabaseModule } from '@app/common';
 import {
-  CustomerDocument,
+  Customer,
   CustomerSchema,
   TransactionDocument,
   TransactionSchema,
@@ -26,7 +26,7 @@ import { TransactionService } from './services/transaction.service';
   imports: [
     DatabaseModule,
     DatabaseModule.forFeature([
-      { name: CustomerDocument.name, schema: CustomerSchema },
+      { name: Customer.name, schema: CustomerSchema },
       { name: TransactionDocument.name, schema: TransactionSchema },
     ]),
     ConfigModule.forRoot({

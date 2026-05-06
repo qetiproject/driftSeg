@@ -1,7 +1,7 @@
 import { DatabaseModule } from '@app/common';
 import {
-  CustomerDocument,
-  CustomerSchema,
+  Customer,
+  CustomerSchema
 } from '@app/common/models/customer-schema';
 import {
   TransactionDocument,
@@ -59,7 +59,7 @@ import {
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
       { name: TransactionDocument.name, schema: TransactionSchema },
-      { name: CustomerDocument.name, schema: CustomerSchema },
+      { name: Customer.name, schema: CustomerSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,

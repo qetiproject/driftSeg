@@ -29,8 +29,8 @@
       "@apps/customer/src/repositories": ["apps/customer/src/repositories"],
       "@apps/customer/src/repositories/*": ["apps/customer/src/repositories/*"],
       "@apps/customer/src/dto/*": ["apps/customer/src/dto/*"],
-      "@apps/customer/src/utils": ["apps/customer/src/utils"],
-      "@apps/customer/src/utils/*": ["apps/customer/src/utils/*"],
+      // "@apps/customer/src/utils": ["apps/customer/src/utils"],
+      // "@apps/customer/src/utils/*": ["apps/customer/src/utils/*"],
       "@customer/*": ["apps/customer/src/*"]
     }
   },
