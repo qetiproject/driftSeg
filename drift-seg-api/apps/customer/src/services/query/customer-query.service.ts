@@ -7,8 +7,24 @@ import { Injectable } from '@nestjs/common';
 export class CustomerQueryService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
-  async getCustomers(): Promise<CustomerResponseDto[]> {
-    const customers = await this.customerRepository.find({});
-    return customers.map((customer) => toCustomerResponse(customer));
+  async getCustomers(page = 1, limit = 20): Promise<CustomerResponseDto[]> {
+    const safePage = Math.max(page, 1);
+    const safeLimit = Math.max(limit, 1);
+    const skip = (safePage - 1) * safeLimit;
+
+    const customers = await this.customerRepository.findMany(
+      {},
+      {
+        _id: 1,
+        firstName: 1,
+        lastName: 1,
+        email: 1,
+        totalSpent: 1,
+        status: 1,
+      },
+      { skip, limit: safeLimit, sort: { createdAt: -1 } },
+    );
+
+    return customers.map(toCustomerResponse);
   }
 }
