@@ -12,4 +12,11 @@ export class CustomerRepository extends AbstractRepository<CustomerDocument> {
   ) {
     super(customerModel);
   }
+
+  async createCustomer(
+    document: Omit<Customer, '_id'>,
+  ): Promise<CustomerDocument> {
+    const createdCustomer = await this.model.create(document);
+    return createdCustomer.toObject();
+  }
 }

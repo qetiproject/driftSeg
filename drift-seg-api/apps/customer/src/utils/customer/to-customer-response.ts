@@ -1,11 +1,14 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
-import { CustomerDocument } from '@app/common/models';
+import { CustomerMapperInput } from '@customer/dto/customer/customer-mapper-input';
 import { CustomerResponseDto } from '@customer/dto/customer/customer.response.dto';
 
 export function toCustomerResponse(
-  customer: CustomerDocument,
+  customer: CustomerMapperInput,
 ): CustomerResponseDto {
+  const id = customer.id ?? customer._id?.toString() ?? '';
+
   return {
+    id,
     firstName: customer.firstName,
     lastName: customer.lastName,
     email: customer.email,

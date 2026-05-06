@@ -1,6 +1,12 @@
+import { CustomerStatusEnum } from '@app/common/enum/status.enum';
+import { toCustomerResponse } from '@customer/utils';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CUSTOMER_ERROR_MESSAGES } from '../constants/error-messages';
-import { UpdateCustomerDto } from '../dto';
+import {
+  CreateCustomerDto,
+  CustomerResponseDto,
+  UpdateCustomerDto,
+} from '../dto';
 import { CustomerRepository, TransactionRepository } from '../repositories';
 
 @Injectable()
@@ -10,18 +16,19 @@ export class CustomerService {
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  // async createCustomer(
-  //   createCustomerDto: CreateCustomerDto,
-  // ): Promise<CustomerResponseDto> {
-  //   await this.validateCreateCustomerDto(createCustomerDto);
-  //   const created = await this.customerRepository.create({
-  //     ...createCustomerDto,
-  //     totalSpent: 0,
-  //     status: CustomerStatusEnum.INACTIVE,
-  //   });
-  //   return toCustomerResponse(created);
-  // }
+  async createCustomer(
+    createCustomerDto: CreateCustomerDto,
+  ): Promise<CustomerResponseDto> {
+    const createdCustomer = await this.customerRepository.createCustomer({
+      ...createCustomerDto,
+      totalSpent: 0,
+      status: CustomerStatusEnum.INACTIVE,
+    });
 
+    return toCustomerResponse(createdCustomer);
+  }
+
+  // await this.validateCreateCustomerDto(createCustomerDto);
   // private async validateCreateCustomerDto(
   //   createCustomerDto: CreateCustomerDto,
   // ) {
