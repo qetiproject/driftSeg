@@ -65,7 +65,7 @@ export async function segmentMembersInfo(
       });
       return {
         customerId: member.customerId.toString(),
-        customerEmail: customer.email,
+        customerEmail: customer?.email || 'Unknown',
       };
     }),
   );

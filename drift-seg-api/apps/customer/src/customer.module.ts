@@ -1,25 +1,26 @@
 import { DatabaseModule } from '@app/common';
 import {
-  Customer,
-  CustomerSchema,
-  TransactionDocument,
-  TransactionSchema,
+    Customer,
+    CustomerSchema,
+    TransactionDocument,
+    TransactionSchema,
 } from '@app/common/models';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Joi from 'joi';
 import {
-  CUSTOMER_SERVICE_ENV_FILE_PATH,
-  SEGMENT_EVENTS_QUEUE,
+    CUSTOMER_SERVICE_ENV_FILE_PATH,
+    SEGMENT_EVENTS_QUEUE,
 } from './constants/constants';
 import { SEGMENT_EVENTS_CLIENT } from './constants/tokens';
 import { CustomerController } from './controllers/customer.controller';
 import { TransactionController } from './controllers/transaction.controller';
 import { TransactionRepository } from './repositories';
 import { CustomerRepository } from './repositories/customer.repository';
+import { CustomerCommandService } from './services/customer-command.service';
+import { CustomerQueryService } from './services/customer-query.service';
 import { CustomerService } from './services/customer.service';
-import { CustomerQueryService } from './services/query/customer-query.service';
 import { TransactionService } from './services/transaction.service';
 
 @Module({
@@ -58,6 +59,7 @@ import { TransactionService } from './services/transaction.service';
   controllers: [CustomerController, TransactionController],
   providers: [
     CustomerService,
+    CustomerCommandService,
     CustomerQueryService,
     CustomerRepository,
     TransactionService,

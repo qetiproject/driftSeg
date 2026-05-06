@@ -1,4 +1,8 @@
 import { CustomerDocument } from '@app/common/models';
+import { CreateCustomerDto, CustomerResponseDto } from '@customer/dto';
+import { CustomerQueryService } from '@customer/services/customer-query.service';
+import { CustomerCommandService } from '@customer/services/customer-command.service';
+import { CustomerService } from '@customer/services/customer.service';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBody,
@@ -6,9 +10,6 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateCustomerDto, CustomerResponseDto } from '../dto';
-import { CustomerQueryService } from '../services';
-import { CustomerService } from '../services/customer.service';
 
 @Controller('customer')
 @ApiTags('customer')
@@ -16,15 +17,16 @@ export class CustomerController {
   constructor(
     private readonly customerService: CustomerService,
     private readonly customerQueryService: CustomerQueryService,
+    private readonly customerCommandService: CustomerCommandService,
   ) {}
 
   @Post('create')
   @ApiBody({ type: CreateCustomerDto })
   @ApiCreatedResponse({ type: CustomerResponseDto })
-  create(
+  createCustomer(
     @Body() createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
-    return this.customerService.createCustomer(createCustomerDto);
+    return this.customerCommandService.createCustomer(createCustomerDto);
   }
 
   @Get()
