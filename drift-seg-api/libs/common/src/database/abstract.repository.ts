@@ -63,4 +63,14 @@ export abstract class AbstractRepository<TDocument> {
   ): Promise<TDocument | null> {
     return this.model.findOneAndDelete(filterQuery).lean<TDocument>(true);
   }
+
+  async findByIdAndDelete(id: string): Promise<TDocument | null> {
+    if (!Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    const deleted = await this.model.findByIdAndDelete(id).lean<TDocument>();
+
+    return deleted;
+  }
 }

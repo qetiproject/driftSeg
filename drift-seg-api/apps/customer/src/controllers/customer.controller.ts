@@ -5,7 +5,6 @@ import {
 } from '@customer/dto';
 import { CustomerCommandService } from '@customer/services/customer-command.service';
 import { CustomerQueryService } from '@customer/services/customer-query.service';
-import { CustomerService } from '@customer/services/customer.service';
 import {
   Body,
   Controller,
@@ -26,7 +25,6 @@ import {
 @ApiTags('customer')
 export class CustomerController {
   constructor(
-    private readonly customerService: CustomerService,
     private readonly customerQueryService: CustomerQueryService,
     private readonly customerCommandService: CustomerCommandService,
   ) {}
@@ -65,6 +63,6 @@ export class CustomerController {
   @Delete(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
   removeCustomer(@Param('id') id: string): Promise<CustomerResponseDto | null> {
-    return this.customerService.removeCustomer(id);
+    return this.customerCommandService.removeCustomer(id);
   }
 }

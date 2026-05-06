@@ -6,12 +6,20 @@ import {
   UpdateCustomerDto,
 } from '@customer/dto';
 import { CustomerRepository } from '@customer/repositories/customer.repository';
-import { toCustomerResponse } from '@customer/utils';
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { TransactionRepository } from '@customer/repositories/transaction.repository';
+import { toCustomerResponse } from '@customer/utils/customer/to-customer-response';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 
 @Injectable()
 export class CustomerCommandService {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(
+    private readonly customerRepository: CustomerRepository,
+    private readonly transactionRepository: TransactionRepository,
+  ) {}
 
   async createCustomer(dto: CreateCustomerDto) {
     await this.customerByEmail(dto.email);
@@ -40,5 +48,17 @@ export class CustomerCommandService {
     updateCustomerDto: UpdateCustomerDto,
   ): Promise<CustomerResponseDto | null> {
     return await this.customerRepository.updateById(id, updateCustomerDto);
+  }
+
+  async removeCustomer(id: string) {
+    const deletedCustomer = await this.customerRepository.findByIdAndDelete(id);
+
+    if (!deletedCustomer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+    }
+
+    await this.transactionRepository.deleteManyByCustomerId(id);
+
+    return deletedCustomer;
   }
 }
