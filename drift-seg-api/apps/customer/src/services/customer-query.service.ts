@@ -8,7 +8,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 export class CustomerQueryService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
-  async getCustomers(page = 1, limit = 20): Promise<CustomerResponseDto[]> {
+  async getCustomers(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<CustomerResponseDto[]> {
     const safePage = Math.max(page, 1);
     const safeLimit = Math.max(limit, 1);
     const skip = (safePage - 1) * safeLimit;

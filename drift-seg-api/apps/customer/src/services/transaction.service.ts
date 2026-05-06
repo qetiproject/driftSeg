@@ -68,10 +68,20 @@ export class TransactionService {
     return toTransactionResponse(created);
   }
 
-  async getTransactions(): Promise<TransactionResponseDto[]> {
-    const transactions = await this.transactionRepository.find({});
-    return transactions.map((transaction) =>
-      toTransactionResponse(transaction),
+  async getTransactions(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<TransactionResponseDto[]> {
+    const safePage = Math.max(page, 1);
+    const safeLimit = Math.max(limit, 1);
+    const skip = (safePage - 1) * safeLimit;
+    const transactions = await this.transactionRepository.find(
+      {},
+      {
+        skip,
+        limit: safeLimit,
+      },
     );
+    return transactions.map(toTransactionResponse);
   }
 }
