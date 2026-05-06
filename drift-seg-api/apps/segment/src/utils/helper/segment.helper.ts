@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { NotFoundException } from '@nestjs/common';
 import { DAY_IN_MS } from '../../constants/constants';
 import {
   SegmentMembersResponseDto,
@@ -31,7 +32,13 @@ export function getSegmentById(
   segmentRepository: SegmentRepository,
   segmentId: string,
 ): Promise<SegmentDocument> {
-  return segmentRepository.findOne({ _id: segmentId });
+  return segmentRepository.findOne({ _id: segmentId }).then((segment) => {
+    if (!segment) {
+      throw new NotFoundException('Segment not found');
+    }
+
+    return segment;
+  });
 }
 
 export function getSegmentMembers(

@@ -1,7 +1,9 @@
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import type { CustomerDocument, TransactionDocument } from '@app/common/models';
+import { CUSTOMER_ERROR_MESSAGES } from '../../constants/error-messages';
 import { CreateTransactionDto, TransactionResponseDto } from '../../dto';
 import { CustomerRepository } from '../../repositories';
+import { NotFoundException } from '@nestjs/common';
 
 export function toTransactionResponse(
   transaction: TransactionDocument,
@@ -27,11 +29,17 @@ export async function updateCustomerAfterTransaction(
   customerRepository: CustomerRepository,
   createTransactionDto: CreateTransactionDto,
 ): Promise<CustomerDocument> {
-  return await customerRepository.findOneAndUpdate(
+  const updatedCustomer = await customerRepository.findOneAndUpdate(
     { _id: createTransactionDto.customerId },
     {
       $inc: { totalSpent: createTransactionDto.amount },
       $set: { status: CustomerStatusEnum.ACTIVE },
     },
   );
+
+  if (!updatedCustomer) {
+    throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+  }
+
+  return updatedCustomer;
 }

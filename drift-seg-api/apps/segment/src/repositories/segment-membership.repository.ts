@@ -1,5 +1,5 @@
 import { AbstractRepository } from '@app/common';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { SegmentMembershipDocument } from '../models';
@@ -36,7 +36,13 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
     return this.findOneAndUpdate(
       { _id: membershipId },
       { $set: { isActive: false } },
-    );
+    ).then((membership) => {
+      if (!membership) {
+        throw new NotFoundException('Segment membership not found');
+      }
+
+      return membership;
+    });
   }
 
   async deleteBySegmentId(segmentId: Types.ObjectId): Promise<void> {
