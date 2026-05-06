@@ -13,10 +13,6 @@ export class CustomerService {
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  async getCustomerById(_id: string) {
-    return await this.customerRepository.findOne({ _id });
-  }
-
   async updateCustomer(_id: string, updateCustomerDto: UpdateCustomerDto) {
     return await this.customerRepository.findOneAndUpdate(
       { _id },

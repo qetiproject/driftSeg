@@ -1,7 +1,7 @@
 import { CustomerDocument } from '@app/common/models';
 import { CreateCustomerDto, CustomerResponseDto } from '@customer/dto';
-import { CustomerQueryService } from '@customer/services/customer-query.service';
 import { CustomerCommandService } from '@customer/services/customer-command.service';
+import { CustomerQueryService } from '@customer/services/customer-query.service';
 import { CustomerService } from '@customer/services/customer.service';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
@@ -35,11 +35,11 @@ export class CustomerController {
     return this.customerQueryService.getCustomers();
   }
 
-  // @Get(':id')
-  // @ApiOkResponse({ type: CustomerResponseDto })
-  // findOne(@Param('id') id: string): Promise<CustomerDocument> {
-  //   return this.customerService.getCustomerById(id);
-  // }
+  @Get(':id')
+  @ApiOkResponse({ type: CustomerResponseDto })
+  findOne(@Param('id') id: string): Promise<CustomerResponseDto> {
+    return this.customerQueryService.getCustomerById(id);
+  }
 
   // @Patch(':id')
   // @ApiBody({ type: UpdateCustomerDto })

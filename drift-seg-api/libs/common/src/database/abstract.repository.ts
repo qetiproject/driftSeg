@@ -20,6 +20,14 @@ export abstract class AbstractRepository<TDocument> {
     return document;
   }
 
+  async findById(id: string): Promise<TDocument | null> {
+    if (!Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    return this.model.findById(id).lean<TDocument>();
+  }
+
   async findOneAndUpdate(
     filterQuery: QueryFilter<TDocument>,
     update: UpdateQuery<TDocument>,

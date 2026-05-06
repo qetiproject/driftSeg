@@ -1,7 +1,8 @@
+import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
 import { CustomerResponseDto } from '@customer/dto/customer/customer.response.dto';
 import { CustomerRepository } from '@customer/repositories/customer.repository';
 import { toCustomerResponse } from '@customer/utils/customer/to-customer-response';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CustomerQueryService {
@@ -21,5 +22,15 @@ export class CustomerQueryService {
     );
 
     return customers.map(toCustomerResponse);
+  }
+
+  async getCustomerById(id: string): Promise<CustomerResponseDto> {
+    const customer = await this.customerRepository.findById(id);
+
+    if (!customer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+    }
+
+    return toCustomerResponse(customer);
   }
 }
