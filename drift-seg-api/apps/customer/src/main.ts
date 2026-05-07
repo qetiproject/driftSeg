@@ -1,34 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomerModule } from './customer.module';
+
+import { setupCors, setupPipes, setupSwagger } from '@customer/setup';
 
 async function bootstrap() {
   const app = await NestFactory.create(CustomerModule);
-  app.enableCors({
-    origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
-    credentials: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-  });
+
+  setupCors(app);
+  setupPipes(app);
+  setupSwagger(app);
+
   app.setGlobalPrefix('api');
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('DriftSeg Customer API')
-    .setDescription('Customer and transaction endpoints')
-    .setVersion('1.0')
-    .build();
-  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('swagger', app, swaggerDocument);
 
   const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT') || 3000);
 }
+
 bootstrap();
