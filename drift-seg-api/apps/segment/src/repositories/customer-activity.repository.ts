@@ -1,4 +1,7 @@
-import { TransactionDocument } from '@app/common/models/transaction-schema';
+import {
+  Transaction,
+  TransactionDocument,
+} from '@app/common/models/transaction-schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -6,7 +9,7 @@ import { Model, Types } from 'mongoose';
 @Injectable()
 export class CustomerActivityRepository {
   constructor(
-    @InjectModel(TransactionDocument.name)
+    @InjectModel(Transaction.name)
     private readonly transactionModel: Model<TransactionDocument>,
   ) {}
 

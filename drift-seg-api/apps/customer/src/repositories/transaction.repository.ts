@@ -1,5 +1,8 @@
 import { AbstractRepository } from '@app/common';
-import { TransactionDocument } from '@app/common/models/transaction-schema';
+import {
+  Transaction,
+  TransactionDocument,
+} from '@app/common/models/transaction-schema';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -9,10 +12,16 @@ export class TransactionRepository extends AbstractRepository<TransactionDocumen
   protected readonly logger = new Logger(TransactionRepository.name);
 
   constructor(
-    @InjectModel(TransactionDocument.name)
+    @InjectModel(Transaction.name)
     transactionModel: Model<TransactionDocument>,
   ) {
     super(transactionModel);
+  }
+
+  async createTransaction(
+    document: Pick<Transaction, 'customerId' | 'amount' | 'occurredAt' | 'description'>,
+  ): Promise<TransactionDocument> {
+    return this.model.create(document);
   }
 
   async deleteManyByCustomerId(customerId: string): Promise<number> {

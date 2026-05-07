@@ -4,7 +4,7 @@ import {
   CustomerSchema
 } from '@app/common/models/customer-schema';
 import {
-  TransactionDocument,
+  Transaction,
   TransactionSchema,
 } from '@app/common/models/transaction-schema';
 import { Module } from '@nestjs/common';
@@ -58,7 +58,7 @@ import {
       { name: SegmentDocument.name, schema: SegmentSchema },
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
-      { name: TransactionDocument.name, schema: TransactionSchema },
+      { name: Transaction.name, schema: TransactionSchema },
       { name: Customer.name, schema: CustomerSchema },
     ]),
     ConfigModule.forRoot({

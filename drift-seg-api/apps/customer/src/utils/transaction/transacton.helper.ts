@@ -8,7 +8,7 @@ export function toTransactionResponse(
     transaction.occurredAt ?? Date.now(),
   ).toISOString();
   return {
-    _id: transaction._id.toString(),
+    id: transaction._id.toString(),
     customerId: transaction.customerId.toString(),
     amount: transaction.amount,
     occurredAt,

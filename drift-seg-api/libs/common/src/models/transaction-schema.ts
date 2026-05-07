@@ -1,12 +1,11 @@
-import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes, Types } from 'mongoose';
+import { HydratedDocument, SchemaTypes, Types } from 'mongoose';
 
 @Schema({
   versionKey: false,
   timestamps: false,
 })
-export class TransactionDocument extends AbstractDocument {
+export class Transaction {
   @Prop({ type: SchemaTypes.ObjectId, required: true, ref: 'CustomerDocument' })
   customerId!: Types.ObjectId;
 
@@ -20,7 +19,8 @@ export class TransactionDocument extends AbstractDocument {
   description?: string;
 }
 
-export const TransactionSchema =
-  SchemaFactory.createForClass(TransactionDocument);
+export type TransactionDocument = HydratedDocument<Transaction>;
+
+export const TransactionSchema = SchemaFactory.createForClass(Transaction);
 
 TransactionSchema.index({ customerId: 1, occurredAt: -1 });

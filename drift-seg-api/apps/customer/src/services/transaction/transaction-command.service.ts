@@ -52,7 +52,7 @@ export class TransactionCommandService {
   private async createTransactionEntity(
     dto: CreateTransactionDto,
   ): Promise<TransactionDocument> {
-    return this.transactionRepository.create({
+    return this.transactionRepository.createTransaction({
       customerId: new Types.ObjectId(dto.customerId),
       amount: dto.amount,
       occurredAt: dto.occurredAt ? new Date(dto.occurredAt) : new Date(),

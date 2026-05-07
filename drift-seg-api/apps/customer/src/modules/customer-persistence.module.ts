@@ -2,7 +2,7 @@ import { DatabaseModule } from '@app/common';
 import {
   Customer,
   CustomerSchema,
-  TransactionDocument,
+  Transaction,
   TransactionSchema,
 } from '@app/common/models';
 import { CustomerRepository } from '@customer/repositories/customer.repository';
@@ -14,7 +14,7 @@ import { Module } from '@nestjs/common';
     DatabaseModule,
     DatabaseModule.forFeature([
       { name: Customer.name, schema: CustomerSchema },
-      { name: TransactionDocument.name, schema: TransactionSchema },
+      { name: Transaction.name, schema: TransactionSchema },
     ]),
   ],
   providers: [CustomerRepository, TransactionRepository],

@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TransactionResponseDto {
   @ApiProperty({ example: '680baf22a9d7a5946a2d06c2' })
-  _id!: string;
+  id!: string;
 
   @ApiProperty({ example: '680baf22a9d7a5946a2d06c1' })
   customerId!: string;
