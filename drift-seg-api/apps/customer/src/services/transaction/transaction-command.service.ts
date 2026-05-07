@@ -3,13 +3,18 @@ import {
   TransactionCreatedEvent,
 } from '@app/common/dto';
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
+import { Customer, TransactionDocument } from '@app/common/models';
 import { toTransactionResponse } from '@customer/utils';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
 import { SEGMENT_EVENTS_CLIENT } from '../../constants/tokens';
-import { CreateTransactionDto, TransactionResponseDto } from '../../dto';
+import {
+  CreateTransactionDto,
+  CustomerResponseDto,
+  TransactionResponseDto,
+} from '../../dto';
 import { TransactionRepository } from '../../repositories';
 import { CustomerCommandService } from '../customer/customer-command.service';
 import { CustomerQueryService } from '../customer/customer-query.service';
@@ -25,55 +30,70 @@ export class TransactionCommandService {
   ) {}
 
   async createTransaction(
-    createTransactionDto: CreateTransactionDto,
+    dto: CreateTransactionDto,
   ): Promise<TransactionResponseDto> {
-    const customer = await this.customerQueryService.getCustomerById(
-      createTransactionDto.customerId,
+    const customer: CustomerResponseDto =
+      await this.customerQueryService.getCustomerById(dto.customerId);
+
+    const transaction = await this.createTransactionEntity(dto);
+
+    const updatedCustomer = await this.updateCustomerAfterTransaction(
+      customer,
+      dto.amount,
     );
 
-    const newTransaction = await this.transactionRepository.create({
-      customerId: new Types.ObjectId(createTransactionDto.customerId),
-      amount: createTransactionDto.amount,
-      occurredAt: createTransactionDto.occurredAt
-        ? new Date(createTransactionDto.occurredAt)
-        : new Date(),
-      description: createTransactionDto.description,
+    this.emitTransactionCreatedEvent(transaction, updatedCustomer, dto);
+
+    return toTransactionResponse(transaction);
+  }
+
+  private async createTransactionEntity(dto: CreateTransactionDto) {
+    return this.transactionRepository.create({
+      customerId: new Types.ObjectId(dto.customerId),
+      amount: dto.amount,
+      occurredAt: dto.occurredAt ? new Date(dto.occurredAt) : new Date(),
+      description: dto.description,
     });
+  }
 
-    const newTotalSpent = customer.totalSpent + createTransactionDto.amount;
+  private resolveCustomerStatus(totalSpent: number): CustomerStatusEnum {
+    return totalSpent > 1000
+      ? CustomerStatusEnum.ACTIVE
+      : CustomerStatusEnum.INACTIVE;
+  }
 
-    const newStatus =
-      newTotalSpent > 1000
-        ? CustomerStatusEnum.ACTIVE
-        : CustomerStatusEnum.INACTIVE;
+  private async updateCustomerAfterTransaction(
+    customer: CustomerResponseDto,
+    amount: number,
+  ): Promise<Customer> {
+    const totalSpent = customer.totalSpent + amount;
 
-    const updatedCustomer = await this.customerCommandService.updateCustomer(
-      createTransactionDto.customerId,
-      {
-        totalSpent: newTotalSpent,
-        status: newStatus,
-      },
-    );
-    const transactionOccurredAt = (
-      newTransaction.occurredAt ?? new Date()
-    ).toISOString();
+    const status = this.resolveCustomerStatus(totalSpent);
 
+    return this.customerCommandService.updateCustomer(customer.email, {
+      totalSpent,
+      status,
+    });
+  }
+
+  private emitTransactionCreatedEvent(
+    transaction: TransactionDocument,
+    customer: Customer,
+    dto: CreateTransactionDto,
+  ): void {
     const eventPayload: TransactionCreatedEvent = {
       eventId: randomUUID(),
-
       eventType: TRANSACTION_CREATED_EVENT,
       occurredAt: new Date().toISOString(),
       data: {
-        transactionId: newTransaction._id.toString(),
-        customerId: createTransactionDto.customerId,
-        amount: createTransactionDto.amount,
-        transactionOccurredAt,
-        totalSpent: updatedCustomer!.totalSpent,
+        transactionId: transaction._id.toString(),
+        customerId: dto.customerId,
+        amount: dto.amount,
+        transactionOccurredAt: transaction.occurredAt!.toISOString(),
+        totalSpent: customer.totalSpent,
       },
     };
 
     this.segmentEventsClient.emit(TRANSACTION_CREATED_EVENT, eventPayload);
-
-    return toTransactionResponse(newTransaction);
   }
 }

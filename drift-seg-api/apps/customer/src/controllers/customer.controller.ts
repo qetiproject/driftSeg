@@ -3,8 +3,10 @@ import {
   CustomerResponseDto,
   UpdateCustomerDto,
 } from '@customer/dto';
-import { CustomerCommandService } from '@customer/services/customer-command.service';
-import { CustomerQueryService } from '@customer/services/customer-query.service';
+import {
+  CustomerCommandService,
+  CustomerQueryService,
+} from '@customer/services';
 import {
   Body,
   Controller,
