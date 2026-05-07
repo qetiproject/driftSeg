@@ -12,3 +12,11 @@ export interface CreateTransactionRequest {
   occurredAt?: string;
   description?: string;
 }
+
+export interface PaginatedTransactionsResponse {
+  items: TransactionResponse[];
+  totalItems: number;
+  totalPages: number;
+  page: number;
+  limit: number;
+}

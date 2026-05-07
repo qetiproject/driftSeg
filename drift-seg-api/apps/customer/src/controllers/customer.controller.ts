@@ -1,6 +1,7 @@
 import {
   CreateCustomerDto,
   CustomerResponseDto,
+  PaginatedCustomersResponseDto,
   UpdateCustomerDto,
 } from '@customer/dto';
 import {
@@ -57,11 +58,11 @@ export class CustomerController {
     example: 10,
     description: 'Limit items',
   })
-  @ApiOkResponse({ type: CustomerResponseDto, isArray: true })
+  @ApiOkResponse({ type: PaginatedCustomersResponseDto })
   getCustomers(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<CustomerResponseDto[]> {
+  ): Promise<PaginatedCustomersResponseDto> {
     return this.customerQueryService.getCustomers(page, limit);
   }
 

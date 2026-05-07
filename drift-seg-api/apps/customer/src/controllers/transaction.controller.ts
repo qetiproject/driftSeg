@@ -1,3 +1,4 @@
+import { PaginatedTransactionsResponseDto } from '@customer/dto';
 import { CreateTransactionDto } from '@customer/dto/transition/create-transaction.dto';
 import { TransactionResponseDto } from '@customer/dto/transition/transaction.response.dto';
 import { TransactionCommandService } from '@customer/services/transaction/transaction-command.service';
@@ -34,11 +35,11 @@ export class TransactionController {
     example: 10,
     description: 'Limit items',
   })
-  @ApiOkResponse({ type: TransactionResponseDto, isArray: true })
+  @ApiOkResponse({ type: PaginatedTransactionsResponseDto })
   getTransactions(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<TransactionResponseDto[]> {
+  ): Promise<PaginatedTransactionsResponseDto> {
     return this.transactionQueryService.getTransactions(page, limit);
   }
 

@@ -58,6 +58,10 @@ export abstract class AbstractRepository<TDocument> {
       .exec();
   }
 
+  async countDocuments(filter: QueryFilter<TDocument>): Promise<number> {
+    return this.model.countDocuments(filter).exec();
+  }
+
   async findOneAndDelete(
     filterQuery: QueryFilter<TDocument>,
   ): Promise<TDocument | null> {

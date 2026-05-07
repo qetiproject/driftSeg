@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient, Endpoints } from '@api';
-import { CreateCustomerRequest, CustomerResponse } from '../types';
+import {
+  CreateCustomerRequest,
+  CustomerResponse,
+  PaginatedCustomersResponse,
+} from '../types';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +21,11 @@ export class CustomerApi {
       payload,
     );
   }
-  getAllCustomers(): Observable<CustomerResponse[]> {
-    return this.#api.get<CustomerResponse[]>(this.#baseUrl, Endpoints.customer.getCustomers);
+  getAllCustomers(): Observable<PaginatedCustomersResponse> {
+    return this.#api.get<PaginatedCustomersResponse>(
+      this.#baseUrl,
+      Endpoints.customer.getCustomers,
+    );
   }
 
   getCustomerDetails(id: string): Observable<CustomerResponse> {

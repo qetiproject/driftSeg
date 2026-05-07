@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient, Endpoints } from '@api';
-import { CreateTransactionRequest, TransactionResponse } from '../types';
+import {
+  CreateTransactionRequest,
+  PaginatedTransactionsResponse,
+  TransactionResponse,
+} from '../types';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +22,8 @@ export class TransactionApi {
     );
   }
 
-  getAllTransactions(): Observable<TransactionResponse[]> {
-    return this.#api.get<TransactionResponse[]>(
+  getAllTransactions(): Observable<PaginatedTransactionsResponse> {
+    return this.#api.get<PaginatedTransactionsResponse>(
       this.#baseUrl,
       Endpoints.transactions.getTransactions,
     );

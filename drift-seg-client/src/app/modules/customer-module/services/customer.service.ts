@@ -21,8 +21,8 @@ export class CustomerService {
   getCustomers(): void {
     this.#customerApi
       .getAllCustomers()
-      .pipe(catchError(() => of([])))
-      .subscribe((customers) => this.#customers.set(customers));
+      .pipe(catchError(() => of({ items: [], totalItems: 0, totalPages: 0, page: 1, limit: 10 })))
+      .subscribe((response) => this.#customers.set(response.items));
   }
 
   getCustomerDetails(id: string): Observable<CustomerResponse | null> {

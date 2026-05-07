@@ -21,7 +21,7 @@ export class TransactionService {
   getTransactions(): void {
     this.#transactionApi
       .getAllTransactions()
-      .pipe(catchError(() => of([])))
-      .subscribe((transactions) => this.#transactions.set(transactions));
+      .pipe(catchError(() => of({ items: [], totalItems: 0, totalPages: 0, page: 1, limit: 10 })))
+      .subscribe((response) => this.#transactions.set(response.items));
   }
 }

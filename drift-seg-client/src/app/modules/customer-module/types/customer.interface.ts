@@ -17,6 +17,14 @@ export interface CustomerDetailsResponse extends CustomerResponse {
   updatedAt: Date;
 }
 
+export interface PaginatedCustomersResponse {
+  items: CustomerResponse[];
+  totalItems: number;
+  totalPages: number;
+  page: number;
+  limit: number;
+}
+
 export interface CreateCustomerRequest {
   firstName: string;
   lastName: string;
