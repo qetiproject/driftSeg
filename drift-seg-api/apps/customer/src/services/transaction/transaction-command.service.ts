@@ -2,7 +2,6 @@ import {
   TRANSACTION_CREATED_EVENT,
   TransactionCreatedEvent,
 } from '@app/common/dto';
-import { CustomerStatusEnum } from '@app/common/enum/status.enum';
 import { TransactionDocument } from '@app/common/models';
 import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
 import { toTransactionResponse } from '@customer/utils';
@@ -60,27 +59,15 @@ export class TransactionCommandService {
     });
   }
 
-  private customerStatus(totalSpent: number): CustomerStatusEnum {
-    return totalSpent > 0
-      ? CustomerStatusEnum.ACTIVE
-      : CustomerStatusEnum.INACTIVE;
-  }
-
   private async updateCustomerAfterTransaction(
     customer: CustomerResponseDto,
     amount: number,
   ): Promise<CustomerResponseDto> {
-    const totalSpent = customer.totalSpent + amount;
-
-    const status = this.customerStatus(totalSpent);
-
-    const updatedCustomer = await this.customerCommandService.updateCustomer(
-      customer.id,
-      {
-        totalSpent,
-        status,
-      },
-    );
+    const updatedCustomer =
+      await this.customerCommandService.addSpentAndRefreshStatus(
+        customer.id,
+        amount,
+      );
 
     if (!updatedCustomer) {
       throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);

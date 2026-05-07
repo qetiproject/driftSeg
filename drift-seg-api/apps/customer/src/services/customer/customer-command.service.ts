@@ -47,7 +47,20 @@ export class CustomerCommandService {
     id: string,
     updateCustomerDto: UpdateCustomerDto,
   ): Promise<CustomerResponseDto | null> {
-    return await this.customerRepository.updateById(id, updateCustomerDto);
+    const updatedCustomer = await this.customerRepository.updateById(
+      id,
+      updateCustomerDto,
+    );
+    return updatedCustomer ? toCustomerResponse(updatedCustomer) : null;
+  }
+
+  async addSpentAndRefreshStatus(
+    id: string,
+    amount: number,
+  ): Promise<CustomerResponseDto | null> {
+    const updatedCustomer =
+      await this.customerRepository.addSpentAndRefreshStatus(id, amount);
+    return updatedCustomer ? toCustomerResponse(updatedCustomer) : null;
   }
 
   async removeCustomer(id: string) {
