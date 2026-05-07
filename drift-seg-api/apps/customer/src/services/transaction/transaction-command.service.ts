@@ -16,7 +16,6 @@ import { toTransactionResponse } from '@customer/utils';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class TransactionCommandService {
@@ -39,12 +38,19 @@ export class TransactionCommandService {
     const transaction: TransactionDocument =
       await this.createTransactionEntity(dto);
 
-    const updatedCustomer = await this.updateCustomerAfterTransaction(
-      customer.id,
-      dto.amount,
-    );
-
-    this.transactionCreatedEvent(transaction, updatedCustomer, dto);
+    try {
+      const updatedCustomer = await this.updateCustomerAfterTransaction(
+        customer.id,
+        dto.amount,
+      );
+      this.transactionCreatedEvent(transaction, updatedCustomer, dto);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown post-create error';
+      this.logger.error(
+        `Transaction created but post-processing failed: ${errorMessage}`,
+      );
+    }
 
     return toTransactionResponse(transaction);
   }
@@ -53,7 +59,7 @@ export class TransactionCommandService {
     dto: CreateTransactionDto,
   ): Promise<TransactionDocument> {
     return this.transactionRepository.createTransaction({
-      customerId: new Types.ObjectId(dto.customerId),
+      customerId: dto.customerId,
       amount: dto.amount,
       occurredAt: dto.occurredAt ? new Date(dto.occurredAt) : new Date(),
       description: dto.description,

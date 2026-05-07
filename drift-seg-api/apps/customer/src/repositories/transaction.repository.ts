@@ -18,13 +18,16 @@ export class TransactionRepository extends AbstractRepository<TransactionDocumen
     super(transactionModel);
   }
 
-  async createTransaction(
-    document: Pick<
-      Transaction,
-      'customerId' | 'amount' | 'occurredAt' | 'description'
-    >,
-  ): Promise<TransactionDocument> {
-    return this.model.create(document);
+  async createTransaction(document: {
+    customerId: string;
+    amount: number;
+    occurredAt?: Date;
+    description?: string;
+  }): Promise<TransactionDocument> {
+    return this.model.create({
+      ...document,
+      customerId: new Types.ObjectId(document.customerId),
+    });
   }
 
   async deleteManyByCustomerId(customerId: string): Promise<number> {
