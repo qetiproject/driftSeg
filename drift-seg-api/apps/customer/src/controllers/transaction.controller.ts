@@ -11,7 +11,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@Controller('transaction')
+@Controller('transactions')
 @ApiTags('transaction')
 export class TransactionController {
   constructor(
@@ -42,7 +42,7 @@ export class TransactionController {
     return this.transactionQueryService.getTransactions(page, limit);
   }
 
-  @Post('create')
+  @Post()
   @ApiBody({ type: CreateTransactionDto })
   @ApiCreatedResponse({ type: TransactionResponseDto })
   createTransaction(

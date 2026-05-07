@@ -25,7 +25,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@Controller('customer')
+@Controller('customers')
 @ApiTags('customer')
 export class CustomerController {
   constructor(
@@ -33,7 +33,7 @@ export class CustomerController {
     private readonly customerCommandService: CustomerCommandService,
   ) {}
 
-  @Post('create')
+  @Post()
   @ApiBody({ type: CreateCustomerDto })
   @ApiCreatedResponse({ type: CustomerResponseDto })
   createCustomer(
@@ -77,13 +77,13 @@ export class CustomerController {
   updateCustomerById(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
-  ): Promise<CustomerResponseDto | null> {
+  ): Promise<CustomerResponseDto> {
     return this.customerCommandService.updateCustomer(id, updateCustomerDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: CustomerResponseDto })
-  removeCustomer(@Param('id') id: string): Promise<CustomerResponseDto | null> {
+  removeCustomer(@Param('id') id: string): Promise<CustomerResponseDto> {
     return this.customerCommandService.removeCustomer(id);
   }
 }

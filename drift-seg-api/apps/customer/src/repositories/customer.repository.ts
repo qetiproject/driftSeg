@@ -44,26 +44,12 @@ export class CustomerRepository extends AbstractRepository<CustomerDocument> {
     }
 
     return this.model
-      .findOneAndUpdate(
-        { _id: new Types.ObjectId(id) },
-        [
-          {
-            $set: {
-              totalSpent: { $add: [{ $ifNull: ['$totalSpent', 0] }, amount] },
-            },
-          },
-          {
-            $set: {
-              status: {
-                $cond: [
-                  { $gt: ['$totalSpent', 0] },
-                  CustomerStatusEnum.ACTIVE,
-                  CustomerStatusEnum.INACTIVE,
-                ],
-              },
-            },
-          },
-        ],
+      .findByIdAndUpdate(
+        new Types.ObjectId(id),
+        {
+          $inc: { totalSpent: amount },
+          $set: { status: CustomerStatusEnum.ACTIVE },
+        },
         { new: true },
       )
       .lean<CustomerDocument>();

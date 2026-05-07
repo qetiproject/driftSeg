@@ -4,7 +4,9 @@ import { TransactionResponseDto } from '@customer/dto/transition/transaction.res
 export function toTransactionResponse(
   transaction: TransactionDocument,
 ): TransactionResponseDto {
-  const occurredAt = (transaction.occurredAt ?? new Date()).toISOString();
+  const occurredAt = new Date(
+    transaction.occurredAt ?? Date.now(),
+  ).toISOString();
   return {
     _id: transaction._id.toString(),
     customerId: transaction.customerId.toString(),

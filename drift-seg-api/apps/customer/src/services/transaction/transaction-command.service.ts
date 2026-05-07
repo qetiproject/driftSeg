@@ -3,24 +3,25 @@ import {
   TransactionCreatedEvent,
 } from '@app/common/dto';
 import { TransactionDocument } from '@app/common/models';
-import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
-import { toTransactionResponse } from '@customer/utils';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { randomUUID } from 'crypto';
-import { Types } from 'mongoose';
-import { SEGMENT_EVENTS_CLIENT } from '../../constants/tokens';
+import { SEGMENT_EVENTS_CLIENT } from '@customer/constants/tokens';
 import {
   CreateTransactionDto,
   CustomerResponseDto,
   TransactionResponseDto,
-} from '../../dto';
-import { TransactionRepository } from '../../repositories';
-import { CustomerCommandService } from '../customer/customer-command.service';
-import { CustomerQueryService } from '../customer/customer-query.service';
+} from '@customer/dto';
+import { TransactionRepository } from '@customer/repositories/transaction.repository';
+import { CustomerCommandService } from '@customer/services/customer/customer-command.service';
+import { CustomerQueryService } from '@customer/services/customer/customer-query.service';
+import { toTransactionResponse } from '@customer/utils';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { randomUUID } from 'crypto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class TransactionCommandService {
+  private readonly logger = new Logger(TransactionCommandService.name);
+
   constructor(
     private readonly transactionRepository: TransactionRepository,
     @Inject(SEGMENT_EVENTS_CLIENT)
@@ -39,7 +40,7 @@ export class TransactionCommandService {
       await this.createTransactionEntity(dto);
 
     const updatedCustomer = await this.updateCustomerAfterTransaction(
-      customer,
+      customer.id,
       dto.amount,
     );
 
@@ -60,20 +61,13 @@ export class TransactionCommandService {
   }
 
   private async updateCustomerAfterTransaction(
-    customer: CustomerResponseDto,
+    customerId: string,
     amount: number,
   ): Promise<CustomerResponseDto> {
-    const updatedCustomer =
-      await this.customerCommandService.addSpentAndRefreshStatus(
-        customer.id,
-        amount,
-      );
-
-    if (!updatedCustomer) {
-      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
-    }
-
-    return updatedCustomer;
+    return this.customerCommandService.addSpentAndRefreshStatus(
+      customerId,
+      amount,
+    );
   }
 
   private transactionCreatedEvent(
@@ -81,6 +75,10 @@ export class TransactionCommandService {
     customer: CustomerResponseDto,
     dto: CreateTransactionDto,
   ): void {
+    const transactionOccurredAt = new Date(
+      transaction.occurredAt ?? Date.now(),
+    ).toISOString();
+
     const eventPayload: TransactionCreatedEvent = {
       eventId: randomUUID(),
       eventType: TRANSACTION_CREATED_EVENT,
@@ -89,11 +87,19 @@ export class TransactionCommandService {
         transactionId: transaction._id.toString(),
         customerId: dto.customerId,
         amount: dto.amount,
-        transactionOccurredAt: transaction.occurredAt!.toISOString(),
+        transactionOccurredAt,
         totalSpent: customer.totalSpent,
       },
     };
 
-    this.segmentEventsClient.emit(TRANSACTION_CREATED_EVENT, eventPayload);
+    try {
+      this.segmentEventsClient.emit(TRANSACTION_CREATED_EVENT, eventPayload);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown emit error';
+      this.logger.error(
+        `Failed to emit transaction created event: ${errorMessage}`,
+      );
+    }
   }
 }

@@ -46,24 +46,33 @@ export class CustomerCommandService {
   async updateCustomer(
     id: string,
     updateCustomerDto: UpdateCustomerDto,
-  ): Promise<CustomerResponseDto | null> {
+  ): Promise<CustomerResponseDto> {
     const updatedCustomer = await this.customerRepository.updateById(
       id,
       updateCustomerDto,
     );
-    return updatedCustomer ? toCustomerResponse(updatedCustomer) : null;
+    if (!updatedCustomer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+    }
+
+    return toCustomerResponse(updatedCustomer);
   }
 
   async addSpentAndRefreshStatus(
     id: string,
     amount: number,
-  ): Promise<CustomerResponseDto | null> {
+  ): Promise<CustomerResponseDto> {
     const updatedCustomer =
       await this.customerRepository.addSpentAndRefreshStatus(id, amount);
-    return updatedCustomer ? toCustomerResponse(updatedCustomer) : null;
+
+    if (!updatedCustomer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+    }
+
+    return toCustomerResponse(updatedCustomer);
   }
 
-  async removeCustomer(id: string) {
+  async removeCustomer(id: string): Promise<CustomerResponseDto> {
     const deletedCustomer = await this.customerRepository.findByIdAndDelete(id);
 
     if (!deletedCustomer) {
@@ -72,6 +81,6 @@ export class CustomerCommandService {
 
     await this.transactionRepository.deleteManyByCustomerId(id);
 
-    return deletedCustomer;
+    return toCustomerResponse(deletedCustomer);
   }
 }
