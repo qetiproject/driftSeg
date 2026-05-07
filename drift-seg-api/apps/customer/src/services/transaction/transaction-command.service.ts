@@ -1,22 +1,22 @@
 import {
-  TRANSACTION_CREATED_EVENT,
-  TransactionCreatedEvent,
+    TRANSACTION_CREATED_EVENT,
+    TransactionCreatedEvent,
 } from '@app/common/dto';
+import {
+    existCustomerById,
+    toTransactionResponse,
+    updateCustomerAfterTransaction,
+} from '@customer/utils';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
-import { SEGMENT_EVENTS_CLIENT } from '../constants/tokens';
-import { CreateTransactionDto, TransactionResponseDto } from '../dto';
-import { CustomerRepository, TransactionRepository } from '../repositories';
-import {
-  existCustomerById,
-  toTransactionResponse,
-  updateCustomerAfterTransaction,
-} from '../utils/transaction/transacton.helper';
+import { SEGMENT_EVENTS_CLIENT } from '../../constants/tokens';
+import { CreateTransactionDto, TransactionResponseDto } from '../../dto';
+import { CustomerRepository, TransactionRepository } from '../../repositories';
 
 @Injectable()
-export class TransactionService {
+export class TransactionCommandService {
   constructor(
     private readonly transactionRepository: TransactionRepository,
     private readonly customerRepository: CustomerRepository,
@@ -66,22 +66,5 @@ export class TransactionService {
     this.segmentEventsClient.emit(TRANSACTION_CREATED_EVENT, eventPayload);
 
     return toTransactionResponse(created);
-  }
-
-  async getTransactions(
-    page: number = 1,
-    limit: number = 10,
-  ): Promise<TransactionResponseDto[]> {
-    const safePage = Math.max(page, 1);
-    const safeLimit = Math.max(limit, 1);
-    const skip = (safePage - 1) * safeLimit;
-    const transactions = await this.transactionRepository.find(
-      {},
-      {
-        skip,
-        limit: safeLimit,
-      },
-    );
-    return transactions.map(toTransactionResponse);
   }
 }

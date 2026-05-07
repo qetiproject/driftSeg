@@ -1,3 +1,7 @@
+import { CreateTransactionDto } from '@customer/dto/transition/create-transaction.dto';
+import { TransactionResponseDto } from '@customer/dto/transition/transaction.response.dto';
+import { TransactionCommandService } from '@customer/services/transaction/transaction-command.service';
+import { TransactionQueryService } from '@customer/services/transaction/transaction-query.service';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiBody,
@@ -6,13 +10,14 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateTransactionDto, TransactionResponseDto } from '../dto';
-import { TransactionService } from '../services/transaction.service';
 
 @Controller('transaction')
 @ApiTags('transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(
+    private readonly transactionCommandService: TransactionCommandService,
+    private readonly transactionQueryService: TransactionQueryService,
+  ) {}
 
   @Get()
   @ApiQuery({
@@ -34,7 +39,7 @@ export class TransactionController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ): Promise<TransactionResponseDto[]> {
-    return this.transactionService.getTransactions(page, limit);
+    return this.transactionQueryService.getTransactions(page, limit);
   }
 
   @Post('create')
@@ -43,6 +48,8 @@ export class TransactionController {
   createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<TransactionResponseDto> {
-    return this.transactionService.createTransaction(createTransactionDto);
+    return this.transactionCommandService.createTransaction(
+      createTransactionDto,
+    );
   }
 }
