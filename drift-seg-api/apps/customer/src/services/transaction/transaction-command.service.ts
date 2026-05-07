@@ -3,9 +3,10 @@ import {
   TransactionCreatedEvent,
 } from '@app/common/dto';
 import { CustomerStatusEnum } from '@app/common/enum/status.enum';
-import { Customer, TransactionDocument } from '@app/common/models';
+import { TransactionDocument } from '@app/common/models';
+import { CUSTOMER_ERROR_MESSAGES } from '@customer/constants/error-messages';
 import { toTransactionResponse } from '@customer/utils';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
@@ -35,19 +36,22 @@ export class TransactionCommandService {
     const customer: CustomerResponseDto =
       await this.customerQueryService.getCustomerById(dto.customerId);
 
-    const transaction = await this.createTransactionEntity(dto);
+    const transaction: TransactionDocument =
+      await this.createTransactionEntity(dto);
 
     const updatedCustomer = await this.updateCustomerAfterTransaction(
       customer,
       dto.amount,
     );
 
-    this.emitTransactionCreatedEvent(transaction, updatedCustomer, dto);
+    this.transactionCreatedEvent(transaction, updatedCustomer, dto);
 
     return toTransactionResponse(transaction);
   }
 
-  private async createTransactionEntity(dto: CreateTransactionDto) {
+  private async createTransactionEntity(
+    dto: CreateTransactionDto,
+  ): Promise<TransactionDocument> {
     return this.transactionRepository.create({
       customerId: new Types.ObjectId(dto.customerId),
       amount: dto.amount,
@@ -56,8 +60,8 @@ export class TransactionCommandService {
     });
   }
 
-  private resolveCustomerStatus(totalSpent: number): CustomerStatusEnum {
-    return totalSpent > 1000
+  private customerStatus(totalSpent: number): CustomerStatusEnum {
+    return totalSpent > 0
       ? CustomerStatusEnum.ACTIVE
       : CustomerStatusEnum.INACTIVE;
   }
@@ -65,20 +69,29 @@ export class TransactionCommandService {
   private async updateCustomerAfterTransaction(
     customer: CustomerResponseDto,
     amount: number,
-  ): Promise<Customer> {
+  ): Promise<CustomerResponseDto> {
     const totalSpent = customer.totalSpent + amount;
 
-    const status = this.resolveCustomerStatus(totalSpent);
+    const status = this.customerStatus(totalSpent);
 
-    return this.customerCommandService.updateCustomer(customer.email, {
-      totalSpent,
-      status,
-    });
+    const updatedCustomer = await this.customerCommandService.updateCustomer(
+      customer.id,
+      {
+        totalSpent,
+        status,
+      },
+    );
+
+    if (!updatedCustomer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MESSAGES.CUSTOMER_NOT_FOUND);
+    }
+
+    return updatedCustomer;
   }
 
-  private emitTransactionCreatedEvent(
+  private transactionCreatedEvent(
     transaction: TransactionDocument,
-    customer: Customer,
+    customer: CustomerResponseDto,
     dto: CreateTransactionDto,
   ): void {
     const eventPayload: TransactionCreatedEvent = {
