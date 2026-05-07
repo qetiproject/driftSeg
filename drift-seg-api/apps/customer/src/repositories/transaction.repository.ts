@@ -19,7 +19,10 @@ export class TransactionRepository extends AbstractRepository<TransactionDocumen
   }
 
   async createTransaction(
-    document: Pick<Transaction, 'customerId' | 'amount' | 'occurredAt' | 'description'>,
+    document: Pick<
+      Transaction,
+      'customerId' | 'amount' | 'occurredAt' | 'description'
+    >,
   ): Promise<TransactionDocument> {
     return this.model.create(document);
   }

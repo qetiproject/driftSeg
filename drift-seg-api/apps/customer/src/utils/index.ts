@@ -1,3 +1,3 @@
 export * from './customer/to-customer-response';
-export * from './transaction/transacton.helper';
+export * from './transaction/to-transaction-response';
 
