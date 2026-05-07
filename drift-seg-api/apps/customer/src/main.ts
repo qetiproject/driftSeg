@@ -1,14 +1,13 @@
+import { setupHttp } from '@app/common/config/http.setup';
+import { setupSwagger } from '@app/common/config/swagger.setup';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { CustomerModule } from './customer.module';
 
-import { setupCors, setupPipes, setupSwagger } from '@customer/setup';
-
 async function bootstrap() {
   const app = await NestFactory.create(CustomerModule);
 
-  setupCors(app);
-  setupPipes(app);
+  setupHttp(app);
   setupSwagger(app);
 
   app.setGlobalPrefix('api');
