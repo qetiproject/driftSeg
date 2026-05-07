@@ -24,14 +24,8 @@
     "paths": {
       "@app/common": ["libs/common/src"],
       "@app/common/*": ["libs/common/src/*"],
-      "@apps/customer/src/constants": ["apps/customer/src/constants"],
-      "@apps/customer/src/constants/*": ["apps/customer/src/constants/*"],
-      "@apps/customer/src/repositories": ["apps/customer/src/repositories"],
-      "@apps/customer/src/repositories/*": ["apps/customer/src/repositories/*"],
-      "@apps/customer/src/dto/*": ["apps/customer/src/dto/*"],
-      // "@apps/customer/src/utils": ["apps/customer/src/utils"],
-      // "@apps/customer/src/utils/*": ["apps/customer/src/utils/*"],
-      "@customer/*": ["apps/customer/src/*"]
+      "@customer/*": ["apps/customer/src/*"],
+      "@segment/*": ["apps/segment/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", "docs"]

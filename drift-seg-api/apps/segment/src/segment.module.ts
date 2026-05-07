@@ -1,8 +1,5 @@
 import { DatabaseModule } from '@app/common';
-import {
-  Customer,
-  CustomerSchema
-} from '@app/common/models/customer-schema';
+import { Customer, CustomerSchema } from '@app/common/models/customer-schema';
 import {
   Transaction,
   TransactionSchema,
@@ -30,7 +27,7 @@ import {
   SegmentMembershipDocument,
   SegmentMembershipSchema,
 } from './models/segment-membership.schema';
-import { SegmentDocument, SegmentSchema } from './models/segment.schema';
+import { Segment, SegmentSchema } from './models/segment.schema';
 import {
   CustomerActivityRepository,
   CustomerRepository,
@@ -56,7 +53,7 @@ import {
     DatabaseModule,
     ScheduleModule.forRoot(),
     DatabaseModule.forFeature([
-      { name: SegmentDocument.name, schema: SegmentSchema },
+      { name: Segment.name, schema: SegmentSchema },
       { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
       { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
       { name: Transaction.name, schema: TransactionSchema },

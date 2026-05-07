@@ -2,15 +2,15 @@ import { AbstractRepository } from '@app/common';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { SegmentDocument } from '../models';
+import { Segment } from '../models';
 
 @Injectable()
-export class SegmentRepository extends AbstractRepository<SegmentDocument> {
+export class SegmentRepository extends AbstractRepository<Segment> {
   protected readonly logger = new Logger(SegmentRepository.name);
 
   constructor(
-    @InjectModel(SegmentDocument.name)
-    segmentModel: Model<SegmentDocument>,
+    @InjectModel(Segment.name)
+    segmentModel: Model<Segment>,
   ) {
     super(segmentModel);
   }
@@ -21,9 +21,9 @@ export class SegmentRepository extends AbstractRepository<SegmentDocument> {
     return existing !== null;
   }
 
-  findDependentsBySegmentId(segmentId: Types.ObjectId): Promise<SegmentDocument[]> {
+  findDependentsBySegmentId(segmentId: Types.ObjectId): Promise<Segment[]> {
     return this.model
       .find({ dependsOnSegmentIds: segmentId })
-      .lean<SegmentDocument[]>(true);
+      .lean<Segment[]>(true);
   }
 }

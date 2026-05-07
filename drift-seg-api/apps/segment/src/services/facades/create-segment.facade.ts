@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
-import { SegmentRuleKind, SegmentTypeEnum } from '../../dto';
+import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../../dto';
 import { CreateSegmentDto } from '../../dto/request';
 import { SegmentRulesDto } from '../../dto/request/create-segment.dto';
 import { SegmentRepository } from '../../repositories';
@@ -20,102 +20,58 @@ export class CreateSegmentFacade {
 
   async createSegment(payload: CreateSegmentDto) {
     await segmentNameIsUnique(this.segmentRepository, payload.name);
+
     if (!payload.rules) {
       throw new BadRequestException(
         SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED,
       );
     }
-    const payloadWithRules = payload as PayloadWithRules;
 
-    if (payload.type === SegmentTypeEnum.STATIC) {
-      return this.createStaticSegment(payloadWithRules);
-    }
-    return this.createDynamicSegment(payloadWithRules);
+    const payloadWithRules = payload as CreateSegmentWithRulesDto;
+
+    return payload.type === SegmentTypeEnum.STATIC
+      ? this.createStaticSegment(payloadWithRules)
+      : this.createDynamicSegment(payloadWithRules);
   }
 
-  private async createDynamicSegment(payload: PayloadWithRules) {
-    switch (payload.rules.kind) {
-      case SegmentRuleKind.ACTIVE_BUYERS:
-        return this.createActiveSegment(payload);
-      case SegmentRuleKind.VIP:
-        return this.createVipSegment(payload);
-      case SegmentRuleKind.RISK:
-        return this.createRiskSegment(payload);
-      default:
-        throw new BadRequestException(
-          SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED,
-        );
-    }
-  }
-
-  private async createActiveSegment(payload: PayloadWithRules) {
-    validateActiveRules(payload);
-
+  private async createDynamicSegment(payload: CreateSegmentWithRulesDto) {
     return this.segmentRepository.create({
       ...baseSegmentCreatePayload(payload),
-      rules: {
-        kind: SegmentRuleKind.ACTIVE_BUYERS,
-        days: payload.rules.days,
-      },
+      rules: this.buildRules(payload),
     });
   }
 
-  private async createVipSegment(payload: PayloadWithRules) {
-    const minSpend = validateVipRules(payload);
-
+  private async createStaticSegment(payload: CreateSegmentWithRulesDto) {
     return this.segmentRepository.create({
       ...baseSegmentCreatePayload(payload),
-      rules: {
-        kind: SegmentRuleKind.VIP,
-        days: payload.rules.days,
-        minSpend,
-      },
+      staticSegmentKind: payload.staticSegmentKind ?? payload.rules.kind,
+      rules: this.buildRules(payload),
     });
   }
 
-  private async createRiskSegment(payload: PayloadWithRules) {
-    const inActiveDays = validateRiskRules(payload);
-
-    return this.segmentRepository.create({
-      ...baseSegmentCreatePayload(payload),
-      rules: {
-        kind: SegmentRuleKind.RISK,
-        inActiveDays,
-      },
-    });
-  }
-
-  private async createStaticSegment(payload: PayloadWithRules) {
+  private buildRules(payload: CreateSegmentWithRulesDto): SegmentRuleInput {
     switch (payload.rules.kind) {
       case SegmentRuleKind.ACTIVE_BUYERS:
         validateActiveRules(payload);
-        return this.segmentRepository.create({
-          ...baseSegmentCreatePayload(payload),
-          staticSegmentKind: payload.staticSegmentKind ?? payload.rules.kind,
-          rules: {
-            kind: SegmentRuleKind.ACTIVE_BUYERS,
-            days: payload.rules.days,
-          },
-        });
+
+        return {
+          kind: SegmentRuleKind.ACTIVE_BUYERS,
+          days: payload.rules.days,
+        };
+
       case SegmentRuleKind.VIP:
-        return this.segmentRepository.create({
-          ...baseSegmentCreatePayload(payload),
-          staticSegmentKind: payload.staticSegmentKind ?? payload.rules.kind,
-          rules: {
-            kind: SegmentRuleKind.VIP,
-            days: payload.rules.days,
-            minSpend: validateVipRules(payload),
-          },
-        });
+        return {
+          kind: SegmentRuleKind.VIP,
+          days: payload.rules.days,
+          minSpend: validateVipRules(payload),
+        };
+
       case SegmentRuleKind.RISK:
-        return this.segmentRepository.create({
-          ...baseSegmentCreatePayload(payload),
-          staticSegmentKind: payload.staticSegmentKind ?? payload.rules.kind,
-          rules: {
-            kind: SegmentRuleKind.RISK,
-            inActiveDays: validateRiskRules(payload),
-          },
-        });
+        return {
+          kind: SegmentRuleKind.RISK,
+          inActiveDays: validateRiskRules(payload),
+        };
+
       default:
         throw new BadRequestException(
           SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED,
@@ -124,6 +80,6 @@ export class CreateSegmentFacade {
   }
 }
 
-type PayloadWithRules = CreateSegmentDto & {
+type CreateSegmentWithRulesDto = CreateSegmentDto & {
   rules: SegmentRulesDto;
 };

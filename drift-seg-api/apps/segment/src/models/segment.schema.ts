@@ -7,7 +7,7 @@ import * as segmentRule from '../dto/segment-rule';
   versionKey: false,
   timestamps: true,
 })
-export class SegmentDocument extends AbstractDocument {
+export class Segment extends AbstractDocument {
   @Prop({ required: true, unique: true, trim: true })
   name!: string;
 
@@ -16,7 +16,7 @@ export class SegmentDocument extends AbstractDocument {
 
   @Prop({
     type: SchemaTypes.Mixed,
-    required(this: SegmentDocument) {
+    required(this: Segment) {
       return this.type === segmentRule.SegmentTypeEnum.DYNAMIC;
     },
   })
@@ -33,12 +33,14 @@ export class SegmentDocument extends AbstractDocument {
 
   @Prop({
     type: SchemaTypes.Mixed,
-    required(this: SegmentDocument) {
+    required(this: Segment) {
       return this.type === segmentRule.SegmentTypeEnum.STATIC;
     },
   })
   staticSegmentKind?: string;
 }
 
-export const SegmentSchema = SchemaFactory.createForClass(SegmentDocument);
+export const SegmentSchema = SchemaFactory.createForClass(Segment);
 SegmentSchema.index({ dependsOnSegmentIds: 1 });
+
+export type SegmentDocument = Segment;
