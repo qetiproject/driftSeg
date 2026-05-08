@@ -1,18 +1,20 @@
 import { Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Types } from 'mongoose';
 import {
   PROCESSED_MEMBERSHIP_BATCH_LOG,
   SEGMENT_BATCH_EVENT_ID_PREFIX,
   SEGMENT_BATCH_RECOMPUTE_EVENT,
-} from '../../constants/constants';
+} from '@segment/constants/constants';
 import {
   BatchRecomputePayload,
   PendingBatchEntry,
-} from '../../models/interfaces/segment.interface';
-import { SegmentMembershipFacade } from '../../services/facades/segment-membership.facade';
-import { SegmentDeltaNotifierService } from '../../services/segment-delta-notifier.service';
-import { SegmentSearchIndexerService } from '../../services/segment-search-indexer.service';
+} from '@segment/models/interfaces/segment.interface';
+import {
+  SegmentDeltaNotifierService,
+  SegmentMembershipFacade,
+  SegmentSearchIndexerService,
+} from '@segment/services';
+import { Types } from 'mongoose';
 
 export async function recomputeMembershipForPendingBatch(
   pendingBatch: PendingBatchEntry[],

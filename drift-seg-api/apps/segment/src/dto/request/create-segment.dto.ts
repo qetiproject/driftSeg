@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import * as segmentRule from '@segment/dto/segment-rule';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -16,9 +17,8 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import * as segmentRule from '../segment-rule';
 
-export class SegmentRulesDto {
+class SegmentRulesDto {
   @ApiProperty({ enum: segmentRule.SegmentRuleKind })
   @IsEnum(segmentRule.SegmentRuleKind)
   kind!: segmentRule.SegmentRuleKind;
@@ -85,3 +85,7 @@ export class CreateSegmentDto {
   @IsNotEmpty()
   staticSegmentKind?: string;
 }
+
+export type CreateSegmentWithRulesDto = CreateSegmentDto & {
+  rules: SegmentRulesDto;
+};

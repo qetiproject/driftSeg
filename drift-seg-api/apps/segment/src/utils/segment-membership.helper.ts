@@ -1,11 +1,11 @@
-import { Types } from 'mongoose';
 import {
   SCHEDULER_EVENT_TYPE,
   SEGMENT_STATIC_MANUAL_REFRESH_EVENT,
   SEGMENT_STATIC_REFRESH_EVENT_ID_PREFIX,
-} from '../../constants/constants';
-import { SegmentRuleInput, SegmentRuleKind } from '../../dto';
-import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
+} from '@segment/constants/constants';
+import { SegmentRuleInput, SegmentRuleKind } from '@segment/dto';
+import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
+import { Types } from 'mongoose';
 
 export function isSegmentRuleInput(value: unknown): value is SegmentRuleInput {
   if (!value || typeof value !== 'object') {

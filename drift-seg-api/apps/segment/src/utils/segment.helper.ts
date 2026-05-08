@@ -1,17 +1,14 @@
-import { Types } from 'mongoose';
+import { CustomerRepository } from '@customer/repositories';
 import { NotFoundException } from '@nestjs/common';
-import { DAY_IN_MS } from '../../constants/constants';
+import { DAY_IN_MS } from '@segment/constants/constants';
+import { SegmentMembersResponseDto, SegmentResponseDto } from '@segment/dto';
+import { SegmentDocument, SegmentMembershipDocument } from '@segment/models';
 import {
-  SegmentMembersResponseDto,
-  SegmentResponseDto,
-} from '../../dto/responses';
-import { SegmentDocument, SegmentMembershipDocument } from '../../models';
-import {
-  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
-} from '../../repositories';
+} from '@segment/repositories';
+import { Types } from 'mongoose';
 
 export function toSegmentResponse(
   segment: SegmentDocument,

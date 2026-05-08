@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
-import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
-import { SEGMENT_RULE } from '../../constants/segment-rule';
-import { CreateSegmentDto } from '../../dto/request';
+import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
+import { SEGMENT_RULE } from '@segment/constants/segment-rule';
+import { CreateSegmentDto } from '@segment/dto';
 
 type DynamicCreatePayload = CreateSegmentDto & {
   rules: NonNullable<CreateSegmentDto['rules']>;
@@ -15,9 +15,7 @@ export function validateActiveRules(payload: DynamicCreatePayload): void {
       ),
     );
   }
-
 }
-
 export function validateVipRules(payload: DynamicCreatePayload): number {
   if (payload.rules.days !== SEGMENT_RULE.VIP_DAYS) {
     throw new BadRequestException(

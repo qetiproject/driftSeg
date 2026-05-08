@@ -1,9 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
+import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
+import { CreateSegmentDto, SegmentTypeEnum } from '@segment/dto';
+import { SegmentRepository } from '@segment/repositories';
 import { Types } from 'mongoose';
-import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
-import { SegmentTypeEnum } from '../../dto';
-import { CreateSegmentDto } from '../../dto/request';
-import { SegmentRepository } from '../../repositories';
 
 export function noDependenciesSegment(
   dependsOnSegmentIds?: string[],

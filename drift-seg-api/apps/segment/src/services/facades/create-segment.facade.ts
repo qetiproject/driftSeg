@@ -1,18 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { SEGMENT_ERROR_MESSAGES } from '../../constants/error-messages';
-import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '../../dto';
-import { CreateSegmentDto } from '../../dto/request';
-import { SegmentRulesDto } from '../../dto/request/create-segment.dto';
-import { SegmentRepository } from '../../repositories';
+import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import {
-  validateActiveRules,
-  validateRiskRules,
-  validateVipRules,
-} from '../../utils/helper/create-segment-validate.helper';
+  CreateSegmentDto,
+  CreateSegmentWithRulesDto,
+  SegmentRuleInput,
+  SegmentRuleKind,
+  SegmentTypeEnum,
+} from '@segment/dto';
+import { SegmentRepository } from '@segment/repositories/segment.repository';
 import {
   baseSegmentCreatePayload,
   segmentNameIsUnique,
-} from '../../utils/helper/create-segment.helpers';
+  validateActiveRules,
+  validateRiskRules,
+  validateVipRules,
+} from '@segment/utils';
 
 @Injectable()
 export class CreateSegmentFacade {
@@ -79,7 +81,3 @@ export class CreateSegmentFacade {
     }
   }
 }
-
-type CreateSegmentWithRulesDto = CreateSegmentDto & {
-  rules: SegmentRulesDto;
-};
