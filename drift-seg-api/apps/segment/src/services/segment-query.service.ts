@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { toSegmentResponse } from '@segment/utils';
 import { PaginatedSegmentResponseDto } from '../dto/paginated-segment-response.dto';
 import { SegmentRepository } from '../repositories';
-import { toSegmentResponse } from '../utils/helper/segment.helper';
 
 @Injectable()
 export class SegmentQueryService {

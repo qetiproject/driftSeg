@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -8,7 +8,10 @@ import {
 } from '@nestjs/swagger';
 import { PaginatedSegmentResponseDto } from '../dto/paginated-segment-response.dto';
 import { CreateSegmentDto } from '../dto/request';
-import { SegmentResponseDto } from '../dto/responses';
+import {
+  SegmentMembersResponseDto,
+  SegmentResponseDto,
+} from '../dto/responses';
 import { SegmentMembershipService, SegmentService } from '../services';
 import { SegmentQueryService } from '../services/segment-query.service';
 
@@ -43,11 +46,11 @@ export class SegmentController {
     return this.segmentQueryService.getSegments();
   }
 
-  // @Get(':id/members')
-  // @ApiOkResponse({ type: SegmentMembersResponseDto })
-  // getMembers(@Param('id') id: string): Promise<SegmentMembersResponseDto> {
-  //   return this.segmentService.getSegmentMembers(id);
-  // }
+  @Get(':id/members')
+  @ApiOkResponse({ type: SegmentMembersResponseDto })
+  getMembers(@Param('id') id: string): Promise<SegmentMembersResponseDto> {
+    return this.segmentService.getSegmentMembers(id);
+  }
 
   // @Get(':id/deltas')
   // @ApiOkResponse({ type: SegmentDeltaResponseDto, isArray: true })
