@@ -8,7 +8,7 @@ import {
   VipBuyersRuleInput,
 } from '../dto';
 import { CustomerActivityRepository } from '../repositories';
-import { getSinceDateByDays } from '../utils/helper/segment.helper';
+import { getSinceDateByDays } from '../utils/segment.helper';
 
 @Injectable()
 export class SegmentRuleEvaluatorService {

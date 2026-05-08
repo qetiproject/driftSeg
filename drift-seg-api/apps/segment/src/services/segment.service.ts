@@ -1,33 +1,18 @@
-import { CustomerRepository } from '@customer/repositories/customer.repository';
 import { Injectable } from '@nestjs/common';
-import {
-  getSegmentById,
-  getSegmentMembers,
-  segmentMembersInfo,
-  toSegmentResponse,
-} from '@segment/utils';
+import { toSegmentResponse } from '@segment/utils';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '../dto/responses';
-import {
-  SegmentDeltaRepository,
-  SegmentMembershipRepository,
-  SegmentRepository,
-} from '../repositories';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
-import { SegmentMembershipService } from './segment-membership.service';
+import { SegmentWithMembersFacade } from './facades/segment-with-members.facade';
 
 @Injectable()
 export class SegmentService {
   constructor(
     private readonly createSegmentFacade: CreateSegmentFacade,
-    private readonly segmentRepository: SegmentRepository,
-    private readonly segmentMembershipRepository: SegmentMembershipRepository,
-    private readonly segmentDeltaRepository: SegmentDeltaRepository,
-    private readonly customerRepository: CustomerRepository,
-    private readonly segmentMembershipService: SegmentMembershipService,
+    private readonly segmentWithMembersFacade: SegmentWithMembersFacade,
   ) {}
 
   async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
@@ -38,23 +23,7 @@ export class SegmentService {
   async getSegmentMembers(
     segmentId: string,
   ): Promise<SegmentMembersResponseDto> {
-    const segment = await getSegmentById(this.segmentRepository, segmentId);
-    const members = await getSegmentMembers(
-      this.segmentMembershipRepository,
-      segmentId,
-    );
-    const membersWithEmail = await segmentMembersInfo(
-      this.customerRepository,
-      members,
-    );
-
-    return {
-      segmentId: segment._id.toString(),
-      segmentkind: segment.rules?.kind,
-      staticSegmentKind: segment.staticSegmentKind,
-      totalMembers: members.length,
-      members: membersWithEmail,
-    };
+    return this.segmentWithMembersFacade.getSegmentWithMembers(segmentId);
   }
 
   // async getSegmentDeltas(

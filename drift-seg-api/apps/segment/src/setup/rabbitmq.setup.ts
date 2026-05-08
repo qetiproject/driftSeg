@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import {
-    SEGMENT_EVENTS_QUEUE,
-    SEGMENT_NOTIFICATIONS_QUEUE,
+  SEGMENT_EVENTS_QUEUE,
+  SEGMENT_NOTIFICATIONS_QUEUE,
 } from '../constants/constants';
 
 export function setupRabbitMQ(app: INestApplication, config: ConfigService) {

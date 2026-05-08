@@ -1,5 +1,6 @@
 import { DatabaseModule } from '@app/common';
 import { Customer, CustomerSchema } from '@app/common/models/customer-schema';
+import { CustomerRepository } from '@customer/repositories/customer.repository';
 import {
   Transaction,
   TransactionSchema,
@@ -30,7 +31,6 @@ import {
 import { Segment, SegmentSchema } from './models/segment.schema';
 import {
   CustomerActivityRepository,
-  CustomerRepository,
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
@@ -46,6 +46,7 @@ import {
   SegmentRuleEvaluatorService,
   SegmentSearchIndexerService,
   SegmentService,
+  SegmentWithMembersFacade,
 } from './services';
 
 @Module({
@@ -103,6 +104,7 @@ import {
     SegmentService,
     CreateSegmentFacade,
     SegmentMembershipFacade,
+    SegmentWithMembersFacade,
     SegmentMembershipService,
     SegmentMembershipSchedulerService,
     SegmentDeltaNotifierService,

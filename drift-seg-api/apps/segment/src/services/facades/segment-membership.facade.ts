@@ -1,13 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { isSegmentRuleInput } from '@segment/utils';
 import { Types } from 'mongoose';
 import { SegmentTypeEnum } from '../../dto';
-import { SegmentDocument } from '../../models';
-import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
-import {
-  SegmentDeltaRepository,
-  SegmentMembershipRepository,
-  SegmentRepository,
-} from '../../repositories';
 import {
   buildDependentSegmentMap,
   buildSegmentByIdMap,
@@ -15,8 +9,14 @@ import {
   getDynamicSegments,
   processDynamicSegmentQueue,
   syncStaticMembershipChanges,
-} from '../../utils/helper/segment-membership.facade.helper';
-import { isSegmentRuleInput } from '../../utils/helper/segment-membership.helper';
+} from '../../utils/segment-membership.facade.helper';
+import { SegmentDocument } from '../../models';
+import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from '../../repositories';
 import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 
 @Injectable()

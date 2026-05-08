@@ -11,13 +11,13 @@ import { CustomerActivityRepository } from '../repositories';
 import {
   buildSchedulerTrigger,
   buildStaticRefreshTrigger,
-} from '../utils/helper/segment-membership.helper';
+} from '../utils/segment-membership.helper';
 import {
   buildBatchRecomputePayload,
   logProcessedBatch,
   publishBatchSideEffects,
   recomputeMembershipForPendingBatch,
-} from '../utils/helper/transaction-event.helper';
+} from '../utils/transaction-event.helper';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
 import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
 import { SegmentPendingEventQueueService } from './segment-penging-event.service';

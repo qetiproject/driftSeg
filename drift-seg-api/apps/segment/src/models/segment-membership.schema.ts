@@ -1,4 +1,5 @@
 import { AbstractDocument } from '@app/common';
+import { Customer } from '@app/common/models/customer-schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
 
@@ -10,7 +11,7 @@ export class SegmentMembershipDocument extends AbstractDocument {
   @Prop({ type: SchemaTypes.ObjectId, required: true })
   segmentId!: Types.ObjectId;
 
-  @Prop({ type: SchemaTypes.ObjectId, required: true })
+  @Prop({ type: SchemaTypes.ObjectId, ref: Customer.name, required: true })
   customerId!: Types.ObjectId;
 
   @Prop({ required: true, default: true })

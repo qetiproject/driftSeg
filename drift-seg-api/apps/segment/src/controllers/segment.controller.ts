@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -12,17 +12,14 @@ import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '../dto/responses';
-import { SegmentMembershipService, SegmentService } from '../services';
+import { SegmentService } from '../services';
 import { SegmentQueryService } from '../services/segment-query.service';
 
 @Controller('segments')
 @ApiTags('segments')
 export class SegmentController {
-  private readonly logger = new Logger(SegmentController.name);
-
   constructor(
     private readonly segmentService: SegmentService,
-    private readonly segmentMembershipService: SegmentMembershipService,
     private readonly segmentQueryService: SegmentQueryService,
   ) {}
 
@@ -48,7 +45,9 @@ export class SegmentController {
 
   @Get(':id/members')
   @ApiOkResponse({ type: SegmentMembersResponseDto })
-  getMembers(@Param('id') id: string): Promise<SegmentMembersResponseDto> {
+  getSegmentWithMembers(
+    @Param('id') id: string,
+  ): Promise<SegmentMembersResponseDto> {
     return this.segmentService.getSegmentMembers(id);
   }
 
