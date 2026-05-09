@@ -3,6 +3,7 @@ import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import { SEGMENT_RULE } from '@segment/constants/segment-rule';
 import { CreateSegmentDto } from '@segment/dto';
 
+// create segment validate helper
 type DynamicCreatePayload = CreateSegmentDto & {
   rules: NonNullable<CreateSegmentDto['rules']>;
 };

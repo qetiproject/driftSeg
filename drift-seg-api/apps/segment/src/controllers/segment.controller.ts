@@ -6,20 +6,20 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { SegmentCommandService } from '@segment/services/segment-command.service';
 import { PaginatedSegmentResponseDto } from '../dto/paginated-segment-response.dto';
 import { CreateSegmentDto } from '../dto/request';
 import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '../dto/responses';
-import { SegmentService } from '../services';
 import { SegmentQueryService } from '../services/segment-query.service';
 
 @Controller('segments')
 @ApiTags('segments')
 export class SegmentController {
   constructor(
-    private readonly segmentService: SegmentService,
+    private readonly segmentCommandService: SegmentCommandService,
     private readonly segmentQueryService: SegmentQueryService,
   ) {}
 
@@ -61,7 +61,7 @@ export class SegmentController {
   @ApiBody({ type: CreateSegmentDto })
   @ApiCreatedResponse({ type: SegmentResponseDto })
   create(@Body() payload: CreateSegmentDto): Promise<SegmentResponseDto> {
-    return this.segmentService.createSegment(payload);
+    return this.segmentCommandService.createSegment(payload);
   }
 
   // @Post(':id/refresh')

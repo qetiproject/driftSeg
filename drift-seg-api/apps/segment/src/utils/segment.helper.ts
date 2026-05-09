@@ -1,11 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
 import { DAY_IN_MS } from '@segment/constants/constants';
 import { SegmentMembersResponseDto, SegmentResponseDto } from '@segment/dto';
 import { SegmentDocument, SegmentMembershipDocument } from '@segment/models';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
-  SegmentRepository,
 } from '@segment/repositories';
 import { Types } from 'mongoose';
 
@@ -26,19 +24,6 @@ export function toSegmentResponse(
     ),
     lastComputedAt: segment.lastComputedAt?.toISOString(),
   };
-}
-
-export function getSegmentById(
-  segmentRepository: SegmentRepository,
-  segmentId: string,
-): Promise<SegmentDocument> {
-  return segmentRepository.findOne({ _id: segmentId }).then((segment) => {
-    if (!segment) {
-      throw new NotFoundException('Segment not found');
-    }
-
-    return segment;
-  });
 }
 
 export function getSegmentMembers(

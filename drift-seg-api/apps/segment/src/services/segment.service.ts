@@ -1,8 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { toSegmentResponse } from '@segment/utils';
-import { SegmentTypeEnum } from '../dto';
-import { CreateSegmentDto } from '../dto/request';
-import { SegmentResponseDto } from '../dto/responses';
 import { CreateSegmentFacade } from './facades/create-segment.facade';
 import { SegmentMembershipService } from './segment-membership.service';
 
@@ -12,18 +8,6 @@ export class SegmentService {
     private readonly createSegmentFacade: CreateSegmentFacade,
     private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
-
-  async createSegment(payload: CreateSegmentDto): Promise<SegmentResponseDto> {
-    const created = await this.createSegmentFacade.createSegment(payload);
-
-    if (created.type === SegmentTypeEnum.STATIC) {
-      await this.segmentMembershipService.refreshStaticSegmentMemberships(
-        created,
-      );
-    }
-
-    return toSegmentResponse(created);
-  }
 
   // async getSegmentDeltas(
   //   segmentId: string,

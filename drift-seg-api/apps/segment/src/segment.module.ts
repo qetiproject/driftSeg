@@ -47,6 +47,7 @@ import {
   SegmentService,
   SegmentWithMembersFacade,
 } from './services';
+import { SegmentCommandService } from './services/segment-command.service';
 
 @Module({
   imports: [
@@ -115,6 +116,7 @@ import {
     SegmentDeltaRepository,
     CustomerActivityRepository,
     SegmentPendingEventQueueService,
+    SegmentCommandService,
   ],
 })
 export class SegmentModule {}
