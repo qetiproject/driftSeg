@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
+import {
+  CustomerForSegment,
+  SegmentMembersResponseDto,
+} from '@segment/dto/responses/segment-members-response.dto';
 import { SegmentDocument } from '@segment/models';
 import {
   SegmentMembershipRepository,
@@ -49,14 +52,7 @@ export class SegmentWithMembersFacade {
   }
 
   private mapMembers(
-    membersWithCustomer: {
-      customerId:
-        | Types.ObjectId
-        | {
-            _id: Types.ObjectId;
-            email?: string;
-          };
-    }[],
+    membersWithCustomer: CustomerForSegment[],
   ): SegmentMembersResponseDto['members'] {
     return membersWithCustomer.map((member) => {
       if (member.customerId instanceof Types.ObjectId) {

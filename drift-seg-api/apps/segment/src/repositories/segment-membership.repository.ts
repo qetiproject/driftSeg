@@ -2,17 +2,9 @@ import { AbstractRepository } from '@app/common';
 import { Customer } from '@app/common/models/customer-schema';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { SegmentMemberWithCustomer } from '@segment/dto/responses/segment-members-response.dto';
+import { SegmentMembershipDocument } from '@segment/models/segment-membership.schema';
 import { Model, Types } from 'mongoose';
-import { SegmentMembershipDocument } from '../models';
-
-type SegmentMemberWithCustomer = SegmentMembershipDocument & {
-  customerId:
-    | Types.ObjectId
-    | {
-        _id: Types.ObjectId;
-        email?: string;
-      };
-};
 
 @Injectable()
 export class SegmentMembershipRepository extends AbstractRepository<SegmentMembershipDocument> {
@@ -40,6 +32,7 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
     return this.model.find({ segmentId, isActive: true }).lean(true);
   }
 
+  // findActiveMembersWithCustomerBySegmentId
   async findActiveMembersWithCustomerBySegmentId(
     segmentId: Types.ObjectId,
     options?: { fullCustomerData?: boolean },
@@ -53,7 +46,7 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
         model: Customer.name,
         select: fullCustomerData ? undefined : '_id email',
       })
-      .lean(true);
+      .lean();
   }
 
   deactivateMembership(

@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { toSegmentResponse } from '@segment/utils';
-import { PaginatedSegmentResponseDto } from '../dto/paginated-segment-response.dto';
-import { SegmentRepository } from '../repositories';
+import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
+import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
+import { SegmentRepository } from '@segment/repositories/segment.repository';
+import { SegmentWithMembersFacade } from '@segment/services/facades/segment-with-members.facade';
+import { toSegmentResponse } from '@segment/utils/segment.helper';
 
 @Injectable()
 export class SegmentQueryService {
-  constructor(private readonly segmentRepository: SegmentRepository) {}
+  constructor(
+    private readonly segmentRepository: SegmentRepository,
+    private readonly segmentWithMembersFacade: SegmentWithMembersFacade,
+  ) {}
 
   async getSegments(
     page: number = 1,
@@ -31,5 +36,11 @@ export class SegmentQueryService {
       page: safePage,
       limit: safeLimit,
     };
+  }
+
+  async getSegmentMembers(
+    segmentId: string,
+  ): Promise<SegmentMembersResponseDto> {
+    return this.segmentWithMembersFacade.getSegmentWithMembers(segmentId);
   }
 }
