@@ -48,7 +48,7 @@ export class SegmentController {
   getSegmentWithMembers(
     @Param('id') id: string,
   ): Promise<SegmentMembersResponseDto> {
-    return this.segmentQueryService.getSegmentMembers(id);
+    return this.segmentQueryService.getSegmentWithMembers(id);
   }
 
   // @Get(':id/deltas')

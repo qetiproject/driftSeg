@@ -4,15 +4,6 @@ import { CreateSegmentDto, SegmentTypeEnum } from '@segment/dto';
 import { SegmentRepository } from '@segment/repositories';
 import { Types } from 'mongoose';
 
-export function noDependenciesSegment(
-  dependsOnSegmentIds?: string[],
-  message: string = SEGMENT_ERROR_MESSAGES.ACTIVE_BUYERS_NO_DEPENDENCIES,
-): void {
-  if ((dependsOnSegmentIds?.length ?? 0) > 0) {
-    throw new BadRequestException(message);
-  }
-}
-
 export async function segmentNameIsUnique(
   segmentRepository: SegmentRepository,
   name: string,

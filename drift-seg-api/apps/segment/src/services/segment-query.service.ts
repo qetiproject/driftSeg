@@ -38,7 +38,7 @@ export class SegmentQueryService {
     };
   }
 
-  async getSegmentMembers(
+  async getSegmentWithMembers(
     segmentId: string,
   ): Promise<SegmentMembersResponseDto> {
     return this.segmentWithMembersFacade.getSegmentWithMembers(segmentId);
