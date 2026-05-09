@@ -1,4 +1,3 @@
-import { CustomerRepository } from '@customer/repositories';
 import { NotFoundException } from '@nestjs/common';
 import { DAY_IN_MS } from '@segment/constants/constants';
 import { SegmentMembersResponseDto, SegmentResponseDto } from '@segment/dto';
@@ -9,6 +8,10 @@ import {
   SegmentRepository,
 } from '@segment/repositories';
 import { Types } from 'mongoose';
+
+interface CustomerLookupRepository {
+  findOne(filter: { _id: Types.ObjectId }): Promise<{ email?: string } | null>;
+}
 
 export function toSegmentResponse(
   segment: SegmentDocument,
@@ -59,7 +62,7 @@ export function getSinceDateByDays(date: Date, days: number): Date {
 }
 
 export async function segmentMembersInfo(
-  customerRepository: CustomerRepository,
+  customerRepository: CustomerLookupRepository,
   members: SegmentMembershipDocument[],
 ): Promise<SegmentMembersResponseDto['members']> {
   return Promise.all(

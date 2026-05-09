@@ -5,7 +5,11 @@ import {
   REMOVE_CUSTOMER_FROM_SEGMENT,
 } from '@segment/constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
-import { SegmentRuleInput, SegmentRuleKind, SegmentTypeEnum } from '@segment/dto';
+import {
+  SegmentRuleInput,
+  SegmentRuleKind,
+  SegmentTypeEnum,
+} from '@segment/dto';
 import { SegmentDocument } from '@segment/models';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
 import {
@@ -27,7 +31,9 @@ interface SegmentMembershipFacadeDeps {
   segmentDeltaRepository: SegmentDeltaRepository;
 }
 
-export function getDynamicSegments(segments: SegmentDocument[]): SegmentDocument[] {
+export function getDynamicSegments(
+  segments: SegmentDocument[],
+): SegmentDocument[] {
   return segments.filter(
     (segment) =>
       segment.type === SegmentTypeEnum.DYNAMIC &&
@@ -135,20 +141,22 @@ export async function reconcileSegmentMembershipForCustomer(
     return false;
   }
 
-  const matchesRule = await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
-    segment.rules,
-    customerId,
-  );
+  const matchesRule =
+    await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+      segment.rules,
+      customerId,
+    );
   const dependenciesSatisfied = await satisfiesDependencies(
     segment,
     customerId,
     deps,
   );
   const shouldBeMember = matchesRule && dependenciesSatisfied;
-  const currentMembership = await deps.segmentMembershipRepository.findActiveMembership(
-    segment._id,
-    customerId,
-  );
+  const currentMembership =
+    await deps.segmentMembershipRepository.findActiveMembership(
+      segment._id,
+      customerId,
+    );
 
   if (shouldBeMember && !currentMembership) {
     await addCustomerToSegment(
@@ -187,10 +195,11 @@ export async function satisfiesDependencies(
   }
 
   for (const dependencyId of dependencyIds) {
-    const membership = await deps.segmentMembershipRepository.findActiveMembership(
-      dependencyId,
-      customerId,
-    );
+    const membership =
+      await deps.segmentMembershipRepository.findActiveMembership(
+        dependencyId,
+        customerId,
+      );
     if (!membership) {
       return false;
     }
@@ -290,7 +299,9 @@ export async function removeOutdatedStaticMembers(
       continue;
     }
 
-    await deps.segmentMembershipRepository.deactivateMembership(activeMembership._id);
+    await deps.segmentMembershipRepository.deactivateMembership(
+      activeMembership._id,
+    );
     removedCustomerIds.push(activeMembership.customerId);
   }
 

@@ -1,6 +1,5 @@
 import { DatabaseModule } from '@app/common';
 import { Customer, CustomerSchema } from '@app/common/models/customer-schema';
-import { CustomerRepository } from '@customer/repositories/customer.repository';
 import {
   Transaction,
   TransactionSchema,
@@ -115,7 +114,6 @@ import {
     SegmentMembershipRepository,
     SegmentDeltaRepository,
     CustomerActivityRepository,
-    CustomerRepository,
     SegmentPendingEventQueueService,
   ],
 })

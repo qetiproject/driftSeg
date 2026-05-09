@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { isSegmentRuleInput } from '@segment/utils';
 import { Types } from 'mongoose';
 import { SegmentTypeEnum } from '../../dto';
+import { isSegmentRuleInput } from '../../utils/segment-membership.helper';
 import {
   buildDependentSegmentMap,
   buildSegmentByIdMap,
@@ -44,12 +44,7 @@ export class SegmentMembershipFacade {
       dependentBySegmentId,
       customerId,
       trigger,
-      {
-        logger: this.logger,
-        segmentRuleEvaluatorService: this.segmentRuleEvaluatorService,
-        segmentMembershipRepository: this.segmentMembershipRepository,
-        segmentDeltaRepository: this.segmentDeltaRepository,
-      },
+      this.getFacadeDeps(),
     );
   }
 
@@ -68,12 +63,7 @@ export class SegmentMembershipFacade {
     const eligibleCustomerIds = await collectEligibleCustomerIds(
       segment,
       customerIds,
-      {
-        logger: this.logger,
-        segmentRuleEvaluatorService: this.segmentRuleEvaluatorService,
-        segmentMembershipRepository: this.segmentMembershipRepository,
-        segmentDeltaRepository: this.segmentDeltaRepository,
-      },
+      this.getFacadeDeps(),
     );
     const activeMemberships =
       await this.segmentMembershipRepository.findActiveMembersBySegmentId(
@@ -84,12 +74,7 @@ export class SegmentMembershipFacade {
         segment._id,
         eligibleCustomerIds,
         activeMemberships,
-        {
-          logger: this.logger,
-          segmentRuleEvaluatorService: this.segmentRuleEvaluatorService,
-          segmentMembershipRepository: this.segmentMembershipRepository,
-          segmentDeltaRepository: this.segmentDeltaRepository,
-        },
+        this.getFacadeDeps(),
       );
 
     if (addedCustomerIds.length === 0 && removedCustomerIds.length === 0) {
@@ -105,5 +90,14 @@ export class SegmentMembershipFacade {
       triggerEventType: trigger.eventType,
       computedAt: new Date(),
     });
+  }
+
+  private getFacadeDeps() {
+    return {
+      logger: this.logger,
+      segmentRuleEvaluatorService: this.segmentRuleEvaluatorService,
+      segmentMembershipRepository: this.segmentMembershipRepository,
+      segmentDeltaRepository: this.segmentDeltaRepository,
+    };
   }
 }
