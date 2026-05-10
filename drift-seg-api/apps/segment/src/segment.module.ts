@@ -1,122 +1,12 @@
-import { DatabaseModule } from '@app/common';
-import { Customer, CustomerSchema } from '@app/common/models/customer-schema';
+import { SegmentController } from '@segment/controllers';
 import {
-  Transaction,
-  TransactionSchema,
-} from '@app/common/models/transaction-schema';
+  SegmentApplicationModule,
+  SegmentConfigModule,
+} from '@segment/modules';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ScheduleModule } from '@nestjs/schedule';
-import Redis from 'ioredis';
-import Joi from 'joi';
-import {
-  SEGMENT_ENV_FILE_PATH,
-  SEGMENT_NOTIFICATIONS_QUEUE,
-} from './constants/constants';
-import {
-  SEGMENT_NOTIFICATIONS_CLIENT,
-  SEGMENT_REDIS_CLIENT,
-} from './constants/tokens';
-import { SegmentController } from './controllers';
-import {
-  SegmentDeltaDocument,
-  SegmentDeltaSchema,
-} from './models/segment-delta.schema';
-import {
-  SegmentMembershipDocument,
-  SegmentMembershipSchema,
-} from './models/segment-membership.schema';
-import { Segment, SegmentSchema } from './models/segment.schema';
-import {
-  CustomerActivityRepository,
-  SegmentDeltaRepository,
-  SegmentMembershipRepository,
-  SegmentRepository,
-} from './repositories';
-import {
-  CreateSegmentFacade,
-  SegmentDeltaNotifierService,
-  SegmentMembershipFacade,
-  SegmentMembershipSchedulerService,
-  SegmentMembershipService,
-  SegmentPendingEventQueueService,
-  SegmentQueryService,
-  SegmentRuleEvaluatorService,
-  SegmentSearchIndexerService,
-  SegmentService,
-  SegmentWithMembersFacade,
-} from './services';
-import { SegmentCommandService } from './services/segment-command.service';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    ScheduleModule.forRoot(),
-    DatabaseModule.forFeature([
-      { name: Segment.name, schema: SegmentSchema },
-      { name: SegmentMembershipDocument.name, schema: SegmentMembershipSchema },
-      { name: SegmentDeltaDocument.name, schema: SegmentDeltaSchema },
-      { name: Transaction.name, schema: TransactionSchema },
-      { name: Customer.name, schema: CustomerSchema },
-    ]),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: SEGMENT_ENV_FILE_PATH,
-      validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
-        PORT: Joi.number().optional(),
-        RABBITMQ_URI: Joi.string().required(),
-        REDIS_URL: Joi.string().required(),
-        ELASTICSEARCH_NODE: Joi.string().optional(),
-      }),
-    }),
-    ClientsModule.registerAsync([
-      {
-        name: SEGMENT_NOTIFICATIONS_CLIENT,
-        imports: [ConfigModule],
-        inject: [ConfigService],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
-            queue: SEGMENT_NOTIFICATIONS_QUEUE,
-            queueOptions: { durable: true },
-          },
-        }),
-      },
-    ]),
-  ],
+  imports: [SegmentConfigModule, SegmentApplicationModule],
   controllers: [SegmentController],
-  providers: [
-    {
-      provide: SEGMENT_REDIS_CLIENT,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService): Redis => {
-        const redisUrl = configService.getOrThrow<string>('REDIS_URL');
-        return new Redis(redisUrl, {
-          lazyConnect: true,
-          maxRetriesPerRequest: 3,
-          enableReadyCheck: true,
-        });
-      },
-    },
-    SegmentService,
-    CreateSegmentFacade,
-    SegmentMembershipFacade,
-    SegmentWithMembersFacade,
-    SegmentMembershipService,
-    SegmentMembershipSchedulerService,
-    SegmentDeltaNotifierService,
-    SegmentSearchIndexerService,
-    SegmentRuleEvaluatorService,
-    SegmentQueryService,
-    SegmentRepository,
-    SegmentMembershipRepository,
-    SegmentDeltaRepository,
-    CustomerActivityRepository,
-    SegmentPendingEventQueueService,
-    SegmentCommandService,
-  ],
 })
 export class SegmentModule {}
