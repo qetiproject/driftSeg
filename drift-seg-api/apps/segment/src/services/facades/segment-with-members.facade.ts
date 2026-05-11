@@ -1,14 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
+import { Injectable } from '@nestjs/common';
 import {
   CustomerForSegment,
   SegmentMembersResponseDto,
 } from '@segment/dto/responses/segment-members-response.dto';
-import { SegmentDocument } from '@segment/models';
 import {
   SegmentMembershipRepository,
   SegmentRepository,
 } from '@segment/repositories';
+import { getSegmentById } from '@segment/utils/segment.helper';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class SegmentWithMembersFacade {
   async getSegmentWithMembers(
     segmentId: string,
   ): Promise<SegmentMembersResponseDto> {
-    const segment = await this.getSegmentById(segmentId);
+    const segment = await getSegmentById(this.segmentRepository, segmentId);
     const membersWithCustomer =
       await this.getSegmentMembersWithCustomer(segmentId);
     const membersWithEmail = this.mapMembers(membersWithCustomer);
@@ -33,16 +32,6 @@ export class SegmentWithMembersFacade {
       totalMembers: membersWithCustomer.length,
       members: membersWithEmail,
     };
-  }
-
-  private async getSegmentById(segmentId: string): Promise<SegmentDocument> {
-    const segment = await this.segmentRepository.findOne({ _id: segmentId });
-
-    if (!segment) {
-      throw new NotFoundException(SEGMENT_ERROR_MESSAGES.SEGMENT_NOT_FOUND);
-    }
-
-    return segment;
   }
 
   private getSegmentMembersWithCustomer(segmentId: string) {

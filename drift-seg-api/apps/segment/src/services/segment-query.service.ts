@@ -1,5 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
+import { Injectable } from '@nestjs/common';
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { SegmentDeltaResponseDto } from '@segment/dto/responses/segment-delta-response.dto';
 import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
@@ -7,11 +6,12 @@ import {
   SegmentDeltaRepository,
   SegmentRepository,
 } from '@segment/repositories';
-import { SegmentWithMembersFacade } from '@segment/services/facades/segment-with-members.facade';
 import {
+  getSegmentById,
   getSegmentDeltas,
   toSegmentResponse,
 } from '@segment/utils/segment.helper';
+import { SegmentWithMembersFacade } from './facades/segment-with-members.facade';
 
 @Injectable()
 export class SegmentQueryService {
@@ -56,10 +56,7 @@ export class SegmentQueryService {
   async getSegmentDeltas(
     segmentId: string,
   ): Promise<SegmentDeltaResponseDto[]> {
-    const segment = await this.segmentRepository.findOne({ _id: segmentId });
-    if (!segment) {
-      throw new NotFoundException(SEGMENT_ERROR_MESSAGES.SEGMENT_NOT_FOUND);
-    }
+    await getSegmentById(this.segmentRepository, segmentId);
 
     const deltas = await getSegmentDeltas(
       this.segmentDeltaRepository,

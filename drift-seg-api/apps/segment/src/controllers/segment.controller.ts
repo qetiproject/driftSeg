@@ -1,4 +1,6 @@
+import type { TransactionCreatedEvent } from '@app/common/dto/transaction-created.event';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -6,6 +8,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { TRANSACTION_CREATED_EVENT } from '@segment/constants/constants';
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { CreateSegmentDto } from '@segment/dto/request/create-segment.dto';
 import {
@@ -14,6 +17,7 @@ import {
   SegmentResponseDto,
 } from '@segment/dto/responses/index';
 import { SegmentCommandService } from '@segment/services/segment-command.service';
+import { SegmentMembershipService } from '@segment/services/segment-membership.service';
 import { SegmentQueryService } from '@segment/services/segment-query.service';
 
 @Controller('segments')
@@ -22,6 +26,7 @@ export class SegmentController {
   constructor(
     private readonly segmentCommandService: SegmentCommandService,
     private readonly segmentQueryService: SegmentQueryService,
+    private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
 
   @Get()
@@ -93,12 +98,12 @@ export class SegmentController {
     return { deleted: true };
   }
 
-  // @EventPattern(dto.TRANSACTION_CREATED_EVENT)
-  // tansactionCreatedEvent(
-  //   @Payload() event: dto.TransactionCreatedEvent,
-  // ): Promise<void> {
-  //   return this.segmentMembershipService.transactionCreated(event);
-  // }
+  @EventPattern(TRANSACTION_CREATED_EVENT)
+  tansactionCreatedEvent(
+    @Payload() event: TransactionCreatedEvent,
+  ): Promise<void> {
+    return this.segmentMembershipService.transactionCreated(event);
+  }
 
   // @EventPattern(SEGMENT_UI_DELTA_EVENT)
   // handleUiDeltaEvent(@Payload() event: unknown): void {

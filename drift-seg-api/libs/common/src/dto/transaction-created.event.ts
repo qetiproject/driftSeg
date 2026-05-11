@@ -1,4 +1,4 @@
-export const TRANSACTION_CREATED_EVENT = 'customer.transaction.created';
+import { TRANSACTION_CREATED_EVENT } from '@segment/constants/constants';
 
 export interface TransactionCreatedEvent {
   eventId: string;

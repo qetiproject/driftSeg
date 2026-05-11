@@ -60,3 +60,4 @@ export const REDIS_CLIENT_STATUS = {
 export const REDIS_CLIENT_EVENT = {
   ERROR: 'error',
 } as const;
+export const TRANSACTION_CREATED_EVENT = 'customer.transaction.created';
