@@ -9,6 +9,7 @@ import {
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { CreateSegmentDto } from '@segment/dto/request/create-segment.dto';
 import {
+  SegmentDeltaResponseDto,
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '@segment/dto/responses/index';
@@ -51,11 +52,13 @@ export class SegmentController {
     return this.segmentQueryService.getSegmentWithMembers(id);
   }
 
-  // @Get(':id/deltas')
-  // @ApiOkResponse({ type: SegmentDeltaResponseDto, isArray: true })
-  // getDeltas(@Param('id') id: string): Promise<SegmentDeltaResponseDto[]> {
-  //   return this.segmentService.getSegmentDeltas(id);
-  // }
+  @Get(':id/deltas')
+  @ApiOkResponse({ type: SegmentDeltaResponseDto, isArray: true })
+  getSegmentDeltas(
+    @Param('id') id: string,
+  ): Promise<SegmentDeltaResponseDto[]> {
+    return this.segmentQueryService.getSegmentDeltas(id);
+  }
 
   @Post('create')
   @ApiBody({ type: CreateSegmentDto })

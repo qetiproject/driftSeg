@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import {
   CustomerForSegment,
   SegmentMembersResponseDto,
@@ -38,7 +39,7 @@ export class SegmentWithMembersFacade {
     const segment = await this.segmentRepository.findOne({ _id: segmentId });
 
     if (!segment) {
-      throw new NotFoundException('Segment not found');
+      throw new NotFoundException(SEGMENT_ERROR_MESSAGES.SEGMENT_NOT_FOUND);
     }
 
     return segment;

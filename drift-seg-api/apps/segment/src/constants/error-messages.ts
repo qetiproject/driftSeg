@@ -1,4 +1,5 @@
 export const SEGMENT_ERROR_MESSAGES = {
+  SEGMENT_NOT_FOUND: 'Segment not found',
   ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED:
     'Only active_buyers, vip and risk rules are supported.',
   ACTIVE_BUYERS_REQUIRES_DAYS: (days: number) =>

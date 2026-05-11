@@ -140,7 +140,7 @@ export class SegmentCommandFacade {
     const segment = await this.segmentRepository.findOne({ _id: segmentId });
 
     if (!segment) {
-      throw new NotFoundException('Segment not found');
+      throw new NotFoundException(SEGMENT_ERROR_MESSAGES.SEGMENT_NOT_FOUND);
     }
 
     return segment;
