@@ -1,5 +1,5 @@
 import {
-  CreateSegmentFacade,
+  SegmentCommandFacade,
   SegmentDeltaNotifierService,
   SegmentMembershipFacade,
   SegmentMembershipSchedulerService,
@@ -25,7 +25,7 @@ import { ScheduleModule } from '@nestjs/schedule';
   ],
   providers: [
     SegmentService,
-    CreateSegmentFacade,
+    SegmentCommandFacade,
     SegmentMembershipFacade,
     SegmentWithMembersFacade,
     SegmentMembershipService,
@@ -39,7 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
   ],
   exports: [
     SegmentService,
-    CreateSegmentFacade,
+    SegmentCommandFacade,
     SegmentMembershipFacade,
     SegmentWithMembersFacade,
     SegmentMembershipService,

@@ -7,7 +7,11 @@ import {
   SegmentRuleKind,
   SegmentTypeEnum,
 } from '@segment/dto';
-import { SegmentRepository } from '@segment/repositories/segment.repository';
+import {
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
+  SegmentRepository,
+} from '@segment/repositories';
 import {
   baseSegmentCreatePayload,
   segmentNameIsUnique,
@@ -15,10 +19,15 @@ import {
   validateRiskRules,
   validateVipRules,
 } from '@segment/utils';
+import { Types } from 'mongoose';
 
 @Injectable()
-export class CreateSegmentFacade {
-  constructor(private readonly segmentRepository: SegmentRepository) {}
+export class SegmentCommandFacade {
+  constructor(
+    private readonly segmentRepository: SegmentRepository,
+    private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly segmentMembershipRepository: SegmentMembershipRepository,
+  ) {}
 
   async createSegment(payload: CreateSegmentDto) {
     await segmentNameIsUnique(this.segmentRepository, payload.name);
@@ -34,6 +43,10 @@ export class CreateSegmentFacade {
     return payload.type === SegmentTypeEnum.STATIC
       ? this.createStaticSegment(payloadWithRules)
       : this.createDynamicSegment(payloadWithRules);
+  }
+
+  async deleteSegmentCascade(segmentId: string): Promise<void> {
+    await this.deleteSegmentRecursive(segmentId, new Set<string>());
   }
 
   private async createDynamicSegment(payload: CreateSegmentWithRulesDto) {
@@ -79,5 +92,29 @@ export class CreateSegmentFacade {
           SEGMENT_ERROR_MESSAGES.ONLY_ACTIVE_AND_VIP_RISK_SUPPORTED,
         );
     }
+  }
+
+  private async deleteSegmentRecursive(
+    segmentId: string,
+    visited: Set<string>,
+  ): Promise<void> {
+    if (visited.has(segmentId)) {
+      return;
+    }
+    visited.add(segmentId);
+
+    const segmentObjectId = new Types.ObjectId(segmentId);
+    const dependents =
+      await this.segmentRepository.findDependentsBySegmentId(segmentObjectId);
+
+    for (const dependent of dependents) {
+      await this.deleteSegmentRecursive(dependent._id.toString(), visited);
+    }
+
+    await this.segmentMembershipRepository.deleteMembersBySegmentId(
+      segmentObjectId,
+    );
+    await this.segmentDeltaRepository.deleteDeltasBySegmentId(segmentObjectId);
+    await this.segmentRepository.deleteSegmentById(segmentId);
   }
 }

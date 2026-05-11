@@ -1,4 +1,4 @@
-export * from './facades/create-segment.facade';
+export * from './facades/segment-command.facade';
 export * from './facades/segment-membership.facade';
 export * from './facades/segment-with-members.facade';
 export * from './segment-delta-notifier.service';
