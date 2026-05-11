@@ -64,7 +64,8 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
     });
   }
 
-  async deleteBySegmentId(segmentId: Types.ObjectId): Promise<void> {
-    await this.model.deleteMany({ segmentId });
+  // deleteMembersBySegmentId
+  async deleteMembersBySegmentId(segmentId: Types.ObjectId): Promise<void> {
+    await this.deleteMany({ segmentId });
   }
 }

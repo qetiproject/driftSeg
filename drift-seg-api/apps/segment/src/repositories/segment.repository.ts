@@ -26,4 +26,8 @@ export class SegmentRepository extends AbstractRepository<Segment> {
       .find({ dependsOnSegmentIds: segmentId })
       .lean<Segment[]>(true);
   }
+
+  async deleteSegmentById(segmentId: string): Promise<void> {
+    await this.findByIdAndDelete(segmentId);
+  }
 }

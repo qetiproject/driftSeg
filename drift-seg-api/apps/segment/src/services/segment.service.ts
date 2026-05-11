@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSegmentFacade } from './facades/create-segment.facade';
+import { SegmentDeltaRepository } from '@segment/repositories/segment-delta.repository';
+import { SegmentMembershipRepository } from '@segment/repositories/segment-membership.repository';
+import { SegmentRepository } from '@segment/repositories/segment.repository';
 import { SegmentMembershipService } from './segment-membership.service';
 
 @Injectable()
 export class SegmentService {
   constructor(
-    private readonly createSegmentFacade: CreateSegmentFacade,
+    private readonly segmentRepository: SegmentRepository,
     private readonly segmentMembershipService: SegmentMembershipService,
+    private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly segmentMembershipRepository: SegmentMembershipRepository,
   ) {}
 
   // async getSegmentDeltas(
@@ -43,31 +47,5 @@ export class SegmentService {
   //   await this.segmentMembershipService.refreshStaticSegmentMemberships(
   //     segment,
   //   );
-  // }
-
-  // async deleteSegmentCascade(segmentId: string): Promise<void> {
-  //   await this.deleteSegmentRecursive(segmentId, new Set<string>());
-  // }
-
-  // private async deleteSegmentRecursive(
-  //   segmentId: string,
-  //   visited: Set<string>,
-  // ): Promise<void> {
-  //   if (visited.has(segmentId)) {
-  //     return;
-  //   }
-  //   visited.add(segmentId);
-
-  //   const segmentObjectId = new Types.ObjectId(segmentId);
-  //   const dependents =
-  //     await this.segmentRepository.findDependentsBySegmentId(segmentObjectId);
-
-  //   for (const dependent of dependents) {
-  //     await this.deleteSegmentRecursive(dependent._id.toString(), visited);
-  //   }
-
-  //   await this.segmentMembershipRepository.deleteBySegmentId(segmentObjectId);
-  //   await this.segmentDeltaRepository.deleteBySegmentId(segmentObjectId);
-  //   await this.segmentRepository.findOneAndDelete({ _id: segmentId });
   // }
 }

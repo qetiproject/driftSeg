@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -6,14 +6,14 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { SegmentCommandService } from '@segment/services/segment-command.service';
-import { PaginatedSegmentResponseDto } from '../dto/paginated-segment-response.dto';
-import { CreateSegmentDto } from '../dto/request';
+import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
+import { CreateSegmentDto } from '@segment/dto/request/create-segment.dto';
 import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
-} from '../dto/responses';
-import { SegmentQueryService } from '../services/segment-query.service';
+} from '@segment/dto/responses/index';
+import { SegmentCommandService } from '@segment/services/segment-command.service';
+import { SegmentQueryService } from '@segment/services/segment-query.service';
 
 @Controller('segments')
 @ApiTags('segments')
@@ -76,19 +76,19 @@ export class SegmentController {
   //   return { refreshed: true };
   // }
 
-  // @Delete(':id')
-  // @ApiOkResponse({
-  //   schema: {
-  //     type: 'object',
-  //     properties: { deleted: { type: 'boolean', example: true } },
-  //   },
-  // })
-  // async deleteWithDependents(
-  //   @Param('id') id: string,
-  // ): Promise<{ deleted: true }> {
-  //   await this.segmentService.deleteSegmentCascade(id);
-  //   return { deleted: true };
-  // }
+  @Delete(':id')
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: { deleted: { type: 'boolean', example: true } },
+    },
+  })
+  async deleteWithDependents(
+    @Param('id') id: string,
+  ): Promise<{ deleted: true }> {
+    await this.segmentCommandService.deleteSegmentCascade(id);
+    return { deleted: true };
+  }
 
   // @EventPattern(dto.TRANSACTION_CREATED_EVENT)
   // tansactionCreatedEvent(

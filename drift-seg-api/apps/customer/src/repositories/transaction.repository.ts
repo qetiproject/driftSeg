@@ -31,9 +31,8 @@ export class TransactionRepository extends AbstractRepository<TransactionDocumen
   }
 
   async deleteManyByCustomerId(customerId: string): Promise<number> {
-    const result = await this.model.deleteMany({
+    return this.deleteMany({
       customerId: new Types.ObjectId(customerId),
     });
-    return result.deletedCount ?? 0;
   }
 }

@@ -65,7 +65,7 @@ export abstract class AbstractRepository<TDocument> {
   async findOneAndDelete(
     filterQuery: QueryFilter<TDocument>,
   ): Promise<TDocument | null> {
-    return this.model.findOneAndDelete(filterQuery).lean<TDocument>(true);
+    return this.model.findOneAndDelete(filterQuery).lean<TDocument>();
   }
 
   async findByIdAndDelete(id: string): Promise<TDocument | null> {
@@ -76,5 +76,10 @@ export abstract class AbstractRepository<TDocument> {
     const deleted = await this.model.findByIdAndDelete(id).lean<TDocument>();
 
     return deleted;
+  }
+
+  async deleteMany(filterQuery: QueryFilter<TDocument>): Promise<number> {
+    const result = await this.model.deleteMany(filterQuery);
+    return result.deletedCount ?? 0;
   }
 }
