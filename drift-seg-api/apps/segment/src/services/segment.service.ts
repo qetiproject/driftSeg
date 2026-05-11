@@ -37,15 +37,4 @@ export class SegmentService {
   //     computedAt: delta.computedAt.toISOString(),
   //   }));
   // }
-
-  // async refreshStaticSegment(segmentId: string): Promise<void> {
-  //   const segment = await getSegmentById(this.segmentRepository, segmentId);
-  //   if (segment.type !== SegmentTypeEnum.STATIC) {
-  //     return;
-  //   }
-
-  //   await this.segmentMembershipService.refreshStaticSegmentMemberships(
-  //     segment,
-  //   );
-  // }
 }

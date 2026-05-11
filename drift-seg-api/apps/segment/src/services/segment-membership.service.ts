@@ -90,6 +90,7 @@ export class SegmentMembershipService {
     }
   }
 
+  // refreshStaticSegmentMemberships
   async refreshStaticSegmentMemberships(
     segment: SegmentDocument,
   ): Promise<void> {

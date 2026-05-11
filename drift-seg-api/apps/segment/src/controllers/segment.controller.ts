@@ -64,17 +64,17 @@ export class SegmentController {
     return this.segmentCommandService.createSegment(payload);
   }
 
-  // @Post(':id/refresh')
-  // @ApiOkResponse({
-  //   schema: {
-  //     type: 'object',
-  //     properties: { refreshed: { type: 'boolean', example: true } },
-  //   },
-  // })
-  // async refreshStatic(@Param('id') id: string): Promise<{ refreshed: true }> {
-  //   await this.segmentService.refreshStaticSegment(id);
-  //   return { refreshed: true };
-  // }
+  @Post(':id/refresh')
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: { refreshed: { type: 'boolean', example: true } },
+    },
+  })
+  async refreshStatic(@Param('id') id: string): Promise<{ refreshed: true }> {
+    await this.segmentCommandService.refreshStaticSegmentById(id);
+    return { refreshed: true };
+  }
 
   @Delete(':id')
   @ApiOkResponse({

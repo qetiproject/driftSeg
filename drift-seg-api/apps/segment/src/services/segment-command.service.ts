@@ -16,4 +16,8 @@ export class SegmentCommandService {
   async deleteSegmentCascade(segmentId: string): Promise<void> {
     await this.segmentCommandFacade.deleteSegmentCascade(segmentId);
   }
+
+  async refreshStaticSegmentById(segmentId: string): Promise<void> {
+    await this.segmentCommandFacade.refreshStaticSegment(segmentId);
+  }
 }

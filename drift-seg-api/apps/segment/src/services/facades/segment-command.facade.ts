@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import {
   CreateSegmentDto,
@@ -7,11 +11,13 @@ import {
   SegmentRuleKind,
   SegmentTypeEnum,
 } from '@segment/dto';
+import { SegmentDocument } from '@segment/models';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
   SegmentRepository,
 } from '@segment/repositories';
+import { SegmentMembershipService } from '@segment/services/segment-membership.service';
 import {
   baseSegmentCreatePayload,
   segmentNameIsUnique,
@@ -27,6 +33,7 @@ export class SegmentCommandFacade {
     private readonly segmentRepository: SegmentRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
+    private readonly segmentMembershipService: SegmentMembershipService,
   ) {}
 
   async createSegment(payload: CreateSegmentDto) {
@@ -47,6 +54,17 @@ export class SegmentCommandFacade {
 
   async deleteSegmentCascade(segmentId: string): Promise<void> {
     await this.deleteSegmentRecursive(segmentId, new Set<string>());
+  }
+
+  async refreshStaticSegment(segmentId: string): Promise<void> {
+    const segment = await this.getSegmentById(segmentId);
+    if (segment.type !== SegmentTypeEnum.STATIC) {
+      return;
+    }
+
+    await this.segmentMembershipService.refreshStaticSegmentMemberships(
+      segment,
+    );
   }
 
   private async createDynamicSegment(payload: CreateSegmentWithRulesDto) {
@@ -116,5 +134,15 @@ export class SegmentCommandFacade {
     );
     await this.segmentDeltaRepository.deleteDeltasBySegmentId(segmentObjectId);
     await this.segmentRepository.deleteSegmentById(segmentId);
+  }
+
+  private async getSegmentById(segmentId: string): Promise<SegmentDocument> {
+    const segment = await this.segmentRepository.findOne({ _id: segmentId });
+
+    if (!segment) {
+      throw new NotFoundException('Segment not found');
+    }
+
+    return segment;
   }
 }
