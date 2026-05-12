@@ -350,7 +350,7 @@ export class SegmentMembershipSchedulerService {
 
   @Cron(SEGMENT_EVENT_FLUSH_CRON)
   async flushTransactionEventBatch(): Promise&lt;void&gt; {
-    await this.segmentMembershipService.flushPendingTransactionEvents();
+    await this.segmentMembershipService.recomputeMembershipsForPendingTransactionBatch();
   }
 }
 </code></pre>

@@ -3,15 +3,15 @@ import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-resp
 import { SegmentDeltaResponseDto } from '@segment/dto/responses/segment-delta-response.dto';
 import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
 import {
-  SegmentDeltaRepository,
-  SegmentRepository,
+    SegmentDeltaRepository,
+    SegmentRepository,
 } from '@segment/repositories';
 import {
-  getSegmentById,
-  getSegmentDeltas,
-  toSegmentResponse,
+    getSegmentById,
+    getSegmentDeltas,
+    toSegmentResponse,
 } from '@segment/utils/segment.helper';
-import { SegmentWithMembersFacade } from './facades/segment-with-members.facade';
+import { SegmentWithMembersFacade } from '../facades/segment-with-members.facade';
 
 @Injectable()
 export class SegmentQueryService {

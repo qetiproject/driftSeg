@@ -16,9 +16,9 @@ import {
   SegmentMembersResponseDto,
   SegmentResponseDto,
 } from '@segment/dto/responses/index';
-import { SegmentCommandService } from '@segment/services/segment-command.service';
+import { SegmentCommandService } from '@segment/services/segment methods/segment-command.service';
+import { SegmentQueryService } from '@segment/services/segment methods/segment-query.service';
 import { SegmentMembershipService } from '@segment/services/segment-membership.service';
-import { SegmentQueryService } from '@segment/services/segment-query.service';
 
 @Controller('segments')
 @ApiTags('segments')

@@ -171,7 +171,7 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier">Async</span>
-                                <a href="#flushPendingTransactionEvents" >flushPendingTransactionEvents</a>
+                                <a href="#recomputeMembershipsForPendingTransactionBatch" >recomputeMembershipsForPendingTransactionBatch</a>
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
@@ -315,18 +315,18 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="flushPendingTransactionEvents"></a>
+                    <a name="recomputeMembershipsForPendingTransactionBatch"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
-                        <span ><b>flushPendingTransactionEvents</b></span>
-                        <a href="#flushPendingTransactionEvents"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>recomputeMembershipsForPendingTransactionBatch</b></span>
+                        <a href="#recomputeMembershipsForPendingTransactionBatch"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>flushPendingTransactionEvents()</code>
+                    <code>recomputeMembershipsForPendingTransactionBatch()</code>
                 </td>
             </tr>
 
@@ -625,7 +625,7 @@ export class SegmentMembershipService {
     );
   }
 
-  async flushPendingTransactionEvents(): Promise&lt;void&gt; {
+  async recomputeMembershipsForPendingTransactionBatch(): Promise&lt;void&gt; {
     const pendingBatch &#x3D;
       await this.segmentPendingEventQueueService.pendingBatch(
         SEGMENT_EVENT_BATCH_SIZE,

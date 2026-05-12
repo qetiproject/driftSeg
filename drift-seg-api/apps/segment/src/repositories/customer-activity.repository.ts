@@ -45,6 +45,7 @@ export class CustomerActivityRepository {
     return doc !== null;
   }
 
+  // getDistinctCustomerIdsWithTransactions
   async getDistinctCustomerIdsWithTransactions(): Promise<Types.ObjectId[]> {
     const ids = await this.transactionModel.distinct('customerId');
     return ids.map((id) => new Types.ObjectId(String(id)));

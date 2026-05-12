@@ -1,10 +1,10 @@
-import {
-  TRANSACTION_CREATED_EVENT,
-  type TransactionCreatedEvent,
-} from '@app/common/dto';
+import { type TransactionCreatedEvent } from '@app/common/dto';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { SEGMENT_EVENT_BATCH_SIZE } from '../constants/constants';
+import {
+  SEGMENT_EVENT_BATCH_SIZE,
+  TRANSACTION_CREATED_EVENT,
+} from '../constants/constants';
 import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
@@ -18,8 +18,8 @@ import {
   publishBatchSideEffects,
   recomputeMembershipForPendingBatch,
 } from '../utils/transaction-event.helper';
-import { SegmentMembershipFacade } from './facades/segment-membership.facade';
 import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
+import { SegmentMembershipFacade } from './segment-membership.facade';
 import { SegmentPendingEventQueueService } from './segment-penging-event.service';
 import { SegmentSearchIndexerService } from './segment-search-indexer.service';
 
@@ -51,7 +51,7 @@ export class SegmentMembershipService {
     );
   }
 
-  async flushPendingTransactionEvents(): Promise<void> {
+  async recomputeMembershipsForPendingTransactionBatch(): Promise<void> {
     const pendingBatch =
       await this.segmentPendingEventQueueService.pendingBatch(
         SEGMENT_EVENT_BATCH_SIZE,
