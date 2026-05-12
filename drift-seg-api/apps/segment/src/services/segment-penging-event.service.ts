@@ -1,18 +1,16 @@
 import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
 import {
-  FAILED_TO_PARSE_PENDING_TRIGGER_LOG,
   REDIS_CLIENT_ERROR_LOG,
   REDIS_CLIENT_EVENT,
   REDIS_CLIENT_STATUS,
-  SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY,
-  SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY,
-} from '../constants/constants';
-import { SEGMENT_REDIS_CLIENT } from '../constants/tokens';
+} from '@segment/constants/constants';
+import { SEGMENT_REDIS_CLIENT } from '@segment/constants/tokens';
 import {
   PendingBatchEntry,
   PendingTrigger,
-} from '../models/interfaces/segment.interface';
+} from '@segment/models/interfaces/segment.interface';
+import { SegmentPendingEventsRepository } from '@segment/repositories/segment-pending-events.repository';
+import Redis from 'ioredis';
 
 @Injectable()
 export class SegmentPendingEventQueueService implements OnModuleDestroy {
@@ -21,6 +19,7 @@ export class SegmentPendingEventQueueService implements OnModuleDestroy {
   constructor(
     @Inject(SEGMENT_REDIS_CLIENT)
     private readonly redisClient: Redis,
+    private readonly pendingEventsRepository: SegmentPendingEventsRepository,
   ) {
     this.redisClient.on(REDIS_CLIENT_EVENT.ERROR, (error: Error) => {
       this.logger.error(REDIS_CLIENT_ERROR_LOG(error.message));
@@ -38,77 +37,25 @@ export class SegmentPendingEventQueueService implements OnModuleDestroy {
     trigger: PendingTrigger,
   ): Promise<void> {
     await this.ensureRedisConnected();
-    const date = Date.now();
-    const triggerValue = JSON.stringify(trigger);
-    await this.redisClient
-      .multi()
-      .hset(SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY, customerId, triggerValue)
-      .zadd(SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY, date, customerId)
-      .exec();
+    await this.pendingEventsRepository.enqueuePendingTrigger(
+      customerId,
+      trigger,
+    );
   }
 
   async pendingBatch(limit: number): Promise<PendingBatchEntry[]> {
     await this.ensureRedisConnected();
-    const customerIds = await this.redisClient.zrange(
-      SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY,
-      0,
-      Math.max(0, limit - 1),
-    );
-    if (customerIds.length === 0) {
-      return [];
-    }
-
-    const triggersRaw = await this.redisClient.hmget(
-      SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY,
-      ...customerIds,
-    );
-    return this.mapCustomerIdsToPendingBatch(customerIds, triggersRaw);
+    return this.pendingEventsRepository.loadOldestPendingBatch(limit);
   }
 
   async removePendingEvents(customerIds: string[]): Promise<void> {
-    if (customerIds.length === 0) {
-      return;
-    }
-
     await this.ensureRedisConnected();
-    await this.redisClient
-      .multi()
-      .zrem(SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY, ...customerIds)
-      .hdel(SEGMENT_PENDING_EVENTS_REDIS_HASH_KEY, ...customerIds)
-      .exec();
+    await this.pendingEventsRepository.removePendingForCustomers(customerIds);
   }
 
   async getPendingCount(): Promise<number> {
     await this.ensureRedisConnected();
-    return this.redisClient.zcard(SEGMENT_PENDING_EVENTS_REDIS_INDEX_KEY);
-  }
-
-  private mapCustomerIdsToPendingBatch(
-    customerIds: string[],
-    triggersRaw: (string | null)[],
-  ): PendingBatchEntry[] {
-    return customerIds.flatMap((customerId, index) => {
-      const raw = triggersRaw[index];
-      if (!raw) {
-        return [];
-      }
-
-      return this.parsePendingBatchEntry(customerId, raw);
-    });
-  }
-
-  private parsePendingBatchEntry(
-    customerId: string,
-    rawTrigger: string,
-  ): PendingBatchEntry[] {
-    try {
-      return [
-        { customerId, trigger: JSON.parse(rawTrigger) as PendingTrigger },
-      ];
-    } catch {
-      this.logger.warn(FAILED_TO_PARSE_PENDING_TRIGGER_LOG(customerId));
-      return [];
-    }
+    return this.pendingEventsRepository.countPendingCustomers();
   }
 
   async onModuleDestroy(): Promise<void> {

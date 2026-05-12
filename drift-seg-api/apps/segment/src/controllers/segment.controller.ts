@@ -18,7 +18,7 @@ import {
 } from '@segment/dto/responses/index';
 import { SegmentCommandService } from '@segment/services/segment methods/segment-command.service';
 import { SegmentQueryService } from '@segment/services/segment methods/segment-query.service';
-import { SegmentMembershipService } from '@segment/services/segment-membership.service';
+import { TransactionEventService } from '@segment/services/transaction-event/transaction-event.service';
 
 @Controller('segments')
 @ApiTags('segments')
@@ -26,7 +26,7 @@ export class SegmentController {
   constructor(
     private readonly segmentCommandService: SegmentCommandService,
     private readonly segmentQueryService: SegmentQueryService,
-    private readonly segmentMembershipService: SegmentMembershipService,
+    private readonly transactionEventService: TransactionEventService,
   ) {}
 
   @Get()
@@ -102,7 +102,7 @@ export class SegmentController {
   tansactionCreatedEvent(
     @Payload() event: TransactionCreatedEvent,
   ): Promise<void> {
-    return this.segmentMembershipService.transactionCreated(event);
+    return this.transactionEventService.transactionCreated(event);
   }
 
   // @EventPattern(SEGMENT_UI_DELTA_EVENT)

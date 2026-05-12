@@ -1,10 +1,6 @@
-import { type TransactionCreatedEvent } from '@app/common/dto';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  SEGMENT_EVENT_BATCH_SIZE,
-  TRANSACTION_CREATED_EVENT,
-} from '../constants/constants';
+import { SEGMENT_EVENT_BATCH_SIZE } from '../constants/constants';
 import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
 import { CustomerActivityRepository } from '../repositories';
@@ -36,20 +32,6 @@ export class SegmentMembershipService {
     @Inject(SEGMENT_NOTIFICATIONS_CLIENT)
     private readonly notificationsClient: ClientProxy,
   ) {}
-
-  async transactionCreated(event: TransactionCreatedEvent): Promise<void> {
-    if (event.eventType !== TRANSACTION_CREATED_EVENT) {
-      return;
-    }
-
-    await this.segmentPendingEventQueueService.addPendingEvent(
-      event.data.customerId,
-      {
-        eventId: event.eventId,
-        eventType: event.eventType,
-      },
-    );
-  }
 
   async recomputeMembershipsForPendingTransactionBatch(): Promise<void> {
     const pendingBatch =
