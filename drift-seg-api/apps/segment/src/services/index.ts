@@ -1,9 +1,9 @@
 export * from './facades/segment-command.facade';
+export * from './facades/segment-membership.facade';
 export * from './facades/segment-with-members.facade';
 export * from './segment methods/segment-query.service';
 export * from './segment-delta-notifier.service';
 export * from './segment-membership-scheduler.service';
-export * from './segment-membership.facade';
 export * from './segment-membership.service';
 export * from './segment-penging-event.service';
 export * from './segment-rule-evaluator.service';

@@ -7,6 +7,7 @@ import { SegmentRuleInput, SegmentRuleKind } from '@segment/dto';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
 import { Types } from 'mongoose';
 
+// isSegmentRuleInput
 export function isSegmentRuleInput(value: unknown): value is SegmentRuleInput {
   if (!value || typeof value !== 'object') {
     return false;

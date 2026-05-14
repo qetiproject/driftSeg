@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { SegmentDeltaResponseDto } from '@segment/dto/responses/segment-delta-response.dto';
 import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
-import { SegmentTypeEnum } from '@segment/dto/segment-rule';
 import { SegmentDocument } from '@segment/models/segment.schema';
 import { SegmentDeltaRepository } from '@segment/repositories/segment-delta.repository';
 import { SegmentRepository } from '@segment/repositories/segment.repository';
@@ -22,27 +21,26 @@ export class SegmentQueryService {
     private readonly segmentWithMembersFacade: SegmentWithMembersFacade,
   ) {}
 
-  async getSegments(
-    page: number = 1,
-    limit: number = 10,
+  async getSegmentsWithPagination(
+    page = 1,
+    limit = 10,
   ): Promise<PaginatedSegmentResponseDto> {
     const safePage = Math.max(page, 1);
     const safeLimit = Math.max(limit, 1);
+
     const skip = (safePage - 1) * safeLimit;
+
     const filter = {};
 
-    const segments = await this.segmentRepository.find(filter, {
-      skip,
-      limit: safeLimit,
-    });
-
-    const totalItems = await this.segmentRepository.countDocuments(filter);
-    const totalPages = Math.ceil(totalItems / safeLimit);
+    const [segments, totalItems] = await Promise.all([
+      this.segmentRepository.getSegments(skip, safeLimit, filter),
+      this.segmentRepository.countDocuments(filter),
+    ]);
 
     return {
       items: segments.map(toSegmentResponse),
       totalItems,
-      totalPages,
+      totalPages: Math.ceil(totalItems / safeLimit),
       page: safePage,
       limit: safeLimit,
     };
@@ -81,10 +79,10 @@ export class SegmentQueryService {
   }
 
   async getValidDynamicSegments(): Promise<SegmentDocument[]> {
-    const segments = await this.segmentRepository.find({
-      type: SegmentTypeEnum.DYNAMIC,
-    });
+    const dynamicSegments = await this.segmentRepository.getDynamicSegments();
 
-    return segments.filter((segment) => isSegmentRuleInput(segment.rules));
+    return dynamicSegments.filter((segment) =>
+      isSegmentRuleInput(segment.rules),
+    );
   }
 }

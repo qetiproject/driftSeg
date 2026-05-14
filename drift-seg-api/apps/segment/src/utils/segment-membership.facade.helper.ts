@@ -27,40 +27,7 @@ interface SegmentMembershipFacadeDeps {
   segmentDeltaRepository: SegmentDeltaRepository;
 }
 
-// export function getDynamicSegments(
-//   segments: SegmentDocument[],
-// ): SegmentDocument[] {
-//   return segments.filter(
-//     (segment) =>
-//       segment.type === SegmentTypeEnum.DYNAMIC &&
-//       isSegmentRuleInput(segment.rules),
-//   );
-// }
-
-export function buildSegmentByIdMap(
-  segments: SegmentDocument[],
-): Map<string, SegmentDocument> {
-  return new Map(segments.map((segment) => [segment._id.toString(), segment]));
-}
-
-export function buildDependentSegmentMap(
-  segments: SegmentDocument[],
-): Map<string, string[]> {
-  const dependentBySegmentId = new Map<string, string[]>();
-
-  for (const segment of segments) {
-    for (const dependencyId of segment.dependsOnSegmentIds ?? []) {
-      const key = dependencyId.toString();
-      const dependents = dependentBySegmentId.get(key) ?? [];
-      dependents.push(segment._id.toString());
-      dependentBySegmentId.set(key, dependents);
-    }
-  }
-
-  return dependentBySegmentId;
-}
-
-export function enqueueDependentDynamicSegments(
+function enqueueDependentDynamicSegments(
   segmentId: string,
   dependentBySegmentId: Map<string, string[]>,
   dynamicById: Map<string, SegmentDocument>,
