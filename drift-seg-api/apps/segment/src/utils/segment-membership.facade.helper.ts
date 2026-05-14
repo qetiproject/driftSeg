@@ -48,23 +48,19 @@ function enqueueDependentDynamicSegments(
 
 export async function processDynamicSegmentQueue(
   dynamicSegments: SegmentDocument[],
-  dynamicById: Map<string, SegmentDocument>,
+  dynamicSegmentById: Map<string, SegmentDocument>,
   dependentBySegmentId: Map<string, string[]>,
   customerId: Types.ObjectId,
   trigger: SegmentMembershipTrigger,
   deps: SegmentMembershipFacadeDeps,
 ): Promise<void> {
-  const queue = dynamicSegments.map((segment) => segment._id.toString());
-  const queued = new Set(queue);
+  const queue = createInitialQueue(dynamicSegments);
+  const visited = new Set(queue);
 
-  while (queue.length > 0) {
-    const segmentId = queue.shift();
-    if (!segmentId) {
-      continue;
-    }
-
-    queued.delete(segmentId);
-    const segment = dynamicById.get(segmentId);
+  for (let i = 0; i < queue.length; i++) {
+    const segmentId = queue[i];
+    visited.delete(segmentId);
+    const segment = dynamicSegmentById.get(segmentId);
     if (!segment) {
       continue;
     }
@@ -75,6 +71,7 @@ export async function processDynamicSegmentQueue(
       trigger,
       deps,
     );
+
     if (!hasChanged) {
       continue;
     }
@@ -82,14 +79,20 @@ export async function processDynamicSegmentQueue(
     enqueueDependentDynamicSegments(
       segmentId,
       dependentBySegmentId,
-      dynamicById,
+      dynamicSegmentById,
       queue,
-      queued,
+      visited,
     );
   }
 }
 
-export async function reconcileSegmentMembershipForCustomer(
+// createInitialQueue
+function createInitialQueue(segments: SegmentDocument[]): string[] {
+  return segments.map((segment) => segment._id.toString());
+}
+
+// reconcileSegmentMembershipForCustomer
+async function reconcileSegmentMembershipForCustomer(
   segment: SegmentDocument,
   customerId: Types.ObjectId,
   trigger: SegmentMembershipTrigger,

@@ -33,13 +33,13 @@ export class SegmentMembershipFacade {
   ): Promise<void> {
     const dynamicValidSegments =
       await this.segmentqueryService.getValidDynamicSegments();
-    const dynamicById = this.mapSegmentsById(dynamicValidSegments);
-    const dependentBySegmentId =
+    const dynamicSegmentsId = this.mapSegmentsById(dynamicValidSegments);
+    const dependentSegmentsId =
       this.buildDependentSegmentMap(dynamicValidSegments);
     await processDynamicSegmentQueue(
       dynamicValidSegments,
-      dynamicById,
-      dependentBySegmentId,
+      dynamicSegmentsId,
+      dependentSegmentsId,
       customerId,
       trigger,
       this.getFacadeDeps(),
