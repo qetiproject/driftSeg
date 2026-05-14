@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import {
-    SEGMENT_EVENT_FLUSH_CRON,
-    SEGMENT_RECOMPUTE_CRON,
+  SEGMENT_EVENT_FLUSH_CRON,
+  SEGMENT_RECOMPUTE_CRON,
 } from '../constants/constants';
 import { SegmentMembershipService } from './segment-membership.service';
 
@@ -13,7 +13,7 @@ export class SegmentMembershipSchedulerService {
   ) {}
 
   @Cron(SEGMENT_RECOMPUTE_CRON)
-  async recomputeDynamicSegments(): Promise<void> {
+  async handleDynamicSegmentMembershipRecompute(): Promise<void> {
     await this.segmentMembershipService.recomputeAllDynamicMemberships();
   }
 

@@ -1,4 +1,4 @@
-export const SEGMENT_RECOMPUTE_CRON = '*/5 * * * *';
+export const SEGMENT_RECOMPUTE_CRON = '*/1 * * * *';
 export const SEGMENT_EVENT_FLUSH_CRON = '*/15 * * * * *';
 export const SEGMENT_EVENT_BATCH_SIZE = 200;
 export const SEGMENT_RECOMPUTE_CHUNK_SIZE = 1000;

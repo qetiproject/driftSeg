@@ -6,17 +6,16 @@ import { SegmentMembershipTrigger } from '../models/segment-trigger.interface';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
-  SegmentRepository,
 } from '../repositories';
 import {
   buildDependentSegmentMap,
   buildSegmentByIdMap,
   collectEligibleCustomerIds,
-  getDynamicSegments,
   processDynamicSegmentQueue,
-  syncStaticMembershipChanges,
+  syncStaticMembershipChanges,,
 } from '../utils/segment-membership.facade.helper';
 import { isSegmentRuleInput } from '../utils/segment-membership.helper';
+import { SegmentQueryService } from './segment methods/segment-query.service';
 import { SegmentRuleEvaluatorService } from './segment-rule-evaluator.service';
 
 @Injectable()
@@ -24,18 +23,17 @@ export class SegmentMembershipFacade {
   private readonly logger = new Logger(SegmentMembershipFacade.name);
 
   constructor(
-    private readonly segmentRepository: SegmentRepository,
     private readonly segmentRuleEvaluatorService: SegmentRuleEvaluatorService,
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
+    private readonly segmentqueryService: SegmentQueryService,
   ) {}
 
   async recomputeMembershipForCustomer(
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
-    const segments = await this.segmentRepository.find({});
-    const dynamicSegments = getDynamicSegments(segments);
+    const dynamicSegments = this.segmentqueryService.getValidDynamicSegments();
     const dynamicById = buildSegmentByIdMap(dynamicSegments);
     const dependentBySegmentId = buildDependentSegmentMap(segments);
     await processDynamicSegmentQueue(

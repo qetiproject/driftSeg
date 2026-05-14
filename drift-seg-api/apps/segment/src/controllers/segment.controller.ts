@@ -1,5 +1,13 @@
 import type { TransactionCreatedEvent } from '@app/common/dto/transaction-created.event';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import {
   ApiBody,
@@ -8,7 +16,11 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { TRANSACTION_CREATED_EVENT } from '@segment/constants/constants';
+import {
+  PROCESSED_MEMBERSHIP_BATCH_LOG,
+  SEGMENT_BATCH_RECOMPUTE_EVENT,
+  TRANSACTION_CREATED_EVENT,
+} from '@segment/constants/constants';
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { CreateSegmentDto } from '@segment/dto/request/create-segment.dto';
 import {
@@ -23,6 +35,8 @@ import { TransactionEventService } from '@segment/services/transaction-event/tra
 @Controller('segments')
 @ApiTags('segments')
 export class SegmentController {
+  private readonly logger = new Logger(SegmentController.name);
+
   constructor(
     private readonly segmentCommandService: SegmentCommandService,
     private readonly segmentQueryService: SegmentQueryService,
@@ -110,21 +124,21 @@ export class SegmentController {
   //   this.logger.debug(UI_DELTA_EVENT_CONSUMED_LOG(JSON.stringify(event)));
   // }
 
-  // @EventPattern(SEGMENT_BATCH_RECOMPUTE_EVENT)
-  // handleBatchRecomputeEvent(
-  //   @Payload()
-  //   event: {
-  //     processedCustomers?: number;
-  //     pendingCustomers?: number;
-  //   },
-  // ): void {
-  //   this.logger.debug(
-  //     PROCESSED_MEMBERSHIP_BATCH_LOG(
-  //       event.processedCustomers ?? 0,
-  //       event.pendingCustomers ?? 0,
-  //     ),
-  //   );
-  // }
+  @EventPattern(SEGMENT_BATCH_RECOMPUTE_EVENT)
+  handleBatchRecomputeEvent(
+    @Payload()
+    event: {
+      processedCustomers?: number;
+      pendingCustomers?: number;
+    },
+  ): void {
+    this.logger.debug(
+      PROCESSED_MEMBERSHIP_BATCH_LOG(
+        event.processedCustomers ?? 0,
+        event.pendingCustomers ?? 0,
+      ),
+    );
+  }
 
   // @EventPattern(SEGMENT_CAMPAIGN_DELTA_EVENT)
   // handleCampaignDeltaEvent(@Payload() event: unknown): void {

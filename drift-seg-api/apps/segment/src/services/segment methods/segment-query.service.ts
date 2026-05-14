@@ -2,14 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PaginatedSegmentResponseDto } from '@segment/dto/paginated-segment-response.dto';
 import { SegmentDeltaResponseDto } from '@segment/dto/responses/segment-delta-response.dto';
 import { SegmentMembersResponseDto } from '@segment/dto/responses/segment-members-response.dto';
+import { SegmentTypeEnum } from '@segment/dto/segment-rule';
+import { SegmentDocument } from '@segment/models/segment.schema';
+import { SegmentDeltaRepository } from '@segment/repositories/segment-delta.repository';
+import { SegmentRepository } from '@segment/repositories/segment.repository';
+import { isSegmentRuleInput } from '@segment/utils/segment-membership.helper';
 import {
-    SegmentDeltaRepository,
-    SegmentRepository,
-} from '@segment/repositories';
-import {
-    getSegmentById,
-    getSegmentDeltas,
-    toSegmentResponse,
+  getSegmentById,
+  getSegmentDeltas,
+  toSegmentResponse,
 } from '@segment/utils/segment.helper';
 import { SegmentWithMembersFacade } from '../facades/segment-with-members.facade';
 
@@ -77,5 +78,13 @@ export class SegmentQueryService {
       triggerEventType: delta.triggerEventType,
       computedAt: delta.computedAt.toISOString(),
     }));
+  }
+
+  async getValidDynamicSegments(): Promise<SegmentDocument[]> {
+    const segments = await this.segmentRepository.find({
+      type: SegmentTypeEnum.DYNAMIC,
+    });
+
+    return segments.filter((segment) => isSegmentRuleInput(segment.rules));
   }
 }

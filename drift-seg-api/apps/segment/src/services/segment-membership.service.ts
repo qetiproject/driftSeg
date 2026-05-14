@@ -1,5 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Types } from 'mongoose';
+import pLimit from 'p-limit';
 import { SEGMENT_EVENT_BATCH_SIZE } from '../constants/constants';
 import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
 import { SegmentDocument } from '../models';
@@ -60,24 +62,33 @@ export class SegmentMembershipService {
     logProcessedBatch(this.logger, pendingBatch.length, pendingCustomers);
   }
 
+  // recomputeAllDynamicMemberships
   async recomputeAllDynamicMemberships(): Promise<void> {
-    const customerIds =
-      await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
+    const customerIds = await this.getActiveCustomerIds();
 
-    for (const customerId of customerIds) {
-      await this.segmentMembershipFacade.recomputeMembershipForCustomer(
-        customerId,
-        buildSchedulerTrigger(customerId),
-      );
-    }
+    const limit = pLimit(20);
+
+    await Promise.all(
+      customerIds.map((id) =>
+        limit(() =>
+          this.segmentMembershipFacade.recomputeMembershipForCustomer(
+            id,
+            buildSchedulerTrigger(id),
+          ),
+        ),
+      ),
+    );
+  }
+
+  getActiveCustomerIds(): Promise<Types.ObjectId[]> {
+    return this.customerActivityRepository.getActiveCustomerIds();
   }
 
   // refreshStaticSegmentMemberships
   async refreshStaticSegmentMemberships(
     segment: SegmentDocument,
   ): Promise<void> {
-    const customerIds =
-      await this.customerActivityRepository.getDistinctCustomerIdsWithTransactions();
+    const customerIds = await this.getActiveCustomerIds();
 
     await this.segmentMembershipFacade.refreshStaticSegmentMemberships(
       segment,

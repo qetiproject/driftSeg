@@ -1,21 +1,17 @@
 import { Logger } from '@nestjs/common';
-import { Types } from 'mongoose';
 import {
   ADD_CUSTOMER_TO_SEGMENT,
   REMOVE_CUSTOMER_FROM_SEGMENT,
 } from '@segment/constants/constants';
 import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
-import {
-  SegmentRuleInput,
-  SegmentRuleKind,
-  SegmentTypeEnum,
-} from '@segment/dto';
+import { SegmentRuleInput, SegmentRuleKind } from '@segment/dto';
 import { SegmentDocument } from '@segment/models';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
 import {
   SegmentDeltaRepository,
   SegmentMembershipRepository,
 } from '@segment/repositories';
+import { Types } from 'mongoose';
 import { SegmentRuleEvaluatorService } from '../services/segment-rule-evaluator.service';
 import { isSegmentRuleInput } from './segment-membership.helper';
 
@@ -31,15 +27,15 @@ interface SegmentMembershipFacadeDeps {
   segmentDeltaRepository: SegmentDeltaRepository;
 }
 
-export function getDynamicSegments(
-  segments: SegmentDocument[],
-): SegmentDocument[] {
-  return segments.filter(
-    (segment) =>
-      segment.type === SegmentTypeEnum.DYNAMIC &&
-      isSegmentRuleInput(segment.rules),
-  );
-}
+// export function getDynamicSegments(
+//   segments: SegmentDocument[],
+// ): SegmentDocument[] {
+//   return segments.filter(
+//     (segment) =>
+//       segment.type === SegmentTypeEnum.DYNAMIC &&
+//       isSegmentRuleInput(segment.rules),
+//   );
+// }
 
 export function buildSegmentByIdMap(
   segments: SegmentDocument[],
