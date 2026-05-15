@@ -7,10 +7,7 @@ import { CustomerActivityRepository } from '@segment/repositories/customer-activ
 import { SegmentDeltaNotifierService } from '@segment/services/segment-delta-notifier.service';
 import { SegmentPendingEventQueueService } from '@segment/services/segment-penging-event.service';
 import { SegmentSearchIndexerService } from '@segment/services/segment-search-indexer.service';
-import {
-  buildSchedulerTrigger,
-  buildStaticRefreshTrigger,
-} from '@segment/utils/segment-membership.helper';
+import { buildSchedulerTrigger } from '@segment/utils/segment-membership.helper';
 import {
   buildBatchRecomputePayload,
   logProcessedBatch,
@@ -90,10 +87,10 @@ export class SegmentMembershipService {
   ): Promise<void> {
     const customerIds = await this.getActiveCustomerIds();
 
-    await this.segmentMembershipFacade.refreshStaticSegmentMemberships(
-      segment,
-      customerIds,
-      buildStaticRefreshTrigger(String(segment._id)),
-    );
+    // await this.segmentMembershipFacade.refreshStaticSegmentMemberships(
+    //   segment,
+    //   customerIds,
+    //   buildStaticRefreshTrigger(String(segment._id)),
+    // );
   }
 }

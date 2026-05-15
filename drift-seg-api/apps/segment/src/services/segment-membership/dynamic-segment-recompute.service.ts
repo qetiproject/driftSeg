@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import { SegmentDependencyGraph } from '@segment/models/interfaces/segmentDependencyGraph';
-import { SegmentMembershipFacadeDeps } from '@segment/models/interfaces/segmentmembershiodeps';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
 import { Segment, SegmentDocument } from '@segment/models/segment.schema';
+import { SegmentDeltaRepository } from '@segment/repositories/segment-delta.repository';
+import { SegmentMembershipRepository } from '@segment/repositories/segment-membership.repository';
 import {
   addCustomerToSegment,
   isSegmentRuleInput,
@@ -11,58 +12,63 @@ import {
   satisfiesDependencies,
 } from '@segment/utils';
 import { Types } from 'mongoose';
+import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 
 @Injectable()
 export class DynamicSegmentRecomputeService {
-  async process(
-    dynamicSegments: Segment[],
-    graph: SegmentDependencyGraph,
-    customerId: Types.ObjectId,
-    trigger: SegmentMembershipTrigger,
-    deps: SegmentMembershipFacadeDeps,
-  ): Promise<void> {
-    const queue = dynamicSegments.map((s) => s._id.toString());
+  constructor(
+    private readonly segmentRuleEvaluatorService: SegmentRuleEvaluatorService,
+    private readonly segmentMembershipRepository: SegmentMembershipRepository,
+    private readonly segmentDeltaRepository: SegmentDeltaRepository,
+  ) {}
 
-    const queued = new Set(queue);
+  private readonly logger = new Logger(DynamicSegmentRecomputeService.name);
+  
 
-    for (let i = 0; i < queue.length; i++) {
-      const segmentId = queue[i];
+ async process(
+  dynamicSegments: Segment[],
+  graph: SegmentDependencyGraph,
+  customerId: Types.ObjectId,
+  trigger: SegmentMembershipTrigger,
+): Promise<void> {
+  const queue: string[] = dynamicSegments.map((s) => s._id.toString());
+  const visited = new Set(queue);
 
-      queued.delete(segmentId);
+  while (queue.length > 0) {
+    const segmentId = queue.shift()!;
 
-      const segment = graph.segmentsById.get(segmentId);
+    const segment = graph.segmentsById.get(segmentId);
+    if (!segment) continue;
 
-      if (!segment) continue;
-
-      const hasChanged = await this.reconcileSegmentMembershipForCustomer(
+    const membershipChanged =
+      await this.reconcileSegmentMembershipForCustomer(
         segment,
         customerId,
         trigger,
-        deps,
       );
 
-      if (!hasChanged) continue;
+    if (!membershipChanged) continue;
 
-      const dependents = graph.dependentsBySegmentId.get(segmentId) ?? [];
+    const dependentIds =
+      graph.dependentsBySegmentId.get(segmentId) ?? [];
 
-      for (const depId of dependents) {
-        if (queued.has(depId)) continue;
+    for (const depId of dependentIds) {
+      if (visited.has(depId)) continue;
 
-        queue.push(depId);
-        queued.add(depId);
-      }
+      visited.add(depId);
+      queue.push(depId);
     }
   }
+ }
 
   // reconcileSegmentMembershipForCustomer
   async reconcileSegmentMembershipForCustomer(
     segment: SegmentDocument,
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
-    deps: SegmentMembershipFacadeDeps,
   ): Promise<boolean> {
     if (!isSegmentRuleInput(segment.rules)) {
-      deps.logger.warn(
+      this.logger.warn(
         SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
           segment._id.toString(),
         ),
@@ -71,18 +77,18 @@ export class DynamicSegmentRecomputeService {
     }
 
     const matchesRule =
-      await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+      await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
         segment.rules,
         customerId,
       );
     const dependenciesSatisfied = await satisfiesDependencies(
       segment,
       customerId,
-      deps,
+      this,,
     );
     const shouldBeMember = matchesRule && dependenciesSatisfied;
     const currentMembership =
-      await deps.segmentMembershipRepository.findActiveMembership(
+      await this.segmentMembershipRepository.findActiveMembership(
         segment._id,
         customerId,
       );
@@ -93,7 +99,7 @@ export class DynamicSegmentRecomputeService {
         segment.rules.kind,
         customerId,
         trigger,
-        deps,
+        this,
       );
       return true;
     }
@@ -105,7 +111,7 @@ export class DynamicSegmentRecomputeService {
         segment.rules.kind,
         customerId,
         trigger,
-        deps,
+        this,
       );
       return true;
     }
