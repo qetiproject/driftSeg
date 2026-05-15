@@ -73,53 +73,49 @@ export class DynamicSegmentRecomputeService {
       return false;
     }
 
-    const [matchesRule, currentMembership, dependenciesSatisfied] =
-      await Promise.all([
-        this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
-          segment.rules,
-          customerId,
-        ),
-        this.segmentMembershipRepository.findActiveMembership(
-          segment._id,
-          customerId,
-        ),
-        this.hasRequiredSegmentMemberships(segment, customerId),
-      ]);
+    const matchesRule =
+      await this.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
+        segment.rules,
+        customerId,
+      );
+
+    const currentMembership =
+      await this.segmentMembershipRepository.findActiveMembership(
+        segment._id,
+        customerId,
+      );
+
+    const dependenciesSatisfied = await this.hasRequiredSegmentMemberships(
+      segment,
+      customerId,
+    );
+
+    if (!matchesRule && !currentMembership) return false;
 
     const shouldBeMember = matchesRule && dependenciesSatisfied;
 
-    const action =
-      shouldBeMember && !currentMembership
-        ? 'ADD'
-        : !shouldBeMember && currentMembership
-          ? 'REMOVE'
-          : 'NOOP';
-
-    switch (action) {
-      case 'ADD':
-        await this.addCustomerToSegment(
-          segment._id,
-          segment.rules.kind,
-          customerId,
-          trigger,
-        );
-        return true;
-
-      case 'REMOVE':
-        if (!currentMembership) return false;
-
-        await this.removeCustomerFromSegment(
-          currentMembership._id,
-          segment._id,
-          segment.rules.kind,
-          customerId,
-          trigger,
-        );
-        return true;
-
-      default:
-        return false;
+    if (shouldBeMember && !currentMembership) {
+      await this.addCustomerToSegment(
+        segment._id,
+        segment.rules.kind,
+        customerId,
+        trigger,
+      );
+      return true;
     }
+
+    if (!shouldBeMember && currentMembership) {
+      await this.removeCustomerFromSegment(
+        currentMembership._id,
+        segment._id,
+        segment.rules.kind,
+        customerId,
+        trigger,
+      );
+      return true;
+    }
+
+    return false;
   }
 
   async hasRequiredSegmentMemberships(
@@ -128,20 +124,16 @@ export class DynamicSegmentRecomputeService {
   ): Promise<boolean> {
     const dependencyIds = segment.dependsOnSegmentIds ?? [];
 
-    if (dependencyIds.length === 0) {
+    if (!dependencyIds?.length) {
       return true;
     }
 
-    const memberships = await Promise.all(
-      dependencyIds.map((dependencyId) =>
-        this.segmentMembershipRepository.findActiveMembership(
-          dependencyId,
-          customerId,
-        ),
-      ),
+    const count = await this.segmentMembershipRepository.countActiveMemberships(
+      dependencyIds,
+      customerId,
     );
 
-    return memberships.every(Boolean);
+    return count === dependencyIds.length;
   }
 
   async addCustomerToSegment(
@@ -160,8 +152,8 @@ export class DynamicSegmentRecomputeService {
     await this.createSegmentDelta({
       segmentId,
       segmentKind,
-      addedCustomerIds: [],
-      removedCustomerIds: [customerId],
+      addedCustomerIds: [customerId],
+      removedCustomerIds: [],
       trigger,
       computedAt,
     });

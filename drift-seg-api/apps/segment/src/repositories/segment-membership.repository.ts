@@ -68,4 +68,16 @@ export class SegmentMembershipRepository extends AbstractRepository<SegmentMembe
   async deleteMembersBySegmentId(segmentId: Types.ObjectId): Promise<void> {
     await this.deleteMany({ segmentId });
   }
+
+  // countActiveMemberships
+  async countActiveMemberships(
+    segmentIds: Types.ObjectId[],
+    customerId: Types.ObjectId,
+  ): Promise<number> {
+    return this.model.countDocuments({
+      segmentId: { $in: segmentIds },
+      customerId,
+      isActive: true,
+    });
+  }
 }
