@@ -10,12 +10,12 @@ import {
 } from '../../repositories';
 import {
   collectEligibleCustomerIds,
-  syncStaticMembershipChanges,,
+  syncStaticMembershipChanges,
 } from '../../utils/segment-membership.facade.helper';
 import { isSegmentRuleInput } from '../../utils/segment-membership.helper';
 import { SegmentQueryService } from '../segment methods/segment-query.service';
-import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 import { DynamicSegmentRecomputeService } from '../segment-membership/dynamic-segment-recompute.service';
+import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 
 @Injectable()
 export class SegmentMembershipFacade {
@@ -37,22 +37,14 @@ export class SegmentMembershipFacade {
     const dynamicSegments =
       await this.segmentqueryService.getValidDynamicSegments();
 
-    const graph =
-      this.segmentDependencyGraphService.build(dynamicSegments);
-    
-    // await processDynamicSegmentQueue(
-    //   dynamicValidSegments,
-    //   dynamicSegmentsId,
-    //   dependentSegmentsId,
-    //   customerId,
-    //   trigger,
-    //   this.getFacadeDeps(),
-    // );
+    const graph = this.segmentDependencyGraphService.build(dynamicSegments);
+
     await this.dynamicSegmentRecomputeService.process(
       dynamicSegments,
       graph,
       customerId,
       trigger,
+      this.getFacadeDeps(),
     );
   }
 

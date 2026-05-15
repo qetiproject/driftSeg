@@ -4,7 +4,6 @@ import { SegmentDependencyGraph } from '@segment/models/interfaces/segmentDepend
 import { SegmentMembershipFacadeDeps } from '@segment/models/interfaces/segmentmembershiodeps';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
 import { Segment, SegmentDocument } from '@segment/models/segment.schema';
-import { SegmentMembershipRepository } from '@segment/repositories';
 import {
   addCustomerToSegment,
   isSegmentRuleInput,
@@ -12,15 +11,9 @@ import {
   satisfiesDependencies,
 } from '@segment/utils';
 import { Types } from 'mongoose';
-import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
 
 @Injectable()
 export class DynamicSegmentRecomputeService {
-  onstructor(
-    private readonly segmentRuleEvaluatorService: SegmentRuleEvaluatorService,
-    private readonly segmentMembershipRepository: SegmentMembershipRepository,
-  ) {}
-  
   async process(
     dynamicSegments: Segment[],
     graph: SegmentDependencyGraph,
@@ -50,7 +43,7 @@ export class DynamicSegmentRecomputeService {
 
       if (!hasChanged) continue;
 
-      const dependents = graph.dependentBySegmentId.get(segmentId) ?? [];
+      const dependents = graph.dependentsBySegmentId.get(segmentId) ?? [];
 
       for (const depId of dependents) {
         if (queued.has(depId)) continue;

@@ -5,37 +5,36 @@ import { Segment } from '@segment/models/segment.schema';
 @Injectable()
 export class SegmentDependencyGraphService {
   build(segments: Segment[]): SegmentDependencyGraph {
-    const segmentsById = this.mapSegmentsById(segments);
-    const dependentBySegmentId = this.buildDependentSegmentMap(segments);
-
     return {
-      segmentsById,
-      dependentBySegmentId,
+      segmentsById: this.buildSegmentIndex(segments),
+      dependentsBySegmentId: this.buildReverseDependencyGraph(segments),
     };
   }
 
-  private mapSegmentsById(segments: Segment[]): Map<string, Segment> {
-    return new Map(segments.map((s) => [s._id.toString(), s]));
+  private buildSegmentIndex(segments: Segment[]): Map<string, Segment> {
+    return new Map(
+      segments.map((segment) => [segment._id.toString(), segment]),
+    );
   }
 
-  private buildDependentSegmentMap(segments: Segment[]): Map<string, string[]> {
-    const map = new Map<string, string[]>();
+  private buildReverseDependencyGraph(
+    segments: Segment[],
+  ): Map<string, string[]> {
+    const graph = new Map<string, string[]>();
 
-    for (const { _id, dependsOnSegmentIds = [] } of segments) {
-      const dependentId = _id.toString();
+    for (const segment of segments) {
+      const segmentId = segment._id.toString();
+      const dependencies = segment.dependsOnSegmentIds ?? [];
 
-      for (const depId of dependsOnSegmentIds) {
-        const key = depId.toString();
+      for (const dependencyId of dependencies) {
+        const key = dependencyId.toString();
 
-        const existing = map.get(key);
-        if (existing) {
-          existing.push(dependentId);
-        } else {
-          map.set(key, [dependentId]);
-        }
+        const dependents = graph.get(key) ?? [];
+        dependents.push(segmentId);
+        graph.set(key, dependents);
       }
     }
 
-    return map;
+    return graph;
   }
 }

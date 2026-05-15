@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import {
-    SegmentDeltaRepository,
-    SegmentMembershipRepository,
+  SegmentDeltaRepository,
+  SegmentMembershipRepository,
 } from '@segment/repositories';
 import { SegmentRuleEvaluatorService } from '@segment/services';
 
