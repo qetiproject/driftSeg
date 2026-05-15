@@ -18,7 +18,7 @@ export class SegmentDeltaDocument extends AbstractDocument {
   removedCustomerIds!: Types.ObjectId[];
 
   @Prop({ type: String, enum: SegmentRuleKind, required: true })
-  segmentkind!: SegmentRuleKind;
+  segmentKind!: SegmentRuleKind;
 
   @Prop({ required: true })
   triggerEventId!: string;

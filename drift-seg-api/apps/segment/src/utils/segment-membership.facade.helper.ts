@@ -1,8 +1,4 @@
-import {
-  ADD_CUSTOMER_TO_SEGMENT,
-  REMOVE_CUSTOMER_FROM_SEGMENT,
-} from '@segment/constants/constants';
-import { SegmentRuleInput, SegmentRuleKind } from '@segment/dto';
+import { SegmentRuleInput } from '@segment/dto';
 import { SegmentDocument } from '@segment/models';
 import { SegmentMembershipFacadeDeps } from '@segment/models/interfaces/segmentmembershiodeps';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
@@ -75,30 +71,6 @@ export async function processDynamicSegmentQueue(
 // createInitialQueue
 function createInitialQueue(segments: SegmentDocument[]): string[] {
   return segments.map((segment) => segment._id.toString());
-}
-
-export async function satisfiesDependencies(
-  segment: SegmentDocument,
-  customerId: Types.ObjectId,
-  deps: SegmentMembershipFacadeDeps,
-): Promise<boolean> {
-  const dependencyIds = segment.dependsOnSegmentIds ?? [];
-  if (dependencyIds.length === 0) {
-    return true;
-  }
-
-  for (const dependencyId of dependencyIds) {
-    const membership =
-      await deps.segmentMembershipRepository.findActiveMembership(
-        dependencyId,
-        customerId,
-      );
-    if (!membership) {
-      return false;
-    }
-  }
-
-  return true;
 }
 
 export async function collectEligibleCustomerIds(
@@ -199,56 +171,4 @@ export async function removeOutdatedStaticMembers(
   }
 
   return removedCustomerIds;
-}
-
-export async function addCustomerToSegment(
-  segmentId: Types.ObjectId,
-  segmentkind: SegmentRuleKind,
-  customerId: Types.ObjectId,
-  trigger: SegmentMembershipTrigger,
-  deps: SegmentMembershipFacadeDeps,
-): Promise<void> {
-  await deps.segmentMembershipRepository.create({
-    segmentId,
-    customerId,
-    isActive: true,
-  });
-  await deps.segmentDeltaRepository.create({
-    segmentId,
-    segmentkind,
-    addedCustomerIds: [customerId],
-    removedCustomerIds: [],
-    triggerEventId: trigger.eventId,
-    triggerEventType: trigger.eventType,
-    computedAt: new Date(),
-  });
-  deps.logger.log(
-    ADD_CUSTOMER_TO_SEGMENT(customerId.toString(), segmentId.toString()),
-  );
-}
-
-export async function removeCustomerFromSegment(
-  membershipId: Types.ObjectId,
-  segmentId: Types.ObjectId,
-  segmentkind: SegmentRuleKind,
-  customerObjectId: Types.ObjectId,
-  trigger: SegmentMembershipTrigger,
-  deps: SegmentMembershipFacadeDeps,
-): Promise<void> {
-  await deps.segmentMembershipRepository.deactivateMembership(membershipId);
-  await deps.segmentDeltaRepository.create({
-    segmentId,
-    segmentkind,
-    addedCustomerIds: [],
-    removedCustomerIds: [customerObjectId],
-    triggerEventId: trigger.eventId,
-    triggerEventType: trigger.eventType,
-    computedAt: new Date(),
-  });
-  deps.logger.log(
-    REMOVE_CUSTOMER_FROM_SEGMENT(
-      customerObjectId.toString(),
-      segmentId.toString(),
-    ),
-  );
 }
