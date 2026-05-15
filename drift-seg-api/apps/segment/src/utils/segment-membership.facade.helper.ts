@@ -1,30 +1,16 @@
-import { Logger } from '@nestjs/common';
 import {
   ADD_CUSTOMER_TO_SEGMENT,
   REMOVE_CUSTOMER_FROM_SEGMENT,
 } from '@segment/constants/constants';
-import { SEGMENT_ERROR_MESSAGES } from '@segment/constants/error-messages';
 import { SegmentRuleInput, SegmentRuleKind } from '@segment/dto';
 import { SegmentDocument } from '@segment/models';
+import { SegmentMembershipFacadeDeps } from '@segment/models/interfaces/segmentmembershiodeps';
 import { SegmentMembershipTrigger } from '@segment/models/segment-trigger.interface';
-import {
-  SegmentDeltaRepository,
-  SegmentMembershipRepository,
-} from '@segment/repositories';
 import { Types } from 'mongoose';
-import { SegmentRuleEvaluatorService } from '../services/segment-rule-evaluator.service';
-import { isSegmentRuleInput } from './segment-membership.helper';
 
 interface ActiveMembershipRecord {
   _id: Types.ObjectId;
   customerId: Types.ObjectId;
-}
-
-interface SegmentMembershipFacadeDeps {
-  logger: Logger;
-  segmentRuleEvaluatorService: SegmentRuleEvaluatorService;
-  segmentMembershipRepository: SegmentMembershipRepository;
-  segmentDeltaRepository: SegmentDeltaRepository;
 }
 
 function enqueueDependentDynamicSegments(
@@ -89,65 +75,6 @@ export async function processDynamicSegmentQueue(
 // createInitialQueue
 function createInitialQueue(segments: SegmentDocument[]): string[] {
   return segments.map((segment) => segment._id.toString());
-}
-
-// reconcileSegmentMembershipForCustomer
-async function reconcileSegmentMembershipForCustomer(
-  segment: SegmentDocument,
-  customerId: Types.ObjectId,
-  trigger: SegmentMembershipTrigger,
-  deps: SegmentMembershipFacadeDeps,
-): Promise<boolean> {
-  if (!isSegmentRuleInput(segment.rules)) {
-    deps.logger.warn(
-      SEGMENT_ERROR_MESSAGES.INVALID_SEGMENT_RULES_WARNING(
-        segment._id.toString(),
-      ),
-    );
-    return false;
-  }
-
-  const matchesRule =
-    await deps.segmentRuleEvaluatorService.shouldCustomerBelongToSegment(
-      segment.rules,
-      customerId,
-    );
-  const dependenciesSatisfied = await satisfiesDependencies(
-    segment,
-    customerId,
-    deps,
-  );
-  const shouldBeMember = matchesRule && dependenciesSatisfied;
-  const currentMembership =
-    await deps.segmentMembershipRepository.findActiveMembership(
-      segment._id,
-      customerId,
-    );
-
-  if (shouldBeMember && !currentMembership) {
-    await addCustomerToSegment(
-      segment._id,
-      segment.rules.kind,
-      customerId,
-      trigger,
-      deps,
-    );
-    return true;
-  }
-
-  if (!shouldBeMember && currentMembership) {
-    await removeCustomerFromSegment(
-      currentMembership._id,
-      segment._id,
-      segment.rules.kind,
-      customerId,
-      trigger,
-      deps,
-    );
-    return true;
-  }
-
-  return false;
 }
 
 export async function satisfiesDependencies(

@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SegmentDependencyGraphService } from '@segment/services/segment-membership/segment-dependency-graph.service';
 import { Types } from 'mongoose';
 import { SegmentTypeEnum } from '../../dto';
-import { Segment, SegmentDocument } from '../../models';
+import { SegmentDocument } from '../../models';
 import { SegmentMembershipTrigger } from '../../models/segment-trigger.interface';
 import {
   SegmentDeltaRepository,
@@ -9,12 +10,12 @@ import {
 } from '../../repositories';
 import {
   collectEligibleCustomerIds,
-  processDynamicSegmentQueue,
-  syncStaticMembershipChanges,
+  syncStaticMembershipChanges,,
 } from '../../utils/segment-membership.facade.helper';
 import { isSegmentRuleInput } from '../../utils/segment-membership.helper';
 import { SegmentQueryService } from '../segment methods/segment-query.service';
 import { SegmentRuleEvaluatorService } from '../segment-rule-evaluator.service';
+import { DynamicSegmentRecomputeService } from '../segment-membership/dynamic-segment-recompute.service';
 
 @Injectable()
 export class SegmentMembershipFacade {
@@ -25,24 +26,33 @@ export class SegmentMembershipFacade {
     private readonly segmentMembershipRepository: SegmentMembershipRepository,
     private readonly segmentDeltaRepository: SegmentDeltaRepository,
     private readonly segmentqueryService: SegmentQueryService,
+    private readonly segmentDependencyGraphService: SegmentDependencyGraphService,
+    private readonly dynamicSegmentRecomputeService: DynamicSegmentRecomputeService,
   ) {}
 
   async recomputeMembershipForCustomer(
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
-    const dynamicValidSegments =
+    const dynamicSegments =
       await this.segmentqueryService.getValidDynamicSegments();
-    const dynamicSegmentsId = this.mapSegmentsById(dynamicValidSegments);
-    const dependentSegmentsId =
-      this.buildDependentSegmentMap(dynamicValidSegments);
-    await processDynamicSegmentQueue(
-      dynamicValidSegments,
-      dynamicSegmentsId,
-      dependentSegmentsId,
+
+    const graph =
+      this.segmentDependencyGraphService.build(dynamicSegments);
+    
+    // await processDynamicSegmentQueue(
+    //   dynamicValidSegments,
+    //   dynamicSegmentsId,
+    //   dependentSegmentsId,
+    //   customerId,
+    //   trigger,
+    //   this.getFacadeDeps(),
+    // );
+    await this.dynamicSegmentRecomputeService.process(
+      dynamicSegments,
+      graph,
       customerId,
       trigger,
-      this.getFacadeDeps(),
     );
   }
 
@@ -97,32 +107,5 @@ export class SegmentMembershipFacade {
       segmentMembershipRepository: this.segmentMembershipRepository,
       segmentDeltaRepository: this.segmentDeltaRepository,
     };
-  }
-
-  private mapSegmentsById(segments: Segment[]): Map<string, Segment> {
-    return new Map(
-      segments.map((segment) => [segment._id.toString(), segment]),
-    );
-  }
-
-  private buildDependentSegmentMap(segments: Segment[]): Map<string, string[]> {
-    const map = new Map<string, string[]>();
-
-    for (const { _id, dependsOnSegmentIds = [] } of segments) {
-      const dependentId = _id.toString();
-
-      for (const dependencyId of dependsOnSegmentIds) {
-        const key = dependencyId.toString();
-
-        const existing = map.get(key);
-        if (existing) {
-          existing.push(dependentId);
-        } else {
-          map.set(key, [dependentId]);
-        }
-      }
-    }
-
-    return map;
   }
 }

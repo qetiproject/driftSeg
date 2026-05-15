@@ -1,25 +1,25 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { SEGMENT_EVENT_BATCH_SIZE } from '@segment/constants/constants';
+import { SEGMENT_NOTIFICATIONS_CLIENT } from '@segment/constants/tokens';
+import { SegmentDocument } from '@segment/models/segment.schema';
+import { CustomerActivityRepository } from '@segment/repositories/customer-activity.repository';
+import { SegmentDeltaNotifierService } from '@segment/services/segment-delta-notifier.service';
+import { SegmentPendingEventQueueService } from '@segment/services/segment-penging-event.service';
+import { SegmentSearchIndexerService } from '@segment/services/segment-search-indexer.service';
+import {
+  buildSchedulerTrigger,
+  buildStaticRefreshTrigger,
+} from '@segment/utils/segment-membership.helper';
+import {
+  buildBatchRecomputePayload,
+  logProcessedBatch,
+  publishBatchSideEffects,
+  recomputeMembershipForPendingBatch,
+} from '@segment/utils/transaction-event.helper';
 import { Types } from 'mongoose';
 import pLimit from 'p-limit';
-import { SEGMENT_EVENT_BATCH_SIZE } from '../constants/constants';
-import { SEGMENT_NOTIFICATIONS_CLIENT } from '../constants/tokens';
-import { SegmentDocument } from '../models';
-import { CustomerActivityRepository } from '../repositories';
-import {
-    buildSchedulerTrigger,
-    buildStaticRefreshTrigger,
-} from '../utils/segment-membership.helper';
-import {
-    buildBatchRecomputePayload,
-    logProcessedBatch,
-    publishBatchSideEffects,
-    recomputeMembershipForPendingBatch,
-} from '../utils/transaction-event.helper';
 import { SegmentMembershipFacade } from './facades/segment-membership.facade';
-import { SegmentDeltaNotifierService } from './segment-delta-notifier.service';
-import { SegmentPendingEventQueueService } from './segment-penging-event.service';
-import { SegmentSearchIndexerService } from './segment-search-indexer.service';
 
 @Injectable()
 export class SegmentMembershipService {
