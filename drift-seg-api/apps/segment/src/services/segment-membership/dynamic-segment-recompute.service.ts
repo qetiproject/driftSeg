@@ -24,17 +24,20 @@ export class DynamicSegmentRecomputeService {
 
   private readonly logger = new Logger(DynamicSegmentRecomputeService.name);
 
-  async process(
+  async dynamicSegmentRecompute(
     dynamicSegments: Segment[],
     graph: SegmentDependencyGraph,
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
   ): Promise<void> {
     const queue: string[] = dynamicSegments.map((s) => s._id.toString());
-    const visited = new Set(queue);
+    const visited = new Set<string>(queue);
 
-    while (queue.length > 0) {
-      const segmentId = queue.shift()!;
+    let head = 0;
+
+    while (head < queue.length) {
+      const segmentId = queue[head];
+      head++;
 
       const segment = graph.segmentsById.get(segmentId);
       if (!segment) continue;
@@ -59,7 +62,8 @@ export class DynamicSegmentRecomputeService {
     }
   }
 
-  async reconcileSegmentMembershipForCustomer(
+  // reconcileSegmentMembershipForCustomer
+  private async reconcileSegmentMembershipForCustomer(
     segment: SegmentDocument,
     customerId: Types.ObjectId,
     trigger: SegmentMembershipTrigger,
@@ -118,7 +122,8 @@ export class DynamicSegmentRecomputeService {
     return false;
   }
 
-  async hasRequiredSegmentMemberships(
+  // hasRequiredSegmentMemberships
+  private async hasRequiredSegmentMemberships(
     segment: SegmentDocument,
     customerId: Types.ObjectId,
   ): Promise<boolean> {
@@ -136,7 +141,8 @@ export class DynamicSegmentRecomputeService {
     return count === dependencyIds.length;
   }
 
-  async addCustomerToSegment(
+  // addCustomerToSegment
+  private async addCustomerToSegment(
     segmentId: Types.ObjectId,
     segmentKind: SegmentRuleKind,
     customerId: Types.ObjectId,
@@ -162,7 +168,8 @@ export class DynamicSegmentRecomputeService {
     );
   }
 
-  async removeCustomerFromSegment(
+  // removeCustomerFromSegment
+  private async removeCustomerFromSegment(
     membershipId: Types.ObjectId,
     segmentId: Types.ObjectId,
     segmentKind: SegmentRuleKind,
@@ -186,6 +193,7 @@ export class DynamicSegmentRecomputeService {
     );
   }
 
+  // createSegmentDelta
   private async createSegmentDelta(params: {
     segmentId: Types.ObjectId;
     segmentKind: SegmentRuleKind;

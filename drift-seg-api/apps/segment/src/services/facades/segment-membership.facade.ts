@@ -28,7 +28,7 @@ export class SegmentMembershipFacade {
 
     const graph = this.segmentDependencyGraphService.build(dynamicSegments);
 
-    await this.dynamicSegmentRecomputeService.process(
+    await this.dynamicSegmentRecomputeService.dynamicSegmentRecompute(
       dynamicSegments,
       graph,
       customerId,
